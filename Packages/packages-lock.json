@@ -1,5 +1,29 @@
 {
   "dependencies": {
+    "com.airuxl.asset-proxy": {
+      "version": "file:../CustomPackages/asset-proxy",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
+    "com.airuxl.ui-proxy": {
+      "version": "file:../CustomPackages/ui-proxy",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
+    "com.airuxul.game-core": {
+      "version": "file:../CustomPackages/game-core",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
+    "com.fluid.behavior-tree": {
+      "version": "file:../CustomPackages/fluid-behavior-tree",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "com.unity.collab-proxy": {
       "version": "2.5.2",
       "depth": 0,
