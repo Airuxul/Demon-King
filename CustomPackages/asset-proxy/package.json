@@ -1,0 +1,7 @@
+{
+    "name": "com.airuxl.asset-proxy",
+    "displayName": "Asset Proxy",
+    "description": "资源加载拓展",
+    "version": "1.0.0",
+    "unity": "2022.3"
+}
