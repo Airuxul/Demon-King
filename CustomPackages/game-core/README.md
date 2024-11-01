@@ -12,7 +12,7 @@ Unity框架整理，主要是唐老师框架以及其他地方整理，并结合
 6. PoolMgr，缓存池模块
 7. ResMgr，Resource加载模块
 8. ScenesMgr，场景加载模块
-9. UIManager，UI模块
+9. UIManager，UI模块(后面要被移除)
 
 ### 参考
 1. [唐老师框架B站地址](https://space.bilibili.com/79983517)
