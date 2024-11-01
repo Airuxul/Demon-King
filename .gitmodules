@@ -1,6 +1,3 @@
-[submodule "CustomPackages/unity-game-core"]
-	path = CustomPackages/unity-game-core
-	url = https://github.com/Airuxul/unity-game-core.git
 [submodule "CustomPackages/ui-proxy"]
 	path = CustomPackages/ui-proxy
 	url = https://github.com/Airuxul/ui-proxy.git
