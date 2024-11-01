@@ -1,9 +1,0 @@
-[submodule "CustomPackages/ui-proxy"]
-	path = CustomPackages/ui-proxy
-	url = https://github.com/Airuxul/ui-proxy.git
-[submodule "CustomPackages/asset-proxy"]
-	path = CustomPackages/asset-proxy
-	url = https://github.com/Airuxul/asset-proxy.git
-[submodule "CustomPackages/game-core"]
-	path = CustomPackages/game-core
-	url = https://github.com/Airuxul/game-core.git
