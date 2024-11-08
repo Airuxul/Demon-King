@@ -15,27 +15,27 @@ namespace GameFramework.Network
         private sealed class SendState : IDisposable
         {
             private const int DefaultBufferLength = 1024 * 64;
-            private MemoryStream m_Stream;
-            private bool m_Disposed;
+            private MemoryStream _Stream;
+            private bool _Disposed;
 
             public SendState()
             {
-                m_Stream = new MemoryStream(DefaultBufferLength);
-                m_Disposed = false;
+                _Stream = new MemoryStream(DefaultBufferLength);
+                _Disposed = false;
             }
 
             public MemoryStream Stream
             {
                 get
                 {
-                    return m_Stream;
+                    return _Stream;
                 }
             }
 
             public void Reset()
             {
-                m_Stream.Position = 0L;
-                m_Stream.SetLength(0L);
+                _Stream.Position = 0L;
+                _Stream.SetLength(0L);
             }
 
             public void Dispose()
@@ -46,21 +46,21 @@ namespace GameFramework.Network
 
             private void Dispose(bool disposing)
             {
-                if (m_Disposed)
+                if (_Disposed)
                 {
                     return;
                 }
 
                 if (disposing)
                 {
-                    if (m_Stream != null)
+                    if (_Stream != null)
                     {
-                        m_Stream.Dispose();
-                        m_Stream = null;
+                        _Stream.Dispose();
+                        _Stream = null;
                     }
                 }
 
-                m_Disposed = true;
+                _Disposed = true;
             }
         }
     }

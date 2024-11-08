@@ -9,6 +9,7 @@ using GameFramework;
 using GameFramework.WebRequest;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -21,81 +22,51 @@ namespace UnityGameFramework.Runtime
     {
         private const int DefaultPriority = 0;
 
-        private IWebRequestManager m_WebRequestManager = null;
-        private EventComponent m_EventComponent = null;
+        private IWebRequestManager _webRequestManager = null;
+        private EventComponent _eventComponent = null;
 
-        [SerializeField]
-        private Transform m_InstanceRoot = null;
+        [FormerlySerializedAs("_InstanceRoot")] [SerializeField]
+        private Transform instanceRoot = null;
 
-        [SerializeField]
-        private string m_WebRequestAgentHelperTypeName = "UnityGameFramework.Runtime.UnityWebRequestAgentHelper";
+        [FormerlySerializedAs("_WebRequestAgentHelperTypeName")] [SerializeField]
+        private string webRequestAgentHelperTypeName = "UnityGameFramework.Runtime.UnityWebRequestAgentHelper";
 
-        [SerializeField]
-        private WebRequestAgentHelperBase m_CustomWebRequestAgentHelper = null;
+        [FormerlySerializedAs("_CustomWebRequestAgentHelper")] [SerializeField]
+        private WebRequestAgentHelperBase customWebRequestAgentHelper = null;
 
-        [SerializeField]
-        private int m_WebRequestAgentHelperCount = 1;
+        [FormerlySerializedAs("_WebRequestAgentHelperCount")] [SerializeField]
+        private int webRequestAgentHelperCount = 1;
 
-        [SerializeField]
-        private float m_Timeout = 30f;
+        [FormerlySerializedAs("_Timeout")] [SerializeField]
+        private float timeout = 30f;
 
         /// <summary>
         /// 获取 Web 请求代理总数量。
         /// </summary>
-        public int TotalAgentCount
-        {
-            get
-            {
-                return m_WebRequestManager.TotalAgentCount;
-            }
-        }
+        public int TotalAgentCount => _webRequestManager.TotalAgentCount;
 
         /// <summary>
         /// 获取可用 Web 请求代理数量。
         /// </summary>
-        public int FreeAgentCount
-        {
-            get
-            {
-                return m_WebRequestManager.FreeAgentCount;
-            }
-        }
+        public int FreeAgentCount => _webRequestManager.FreeAgentCount;
 
         /// <summary>
         /// 获取工作中 Web 请求代理数量。
         /// </summary>
-        public int WorkingAgentCount
-        {
-            get
-            {
-                return m_WebRequestManager.WorkingAgentCount;
-            }
-        }
+        public int WorkingAgentCount => _webRequestManager.WorkingAgentCount;
 
         /// <summary>
         /// 获取等待 Web 请求数量。
         /// </summary>
-        public int WaitingTaskCount
-        {
-            get
-            {
-                return m_WebRequestManager.WaitingTaskCount;
-            }
-        }
+        public int WaitingTaskCount => _webRequestManager.WaitingTaskCount;
 
         /// <summary>
         /// 获取或设置 Web 请求超时时长，以秒为单位。
         /// </summary>
         public float Timeout
         {
-            get
-            {
-                return m_WebRequestManager.Timeout;
-            }
-            set
-            {
-                m_WebRequestManager.Timeout = m_Timeout = value;
-            }
+            get => _webRequestManager.Timeout;
+            set => _webRequestManager.Timeout = timeout = value;
         }
 
         /// <summary>
@@ -105,36 +76,36 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_WebRequestManager = GameFrameworkEntry.GetModule<IWebRequestManager>();
-            if (m_WebRequestManager == null)
+            _webRequestManager = GameFrameworkEntry.GetModule<IWebRequestManager>();
+            if (_webRequestManager == null)
             {
                 Log.Fatal("Web request manager is invalid.");
                 return;
             }
 
-            m_WebRequestManager.Timeout = m_Timeout;
-            m_WebRequestManager.WebRequestStart += OnWebRequestStart;
-            m_WebRequestManager.WebRequestSuccess += OnWebRequestSuccess;
-            m_WebRequestManager.WebRequestFailure += OnWebRequestFailure;
+            _webRequestManager.Timeout = timeout;
+            _webRequestManager.WebRequestStart += OnWebRequestStart;
+            _webRequestManager.WebRequestSuccess += OnWebRequestSuccess;
+            _webRequestManager.WebRequestFailure += OnWebRequestFailure;
         }
 
         private void Start()
         {
-            m_EventComponent = GameEntry.GetComponent<EventComponent>();
-            if (m_EventComponent == null)
+            _eventComponent = GameEntry.GetComponent<EventComponent>();
+            if (_eventComponent == null)
             {
                 Log.Fatal("Event component is invalid.");
                 return;
             }
 
-            if (m_InstanceRoot == null)
+            if (instanceRoot == null)
             {
-                m_InstanceRoot = new GameObject("Web Request Agent Instances").transform;
-                m_InstanceRoot.SetParent(gameObject.transform);
-                m_InstanceRoot.localScale = Vector3.one;
+                instanceRoot = new GameObject("Web Request Agent Instances").transform;
+                instanceRoot.SetParent(gameObject.transform);
+                instanceRoot.localScale = Vector3.one;
             }
 
-            for (int i = 0; i < m_WebRequestAgentHelperCount; i++)
+            for (int i = 0; i < webRequestAgentHelperCount; i++)
             {
                 AddWebRequestAgentHelper(i);
             }
@@ -147,7 +118,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>Web 请求任务的信息。</returns>
         public TaskInfo GetWebRequestInfo(int serialId)
         {
-            return m_WebRequestManager.GetWebRequestInfo(serialId);
+            return _webRequestManager.GetWebRequestInfo(serialId);
         }
 
         /// <summary>
@@ -157,7 +128,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>Web 请求任务的信息。</returns>
         public TaskInfo[] GetWebRequestInfos(string tag)
         {
-            return m_WebRequestManager.GetWebRequestInfos(tag);
+            return _webRequestManager.GetWebRequestInfos(tag);
         }
 
         /// <summary>
@@ -167,7 +138,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">Web 请求任务的信息。</param>
         public void GetAllWebRequestInfos(string tag, List<TaskInfo> results)
         {
-            m_WebRequestManager.GetAllWebRequestInfos(tag, results);
+            _webRequestManager.GetAllWebRequestInfos(tag, results);
         }
 
         /// <summary>
@@ -176,7 +147,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>所有 Web 请求任务的信息。</returns>
         public TaskInfo[] GetAllWebRequestInfos()
         {
-            return m_WebRequestManager.GetAllWebRequestInfos();
+            return _webRequestManager.GetAllWebRequestInfos();
         }
 
         /// <summary>
@@ -185,7 +156,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">所有 Web 请求任务的信息。</param>
         public void GetAllWebRequestInfos(List<TaskInfo> results)
         {
-            m_WebRequestManager.GetAllWebRequestInfos(results);
+            _webRequestManager.GetAllWebRequestInfos(results);
         }
 
         /// <summary>
@@ -487,7 +458,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否移除 Web 请求任务成功。</returns>
         public bool RemoveWebRequest(int serialId)
         {
-            return m_WebRequestManager.RemoveWebRequest(serialId);
+            return _webRequestManager.RemoveWebRequest(serialId);
         }
 
         /// <summary>
@@ -497,7 +468,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>移除 Web 请求任务的数量。</returns>
         public int RemoveWebRequests(string tag)
         {
-            return m_WebRequestManager.RemoveWebRequests(tag);
+            return _webRequestManager.RemoveWebRequests(tag);
         }
 
         /// <summary>
@@ -506,7 +477,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>移除 Web 请求任务的数量。</returns>
         public int RemoveAllWebRequests()
         {
-            return m_WebRequestManager.RemoveAllWebRequests();
+            return _webRequestManager.RemoveAllWebRequests();
         }
 
         /// <summary>
@@ -515,7 +486,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="index">Web 请求代理辅助器索引。</param>
         private void AddWebRequestAgentHelper(int index)
         {
-            WebRequestAgentHelperBase webRequestAgentHelper = Helper.CreateHelper(m_WebRequestAgentHelperTypeName, m_CustomWebRequestAgentHelper, index);
+            WebRequestAgentHelperBase webRequestAgentHelper = Helper.CreateHelper(webRequestAgentHelperTypeName, customWebRequestAgentHelper, index);
             if (webRequestAgentHelper == null)
             {
                 Log.Error("Can not create web request agent helper.");
@@ -524,10 +495,10 @@ namespace UnityGameFramework.Runtime
 
             webRequestAgentHelper.name = Utility.Text.Format("Web Request Agent Helper - {0}", index);
             Transform transform = webRequestAgentHelper.transform;
-            transform.SetParent(m_InstanceRoot);
+            transform.SetParent(instanceRoot);
             transform.localScale = Vector3.one;
 
-            m_WebRequestManager.AddWebRequestAgentHelper(webRequestAgentHelper);
+            _webRequestManager.AddWebRequestAgentHelper(webRequestAgentHelper);
         }
 
         /// <summary>
@@ -542,23 +513,23 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增 Web 请求任务的序列编号。</returns>
         private int AddWebRequest(string webRequestUri, byte[] postData, WWWForm wwwForm, string tag, int priority, object userData)
         {
-            return m_WebRequestManager.AddWebRequest(webRequestUri, postData, tag, priority, WWWFormInfo.Create(wwwForm, userData));
+            return _webRequestManager.AddWebRequest(webRequestUri, postData, tag, priority, WWWFormInfo.Create(wwwForm, userData));
         }
 
         private void OnWebRequestStart(object sender, GameFramework.WebRequest.WebRequestStartEventArgs e)
         {
-            m_EventComponent.Fire(this, WebRequestStartEventArgs.Create(e));
+            _eventComponent.Fire(this, WebRequestStartEventArgs.Create(e));
         }
 
         private void OnWebRequestSuccess(object sender, GameFramework.WebRequest.WebRequestSuccessEventArgs e)
         {
-            m_EventComponent.Fire(this, WebRequestSuccessEventArgs.Create(e));
+            _eventComponent.Fire(this, WebRequestSuccessEventArgs.Create(e));
         }
 
         private void OnWebRequestFailure(object sender, GameFramework.WebRequest.WebRequestFailureEventArgs e)
         {
             Log.Warning("Web request failure, web request serial id '{0}', web request uri '{1}', error message '{2}'.", e.SerialId, e.WebRequestUri, e.ErrorMessage);
-            m_EventComponent.Fire(this, WebRequestFailureEventArgs.Create(e));
+            _eventComponent.Fire(this, WebRequestFailureEventArgs.Create(e));
         }
     }
 }

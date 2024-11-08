@@ -18,9 +18,9 @@ namespace GameFramework.Resource
         /// </summary>
         private sealed class ResourceIniter
         {
-            private readonly ResourceManager m_ResourceManager;
-            private readonly Dictionary<ResourceName, string> m_CachedFileSystemNames;
-            private string m_CurrentVariant;
+            private readonly ResourceManager _ResourceManager;
+            private readonly Dictionary<ResourceName, string> _CachedFileSystemNames;
+            private string _CurrentVariant;
 
             public GameFrameworkAction ResourceInitComplete;
 
@@ -30,9 +30,9 @@ namespace GameFramework.Resource
             /// <param name="resourceManager">资源管理器。</param>
             public ResourceIniter(ResourceManager resourceManager)
             {
-                m_ResourceManager = resourceManager;
-                m_CachedFileSystemNames = new Dictionary<ResourceName, string>();
-                m_CurrentVariant = null;
+                _ResourceManager = resourceManager;
+                _CachedFileSystemNames = new Dictionary<ResourceName, string>();
+                _CurrentVariant = null;
 
                 ResourceInitComplete = null;
             }
@@ -49,19 +49,19 @@ namespace GameFramework.Resource
             /// </summary>
             public void InitResources(string currentVariant)
             {
-                m_CurrentVariant = currentVariant;
+                _CurrentVariant = currentVariant;
 
-                if (m_ResourceManager.m_ResourceHelper == null)
+                if (_ResourceManager._ResourceHelper == null)
                 {
                     throw new GameFrameworkException("Resource helper is invalid.");
                 }
 
-                if (string.IsNullOrEmpty(m_ResourceManager.m_ReadOnlyPath))
+                if (string.IsNullOrEmpty(_ResourceManager._ReadOnlyPath))
                 {
                     throw new GameFrameworkException("Read-only path is invalid.");
                 }
 
-                m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadOnlyPath, RemoteVersionListFileName)), new LoadBytesCallbacks(OnLoadPackageVersionListSuccess, OnLoadPackageVersionListFailure), null);
+                _ResourceManager._ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(_ResourceManager._ReadOnlyPath, RemoteVersionListFileName)), new LoadBytesCallbacks(OnLoadPackageVersionListSuccess, OnLoadPackageVersionListFailure), null);
             }
 
             private void OnLoadPackageVersionListSuccess(string fileUri, byte[] bytes, float duration, object userData)
@@ -70,7 +70,7 @@ namespace GameFramework.Resource
                 try
                 {
                     memoryStream = new MemoryStream(bytes, false);
-                    PackageVersionList versionList = m_ResourceManager.m_PackageVersionListSerializer.Deserialize(memoryStream);
+                    PackageVersionList versionList = _ResourceManager._PackageVersionListSerializer.Deserialize(memoryStream);
                     if (!versionList.IsValid)
                     {
                         throw new GameFrameworkException("Deserialize package version list failure.");
@@ -80,11 +80,11 @@ namespace GameFramework.Resource
                     PackageVersionList.Resource[] resources = versionList.GetResources();
                     PackageVersionList.FileSystem[] fileSystems = versionList.GetFileSystems();
                     PackageVersionList.ResourceGroup[] resourceGroups = versionList.GetResourceGroups();
-                    m_ResourceManager.m_ApplicableGameVersion = versionList.ApplicableGameVersion;
-                    m_ResourceManager.m_InternalResourceVersion = versionList.InternalResourceVersion;
-                    m_ResourceManager.m_AssetInfos = new Dictionary<string, AssetInfo>(assets.Length, StringComparer.Ordinal);
-                    m_ResourceManager.m_ResourceInfos = new Dictionary<ResourceName, ResourceInfo>(resources.Length, new ResourceNameComparer());
-                    ResourceGroup defaultResourceGroup = m_ResourceManager.GetOrAddResourceGroup(string.Empty);
+                    _ResourceManager._ApplicableGameVersion = versionList.ApplicableGameVersion;
+                    _ResourceManager._InternalResourceVersion = versionList.InternalResourceVersion;
+                    _ResourceManager._AssetInfos = new Dictionary<string, AssetInfo>(assets.Length, StringComparer.Ordinal);
+                    _ResourceManager._ResourceInfos = new Dictionary<ResourceName, ResourceInfo>(resources.Length, new ResourceNameComparer());
+                    ResourceGroup defaultResourceGroup = _ResourceManager.GetOrAddResourceGroup(string.Empty);
 
                     foreach (PackageVersionList.FileSystem fileSystem in fileSystems)
                     {
@@ -92,18 +92,18 @@ namespace GameFramework.Resource
                         foreach (int resourceIndex in resourceIndexes)
                         {
                             PackageVersionList.Resource resource = resources[resourceIndex];
-                            if (resource.Variant != null && resource.Variant != m_CurrentVariant)
+                            if (resource.Variant != null && resource.Variant != _CurrentVariant)
                             {
                                 continue;
                             }
 
-                            m_CachedFileSystemNames.Add(new ResourceName(resource.Name, resource.Variant, resource.Extension), fileSystem.Name);
+                            _CachedFileSystemNames.Add(new ResourceName(resource.Name, resource.Variant, resource.Extension), fileSystem.Name);
                         }
                     }
 
                     foreach (PackageVersionList.Resource resource in resources)
                     {
-                        if (resource.Variant != null && resource.Variant != m_CurrentVariant)
+                        if (resource.Variant != null && resource.Variant != _CurrentVariant)
                         {
                             continue;
                         }
@@ -121,27 +121,27 @@ namespace GameFramework.Resource
                                 dependencyAssetNames[index++] = assets[dependencyAssetIndex].Name;
                             }
 
-                            m_ResourceManager.m_AssetInfos.Add(asset.Name, new AssetInfo(asset.Name, resourceName, dependencyAssetNames));
+                            _ResourceManager._AssetInfos.Add(asset.Name, new AssetInfo(asset.Name, resourceName, dependencyAssetNames));
                         }
 
                         string fileSystemName = null;
-                        if (!m_CachedFileSystemNames.TryGetValue(resourceName, out fileSystemName))
+                        if (!_CachedFileSystemNames.TryGetValue(resourceName, out fileSystemName))
                         {
                             fileSystemName = null;
                         }
 
-                        m_ResourceManager.m_ResourceInfos.Add(resourceName, new ResourceInfo(resourceName, fileSystemName, (LoadType)resource.LoadType, resource.Length, resource.HashCode, resource.Length, true, true));
+                        _ResourceManager._ResourceInfos.Add(resourceName, new ResourceInfo(resourceName, fileSystemName, (LoadType)resource.LoadType, resource.Length, resource.HashCode, resource.Length, true, true));
                         defaultResourceGroup.AddResource(resourceName, resource.Length, resource.Length);
                     }
 
                     foreach (PackageVersionList.ResourceGroup resourceGroup in resourceGroups)
                     {
-                        ResourceGroup group = m_ResourceManager.GetOrAddResourceGroup(resourceGroup.Name);
+                        ResourceGroup group = _ResourceManager.GetOrAddResourceGroup(resourceGroup.Name);
                         int[] resourceIndexes = resourceGroup.GetResourceIndexes();
                         foreach (int resourceIndex in resourceIndexes)
                         {
                             PackageVersionList.Resource resource = resources[resourceIndex];
-                            if (resource.Variant != null && resource.Variant != m_CurrentVariant)
+                            if (resource.Variant != null && resource.Variant != _CurrentVariant)
                             {
                                 continue;
                             }
@@ -163,7 +163,7 @@ namespace GameFramework.Resource
                 }
                 finally
                 {
-                    m_CachedFileSystemNames.Clear();
+                    _CachedFileSystemNames.Clear();
                     if (memoryStream != null)
                     {
                         memoryStream.Dispose();

@@ -18,7 +18,7 @@ namespace UnityGameFramework.Editor.ResourceTools
     {
         private const float ButtonHeight = 60f;
         private const float ButtonSpace = 5f;
-        private ResourceSyncToolsController m_Controller = null;
+        private ResourceSyncToolsController _Controller = null;
 
         [MenuItem("Game Framework/Resource Tools/Resource Sync Tools", false, 44)]
         private static void Open()
@@ -33,11 +33,11 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         private void OnEnable()
         {
-            m_Controller = new ResourceSyncToolsController();
-            m_Controller.OnLoadingResource += OnLoadingResource;
-            m_Controller.OnLoadingAsset += OnLoadingAsset;
-            m_Controller.OnCompleted += OnCompleted;
-            m_Controller.OnResourceDataChanged += OnResourceDataChanged;
+            _Controller = new ResourceSyncToolsController();
+            _Controller.OnLoadingResource += OnLoadingResource;
+            _Controller.OnLoadingAsset += OnLoadingAsset;
+            _Controller.OnCompleted += OnCompleted;
+            _Controller.OnResourceDataChanged += OnResourceDataChanged;
         }
 
         private void OnGUI()
@@ -47,7 +47,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 GUILayout.Space(ButtonSpace);
                 if (GUILayout.Button("Remove All Asset Bundle Names in Project", GUILayout.Height(ButtonHeight)))
                 {
-                    if (!m_Controller.RemoveAllAssetBundleNames())
+                    if (!_Controller.RemoveAllAssetBundleNames())
                     {
                         Debug.LogWarning("Remove All Asset Bundle Names in Project failure.");
                     }
@@ -62,7 +62,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 GUILayout.Space(ButtonSpace);
                 if (GUILayout.Button("Sync ResourceCollection.xml to Project", GUILayout.Height(ButtonHeight)))
                 {
-                    if (!m_Controller.SyncToProject())
+                    if (!_Controller.SyncToProject())
                     {
                         Debug.LogWarning("Sync ResourceCollection.xml to Project failure.");
                     }
@@ -77,7 +77,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 GUILayout.Space(ButtonSpace);
                 if (GUILayout.Button("Sync ResourceCollection.xml from Project", GUILayout.Height(ButtonHeight)))
                 {
-                    if (!m_Controller.SyncFromProject())
+                    if (!_Controller.SyncFromProject())
                     {
                         Debug.LogWarning("Sync Project to ResourceCollection.xml failure.");
                     }

@@ -20,13 +20,13 @@ namespace GameFramework.Resource
         private static readonly FileSystem[] EmptyFileSystemArray = new FileSystem[] { };
         private static readonly ResourceGroup[] EmptyResourceGroupArray = new ResourceGroup[] { };
 
-        private readonly bool m_IsValid;
-        private readonly string m_ApplicableGameVersion;
-        private readonly int m_InternalResourceVersion;
-        private readonly Asset[] m_Assets;
-        private readonly Resource[] m_Resources;
-        private readonly FileSystem[] m_FileSystems;
-        private readonly ResourceGroup[] m_ResourceGroups;
+        private readonly bool _IsValid;
+        private readonly string _ApplicableGameVersion;
+        private readonly int _InternalResourceVersion;
+        private readonly Asset[] _Assets;
+        private readonly Resource[] _Resources;
+        private readonly FileSystem[] _FileSystems;
+        private readonly ResourceGroup[] _ResourceGroups;
 
         /// <summary>
         /// 初始化可更新模式版本资源列表的新实例。
@@ -39,13 +39,13 @@ namespace GameFramework.Resource
         /// <param name="resourceGroups">包含的资源组集合。</param>
         public UpdatableVersionList(string applicableGameVersion, int internalResourceVersion, Asset[] assets, Resource[] resources, FileSystem[] fileSystems, ResourceGroup[] resourceGroups)
         {
-            m_IsValid = true;
-            m_ApplicableGameVersion = applicableGameVersion;
-            m_InternalResourceVersion = internalResourceVersion;
-            m_Assets = assets ?? EmptyAssetArray;
-            m_Resources = resources ?? EmptyResourceArray;
-            m_FileSystems = fileSystems ?? EmptyFileSystemArray;
-            m_ResourceGroups = resourceGroups ?? EmptyResourceGroupArray;
+            _IsValid = true;
+            _ApplicableGameVersion = applicableGameVersion;
+            _InternalResourceVersion = internalResourceVersion;
+            _Assets = assets ?? EmptyAssetArray;
+            _Resources = resources ?? EmptyResourceArray;
+            _FileSystems = fileSystems ?? EmptyFileSystemArray;
+            _ResourceGroups = resourceGroups ?? EmptyResourceGroupArray;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_IsValid;
+                return _IsValid;
             }
         }
 
@@ -66,12 +66,12 @@ namespace GameFramework.Resource
         {
             get
             {
-                if (!m_IsValid)
+                if (!_IsValid)
                 {
                     throw new GameFrameworkException("Data is invalid.");
                 }
 
-                return m_ApplicableGameVersion;
+                return _ApplicableGameVersion;
             }
         }
 
@@ -82,12 +82,12 @@ namespace GameFramework.Resource
         {
             get
             {
-                if (!m_IsValid)
+                if (!_IsValid)
                 {
                     throw new GameFrameworkException("Data is invalid.");
                 }
 
-                return m_InternalResourceVersion;
+                return _InternalResourceVersion;
             }
         }
 
@@ -97,12 +97,12 @@ namespace GameFramework.Resource
         /// <returns>包含的资源集合。</returns>
         public Asset[] GetAssets()
         {
-            if (!m_IsValid)
+            if (!_IsValid)
             {
                 throw new GameFrameworkException("Data is invalid.");
             }
 
-            return m_Assets;
+            return _Assets;
         }
 
         /// <summary>
@@ -111,12 +111,12 @@ namespace GameFramework.Resource
         /// <returns>包含的资源集合。</returns>
         public Resource[] GetResources()
         {
-            if (!m_IsValid)
+            if (!_IsValid)
             {
                 throw new GameFrameworkException("Data is invalid.");
             }
 
-            return m_Resources;
+            return _Resources;
         }
 
         /// <summary>
@@ -125,12 +125,12 @@ namespace GameFramework.Resource
         /// <returns>包含的文件系统集合。</returns>
         public FileSystem[] GetFileSystems()
         {
-            if (!m_IsValid)
+            if (!_IsValid)
             {
                 throw new GameFrameworkException("Data is invalid.");
             }
 
-            return m_FileSystems;
+            return _FileSystems;
         }
 
         /// <summary>
@@ -139,12 +139,12 @@ namespace GameFramework.Resource
         /// <returns>包含的资源组集合。</returns>
         public ResourceGroup[] GetResourceGroups()
         {
-            if (!m_IsValid)
+            if (!_IsValid)
             {
                 throw new GameFrameworkException("Data is invalid.");
             }
 
-            return m_ResourceGroups;
+            return _ResourceGroups;
         }
     }
 }

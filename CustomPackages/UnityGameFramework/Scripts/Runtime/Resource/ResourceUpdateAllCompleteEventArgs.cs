@@ -30,13 +30,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 获取资源更新全部完成事件编号。
         /// </summary>
-        public override int Id
-        {
-            get
-            {
-                return EventId;
-            }
-        }
+        public override int Id => EventId;
 
         /// <summary>
         /// 创建资源更新全部完成事件。

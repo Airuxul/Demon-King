@@ -14,8 +14,8 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(SceneComponent))]
     internal sealed class SceneComponentInspector : GameFrameworkInspector
     {
-        private SerializedProperty m_EnableLoadSceneUpdateEvent = null;
-        private SerializedProperty m_EnableLoadSceneDependencyAssetEvent = null;
+        private SerializedProperty _EnableLoadSceneUpdateEvent = null;
+        private SerializedProperty _EnableLoadSceneDependencyAssetEvent = null;
 
         public override void OnInspectorGUI()
         {
@@ -27,8 +27,8 @@ namespace UnityGameFramework.Editor
 
             EditorGUI.BeginDisabledGroup(EditorApplication.isPlayingOrWillChangePlaymode);
             {
-                EditorGUILayout.PropertyField(m_EnableLoadSceneUpdateEvent);
-                EditorGUILayout.PropertyField(m_EnableLoadSceneDependencyAssetEvent);
+                EditorGUILayout.PropertyField(_EnableLoadSceneUpdateEvent);
+                EditorGUILayout.PropertyField(_EnableLoadSceneDependencyAssetEvent);
             }
             EditorGUI.EndDisabledGroup();
 
@@ -47,8 +47,8 @@ namespace UnityGameFramework.Editor
 
         private void OnEnable()
         {
-            m_EnableLoadSceneUpdateEvent = serializedObject.FindProperty("m_EnableLoadSceneUpdateEvent");
-            m_EnableLoadSceneDependencyAssetEvent = serializedObject.FindProperty("m_EnableLoadSceneDependencyAssetEvent");
+            _EnableLoadSceneUpdateEvent = serializedObject.FindProperty("_EnableLoadSceneUpdateEvent");
+            _EnableLoadSceneDependencyAssetEvent = serializedObject.FindProperty("_EnableLoadSceneDependencyAssetEvent");
         }
 
         private string GetSceneNameString(string[] sceneAssetNames)

@@ -15,7 +15,7 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public sealed class WebRequestSuccessEventArgs : GameEventArgs
     {
-        private byte[] m_WebResponseBytes = null;
+        private byte[] _webResponseBytes = null;
 
         /// <summary>
         /// Web 请求成功事件编号。
@@ -29,20 +29,14 @@ namespace UnityGameFramework.Runtime
         {
             SerialId = 0;
             WebRequestUri = null;
-            m_WebResponseBytes = null;
+            _webResponseBytes = null;
             UserData = null;
         }
 
         /// <summary>
         /// 获取 Web 请求成功事件编号。
         /// </summary>
-        public override int Id
-        {
-            get
-            {
-                return EventId;
-            }
-        }
+        public override int Id => EventId;
 
         /// <summary>
         /// 获取 Web 请求任务的序列编号。
@@ -77,7 +71,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>Web 响应的数据流。</returns>
         public byte[] GetWebResponseBytes()
         {
-            return m_WebResponseBytes;
+            return _webResponseBytes;
         }
 
         /// <summary>
@@ -91,7 +85,7 @@ namespace UnityGameFramework.Runtime
             WebRequestSuccessEventArgs webRequestSuccessEventArgs = ReferencePool.Acquire<WebRequestSuccessEventArgs>();
             webRequestSuccessEventArgs.SerialId = e.SerialId;
             webRequestSuccessEventArgs.WebRequestUri = e.WebRequestUri;
-            webRequestSuccessEventArgs.m_WebResponseBytes = e.GetWebResponseBytes();
+            webRequestSuccessEventArgs._webResponseBytes = e.GetWebResponseBytes();
             webRequestSuccessEventArgs.UserData = wwwFormInfo.UserData;
             ReferencePool.Release(wwwFormInfo);
             return webRequestSuccessEventArgs;
@@ -104,7 +98,7 @@ namespace UnityGameFramework.Runtime
         {
             SerialId = 0;
             WebRequestUri = null;
-            m_WebResponseBytes = null;
+            _webResponseBytes = null;
             UserData = null;
         }
     }

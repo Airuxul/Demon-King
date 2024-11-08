@@ -14,72 +14,51 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public abstract class UIFormLogic : MonoBehaviour
     {
-        private bool m_Available = false;
-        private bool m_Visible = false;
-        private UIForm m_UIForm = null;
-        private Transform m_CachedTransform = null;
-        private int m_OriginalLayer = 0;
+        private bool _available = false;
+        private bool _visible = false;
+        private UIForm _uiForm = null;
+        private Transform _cachedTransform = null;
+        private int _originalLayer = 0;
 
         /// <summary>
         /// 获取界面。
         /// </summary>
-        public UIForm UIForm
-        {
-            get
-            {
-                return m_UIForm;
-            }
-        }
+        public UIForm UIForm => _uiForm;
 
         /// <summary>
         /// 获取或设置界面名称。
         /// </summary>
         public string Name
         {
-            get
-            {
-                return gameObject.name;
-            }
-            set
-            {
-                gameObject.name = value;
-            }
+            get => gameObject.name;
+            set => gameObject.name = value;
         }
 
         /// <summary>
         /// 获取界面是否可用。
         /// </summary>
-        public bool Available
-        {
-            get
-            {
-                return m_Available;
-            }
-        }
+        public bool Available => _available;
 
         /// <summary>
         /// 获取或设置界面是否可见。
         /// </summary>
         public bool Visible
         {
-            get
-            {
-                return m_Available && m_Visible;
-            }
+            get => _available && _visible;
             set
             {
-                if (!m_Available)
+                if (!_available)
                 {
                     Log.Warning("UI form '{0}' is not available.", Name);
                     return;
                 }
 
-                if (m_Visible == value)
+                if (_visible == value)
                 {
                     return;
                 }
 
-                m_Visible = value;
+                _visible = value;
                 InternalSetVisible(value);
             }
         }
@@ -87,13 +66,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 获取已缓存的 Transform。
         /// </summary>
-        public Transform CachedTransform
-        {
-            get
-            {
-                return m_CachedTransform;
-            }
-        }
+        public Transform CachedTransform => _cachedTransform;
 
         /// <summary>
         /// 界面初始化。
@@ -101,13 +74,13 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         protected internal virtual void OnInit(object userData)
         {
-            if (m_CachedTransform == null)
+            if (_cachedTransform == null)
             {
-                m_CachedTransform = transform;
+                _cachedTransform = transform;
             }
 
-            m_UIForm = GetComponent<UIForm>();
-            m_OriginalLayer = gameObject.layer;
+            _uiForm = GetComponent<UIForm>();
+            _originalLayer = gameObject.layer;
         }
 
         /// <summary>
@@ -123,7 +96,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         protected internal virtual void OnOpen(object userData)
         {
-            m_Available = true;
+            _available = true;
             Visible = true;
         }
 
@@ -134,9 +107,9 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         protected internal virtual void OnClose(bool isShutdown, object userData)
         {
-            gameObject.SetLayerRecursively(m_OriginalLayer);
+            gameObject.SetLayerRecursively(_originalLayer);
             Visible = false;
-            m_Available = false;
+            _available = false;
         }
 
         /// <summary>

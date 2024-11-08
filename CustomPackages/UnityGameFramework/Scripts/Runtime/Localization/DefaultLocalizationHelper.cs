@@ -23,7 +23,7 @@ namespace UnityGameFramework.Runtime
         private static readonly string BytesAssetExtension = ".bytes";
         private const int ColumnCount = 4;
 
-        private ResourceComponent m_ResourceComponent = null;
+        private ResourceComponent _resourceComponent = null;
 
         /// <summary>
         /// 获取系统语言。
@@ -222,13 +222,13 @@ namespace UnityGameFramework.Runtime
         /// <param name="dictionaryAsset">要释放的字典资源。</param>
         public override void ReleaseDataAsset(ILocalizationManager localizationManager, object dictionaryAsset)
         {
-            m_ResourceComponent.UnloadAsset(dictionaryAsset);
+            _resourceComponent.UnloadAsset(dictionaryAsset);
         }
 
         private void Start()
         {
-            m_ResourceComponent = GameEntry.GetComponent<ResourceComponent>();
-            if (m_ResourceComponent == null)
+            _resourceComponent = GameEntry.GetComponent<ResourceComponent>();
+            if (_resourceComponent == null)
             {
                 Log.Fatal("Resource component is invalid.");
                 return;

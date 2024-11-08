@@ -16,24 +16,24 @@ namespace GameFramework.Entity
         /// </summary>
         private sealed class EntityInfo : IReference
         {
-            private IEntity m_Entity;
-            private EntityStatus m_Status;
-            private IEntity m_ParentEntity;
-            private List<IEntity> m_ChildEntities;
+            private IEntity _Entity;
+            private EntityStatus _Status;
+            private IEntity _ParentEntity;
+            private List<IEntity> _ChildEntities;
 
             public EntityInfo()
             {
-                m_Entity = null;
-                m_Status = EntityStatus.Unknown;
-                m_ParentEntity = null;
-                m_ChildEntities = new List<IEntity>();
+                _Entity = null;
+                _Status = EntityStatus.Unknown;
+                _ParentEntity = null;
+                _ChildEntities = new List<IEntity>();
             }
 
             public IEntity Entity
             {
                 get
                 {
-                    return m_Entity;
+                    return _Entity;
                 }
             }
 
@@ -41,11 +41,11 @@ namespace GameFramework.Entity
             {
                 get
                 {
-                    return m_Status;
+                    return _Status;
                 }
                 set
                 {
-                    m_Status = value;
+                    _Status = value;
                 }
             }
 
@@ -53,11 +53,11 @@ namespace GameFramework.Entity
             {
                 get
                 {
-                    return m_ParentEntity;
+                    return _ParentEntity;
                 }
                 set
                 {
-                    m_ParentEntity = value;
+                    _ParentEntity = value;
                 }
             }
 
@@ -65,7 +65,7 @@ namespace GameFramework.Entity
             {
                 get
                 {
-                    return m_ChildEntities.Count;
+                    return _ChildEntities.Count;
                 }
             }
 
@@ -77,27 +77,27 @@ namespace GameFramework.Entity
                 }
 
                 EntityInfo entityInfo = ReferencePool.Acquire<EntityInfo>();
-                entityInfo.m_Entity = entity;
-                entityInfo.m_Status = EntityStatus.WillInit;
+                entityInfo._Entity = entity;
+                entityInfo._Status = EntityStatus.WillInit;
                 return entityInfo;
             }
 
             public void Clear()
             {
-                m_Entity = null;
-                m_Status = EntityStatus.Unknown;
-                m_ParentEntity = null;
-                m_ChildEntities.Clear();
+                _Entity = null;
+                _Status = EntityStatus.Unknown;
+                _ParentEntity = null;
+                _ChildEntities.Clear();
             }
 
             public IEntity GetChildEntity()
             {
-                return m_ChildEntities.Count > 0 ? m_ChildEntities[0] : null;
+                return _ChildEntities.Count > 0 ? _ChildEntities[0] : null;
             }
 
             public IEntity[] GetChildEntities()
             {
-                return m_ChildEntities.ToArray();
+                return _ChildEntities.ToArray();
             }
 
             public void GetChildEntities(List<IEntity> results)
@@ -108,7 +108,7 @@ namespace GameFramework.Entity
                 }
 
                 results.Clear();
-                foreach (IEntity childEntity in m_ChildEntities)
+                foreach (IEntity childEntity in _ChildEntities)
                 {
                     results.Add(childEntity);
                 }
@@ -116,17 +116,17 @@ namespace GameFramework.Entity
 
             public void AddChildEntity(IEntity childEntity)
             {
-                if (m_ChildEntities.Contains(childEntity))
+                if (_ChildEntities.Contains(childEntity))
                 {
                     throw new GameFrameworkException("Can not add child entity which is already exist.");
                 }
 
-                m_ChildEntities.Add(childEntity);
+                _ChildEntities.Add(childEntity);
             }
 
             public void RemoveChildEntity(IEntity childEntity)
             {
-                if (!m_ChildEntities.Remove(childEntity))
+                if (!_ChildEntities.Remove(childEntity))
                 {
                     throw new GameFrameworkException("Can not remove child entity which is not exist.");
                 }

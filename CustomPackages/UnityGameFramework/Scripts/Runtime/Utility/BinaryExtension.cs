@@ -14,7 +14,7 @@ using System.IO;
 /// </summary>
 public static class BinaryExtension
 {
-    private static readonly byte[] s_CachedBytes = new byte[byte.MaxValue + 1];
+    private static readonly byte[] SCachedBytes = new byte[byte.MaxValue + 1];
 
     /// <summary>
     /// 从二进制流读取编码后的 32 位有符号整数。
@@ -161,12 +161,12 @@ public static class BinaryExtension
 
         for (byte i = 0; i < length; i++)
         {
-            s_CachedBytes[i] = binaryReader.ReadByte();
+            SCachedBytes[i] = binaryReader.ReadByte();
         }
 
-        Utility.Encryption.GetSelfXorBytes(s_CachedBytes, 0, length, encryptBytes);
-        string value = Utility.Converter.GetString(s_CachedBytes, 0, length);
-        Array.Clear(s_CachedBytes, 0, length);
+        Utility.Encryption.GetSelfXorBytes(SCachedBytes, 0, length, encryptBytes);
+        string value = Utility.Converter.GetString(SCachedBytes, 0, length);
+        Array.Clear(SCachedBytes, 0, length);
         return value;
     }
 
@@ -184,14 +184,14 @@ public static class BinaryExtension
             return;
         }
 
-        int length = Utility.Converter.GetBytes(value, s_CachedBytes);
+        int length = Utility.Converter.GetBytes(value, SCachedBytes);
         if (length > byte.MaxValue)
         {
             throw new GameFrameworkException(Utility.Text.Format("String '{0}' is too long.", value));
         }
 
-        Utility.Encryption.GetSelfXorBytes(s_CachedBytes, encryptBytes);
+        Utility.Encryption.GetSelfXorBytes(SCachedBytes, encryptBytes);
         binaryWriter.Write((byte)length);
-        binaryWriter.Write(s_CachedBytes, 0, length);
+        binaryWriter.Write(SCachedBytes, 0, length);
     }
 }

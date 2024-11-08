@@ -12,8 +12,8 @@ namespace GameFramework.Resource
     /// </summary>
     public sealed class UnloadSceneCallbacks
     {
-        private readonly UnloadSceneSuccessCallback m_UnloadSceneSuccessCallback;
-        private readonly UnloadSceneFailureCallback m_UnloadSceneFailureCallback;
+        private readonly UnloadSceneSuccessCallback _UnloadSceneSuccessCallback;
+        private readonly UnloadSceneFailureCallback _UnloadSceneFailureCallback;
 
         /// <summary>
         /// 初始化卸载场景回调函数集的新实例。
@@ -36,8 +36,8 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException("Unload scene success callback is invalid.");
             }
 
-            m_UnloadSceneSuccessCallback = unloadSceneSuccessCallback;
-            m_UnloadSceneFailureCallback = unloadSceneFailureCallback;
+            _UnloadSceneSuccessCallback = unloadSceneSuccessCallback;
+            _UnloadSceneFailureCallback = unloadSceneFailureCallback;
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_UnloadSceneSuccessCallback;
+                return _UnloadSceneSuccessCallback;
             }
         }
 
@@ -58,7 +58,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_UnloadSceneFailureCallback;
+                return _UnloadSceneFailureCallback;
             }
         }
     }

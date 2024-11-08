@@ -12,10 +12,10 @@ namespace GameFramework.Resource
     /// </summary>
     public sealed class LoadSceneCallbacks
     {
-        private readonly LoadSceneSuccessCallback m_LoadSceneSuccessCallback;
-        private readonly LoadSceneFailureCallback m_LoadSceneFailureCallback;
-        private readonly LoadSceneUpdateCallback m_LoadSceneUpdateCallback;
-        private readonly LoadSceneDependencyAssetCallback m_LoadSceneDependencyAssetCallback;
+        private readonly LoadSceneSuccessCallback _LoadSceneSuccessCallback;
+        private readonly LoadSceneFailureCallback _LoadSceneFailureCallback;
+        private readonly LoadSceneUpdateCallback _LoadSceneUpdateCallback;
+        private readonly LoadSceneDependencyAssetCallback _LoadSceneDependencyAssetCallback;
 
         /// <summary>
         /// 初始化加载场景回调函数集的新实例。
@@ -92,10 +92,10 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException("Load scene success callback is invalid.");
             }
 
-            m_LoadSceneSuccessCallback = loadSceneSuccessCallback;
-            m_LoadSceneFailureCallback = loadSceneFailureCallback;
-            m_LoadSceneUpdateCallback = loadSceneUpdateCallback;
-            m_LoadSceneDependencyAssetCallback = loadSceneDependencyAssetCallback;
+            _LoadSceneSuccessCallback = loadSceneSuccessCallback;
+            _LoadSceneFailureCallback = loadSceneFailureCallback;
+            _LoadSceneUpdateCallback = loadSceneUpdateCallback;
+            _LoadSceneDependencyAssetCallback = loadSceneDependencyAssetCallback;
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_LoadSceneSuccessCallback;
+                return _LoadSceneSuccessCallback;
             }
         }
 
@@ -116,7 +116,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_LoadSceneFailureCallback;
+                return _LoadSceneFailureCallback;
             }
         }
 
@@ -127,7 +127,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_LoadSceneUpdateCallback;
+                return _LoadSceneUpdateCallback;
             }
         }
 
@@ -138,7 +138,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_LoadSceneDependencyAssetCallback;
+                return _LoadSceneDependencyAssetCallback;
             }
         }
     }

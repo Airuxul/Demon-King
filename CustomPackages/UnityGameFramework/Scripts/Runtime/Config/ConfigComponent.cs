@@ -9,6 +9,7 @@ using GameFramework;
 using GameFramework.Config;
 using GameFramework.Resource;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -21,45 +22,33 @@ namespace UnityGameFramework.Runtime
     {
         private const int DefaultPriority = 0;
 
-        private IConfigManager m_ConfigManager = null;
-        private EventComponent m_EventComponent = null;
+        private IConfigManager _configManager = null;
+        private EventComponent _eventComponent = null;
 
-        [SerializeField]
-        private bool m_EnableLoadConfigUpdateEvent = false;
+        [FormerlySerializedAs("_EnableLoadConfigUpdateEvent")] [SerializeField]
+        private bool enableLoadConfigUpdateEvent = false;
 
-        [SerializeField]
-        private bool m_EnableLoadConfigDependencyAssetEvent = false;
+        [FormerlySerializedAs("_EnableLoadConfigDependencyAssetEvent")] [SerializeField]
+        private bool enableLoadConfigDependencyAssetEvent = false;
 
-        [SerializeField]
-        private string m_ConfigHelperTypeName = "UnityGameFramework.Runtime.DefaultConfigHelper";
+        [FormerlySerializedAs("_ConfigHelperTypeName")] [SerializeField]
+        private string configHelperTypeName = "UnityGameFramework.Runtime.DefaultConfigHelper";
 
-        [SerializeField]
-        private ConfigHelperBase m_CustomConfigHelper = null;
+        [FormerlySerializedAs("_CustomConfigHelper")] [SerializeField]
+        private ConfigHelperBase customConfigHelper = null;
 
-        [SerializeField]
-        private int m_CachedBytesSize = 0;
+        [FormerlySerializedAs("_CachedBytesSize")] [SerializeField]
+        private int cachedBytesSize = 0;
 
         /// <summary>
         /// 获取全局配置项数量。
         /// </summary>
-        public int Count
-        {
-            get
-            {
-                return m_ConfigManager.Count;
-            }
-        }
+        public int Count => _configManager.Count;
 
         /// <summary>
         /// 获取缓冲二进制流的大小。
         /// </summary>
-        public int CachedBytesSize
-        {
-            get
-            {
-                return m_ConfigManager.CachedBytesSize;
-            }
-        }
+        public int CachedBytesSize => _configManager.CachedBytesSize;
 
         /// <summary>
         /// 游戏框架组件初始化。
@@ -68,24 +57,24 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_ConfigManager = GameFrameworkEntry.GetModule<IConfigManager>();
-            if (m_ConfigManager == null)
+            _configManager = GameFrameworkEntry.GetModule<IConfigManager>();
+            if (_configManager == null)
             {
                 Log.Fatal("Config manager is invalid.");
                 return;
             }
 
-            m_ConfigManager.ReadDataSuccess += OnReadDataSuccess;
-            m_ConfigManager.ReadDataFailure += OnReadDataFailure;
+            _configManager.ReadDataSuccess += OnReadDataSuccess;
+            _configManager.ReadDataFailure += OnReadDataFailure;
 
-            if (m_EnableLoadConfigUpdateEvent)
+            if (enableLoadConfigUpdateEvent)
             {
-                m_ConfigManager.ReadDataUpdate += OnReadDataUpdate;
+                _configManager.ReadDataUpdate += OnReadDataUpdate;
             }
 
-            if (m_EnableLoadConfigDependencyAssetEvent)
+            if (enableLoadConfigDependencyAssetEvent)
             {
-                m_ConfigManager.ReadDataDependencyAsset += OnReadDataDependencyAsset;
+                _configManager.ReadDataDependencyAsset += OnReadDataDependencyAsset;
             }
         }
 
@@ -98,8 +87,8 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            m_EventComponent = GameEntry.GetComponent<EventComponent>();
-            if (m_EventComponent == null)
+            _eventComponent = GameEntry.GetComponent<EventComponent>();
+            if (_eventComponent == null)
             {
                 Log.Fatal("Event component is invalid.");
                 return;
@@ -107,14 +96,14 @@ namespace UnityGameFramework.Runtime
 
             if (baseComponent.EditorResourceMode)
             {
-                m_ConfigManager.SetResourceManager(baseComponent.EditorResourceHelper);
+                _configManager.SetResourceManager(baseComponent.EditorResourceHelper);
             }
             else
             {
-                m_ConfigManager.SetResourceManager(GameFrameworkEntry.GetModule<IResourceManager>());
+                _configManager.SetResourceManager(GameFrameworkEntry.GetModule<IResourceManager>());
             }
 
-            ConfigHelperBase configHelper = Helper.CreateHelper(m_ConfigHelperTypeName, m_CustomConfigHelper);
+            ConfigHelperBase configHelper = Helper.CreateHelper(configHelperTypeName, customConfigHelper);
             if (configHelper == null)
             {
                 Log.Error("Can not create config helper.");
@@ -126,11 +115,11 @@ namespace UnityGameFramework.Runtime
             transform.SetParent(this.transform);
             transform.localScale = Vector3.one;
 
-            m_ConfigManager.SetDataProviderHelper(configHelper);
-            m_ConfigManager.SetConfigHelper(configHelper);
-            if (m_CachedBytesSize > 0)
+            _configManager.SetDataProviderHelper(configHelper);
+            _configManager.SetConfigHelper(configHelper);
+            if (cachedBytesSize > 0)
             {
-                EnsureCachedBytesSize(m_CachedBytesSize);
+                EnsureCachedBytesSize(cachedBytesSize);
             }
         }
 
@@ -140,7 +129,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="ensureSize">要确保二进制流缓存分配内存的大小。</param>
         public void EnsureCachedBytesSize(int ensureSize)
         {
-            m_ConfigManager.EnsureCachedBytesSize(ensureSize);
+            _configManager.EnsureCachedBytesSize(ensureSize);
         }
 
         /// <summary>
@@ -148,7 +137,7 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public void FreeCachedBytes()
         {
-            m_ConfigManager.FreeCachedBytes();
+            _configManager.FreeCachedBytes();
         }
 
         /// <summary>
@@ -157,7 +146,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="configAssetName">全局配置资源名称。</param>
         public void ReadData(string configAssetName)
         {
-            m_ConfigManager.ReadData(configAssetName);
+            _configManager.ReadData(configAssetName);
         }
 
         /// <summary>
@@ -167,7 +156,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="priority">加载全局配置资源的优先级。</param>
         public void ReadData(string configAssetName, int priority)
         {
-            m_ConfigManager.ReadData(configAssetName, priority);
+            _configManager.ReadData(configAssetName, priority);
         }
 
         /// <summary>
@@ -177,7 +166,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void ReadData(string configAssetName, object userData)
         {
-            m_ConfigManager.ReadData(configAssetName, userData);
+            _configManager.ReadData(configAssetName, userData);
         }
 
         /// <summary>
@@ -188,7 +177,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void ReadData(string configAssetName, int priority, object userData)
         {
-            m_ConfigManager.ReadData(configAssetName, priority, userData);
+            _configManager.ReadData(configAssetName, priority, userData);
         }
 
         /// <summary>
@@ -198,7 +187,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否解析全局配置成功。</returns>
         public bool ParseData(string configString)
         {
-            return m_ConfigManager.ParseData(configString);
+            return _configManager.ParseData(configString);
         }
 
         /// <summary>
@@ -209,7 +198,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否解析全局配置成功。</returns>
         public bool ParseData(string configString, object userData)
         {
-            return m_ConfigManager.ParseData(configString, userData);
+            return _configManager.ParseData(configString, userData);
         }
 
         /// <summary>
@@ -219,7 +208,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否解析全局配置成功。</returns>
         public bool ParseData(byte[] configBytes)
         {
-            return m_ConfigManager.ParseData(configBytes);
+            return _configManager.ParseData(configBytes);
         }
 
         /// <summary>
@@ -230,7 +219,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否解析全局配置成功。</returns>
         public bool ParseData(byte[] configBytes, object userData)
         {
-            return m_ConfigManager.ParseData(configBytes, userData);
+            return _configManager.ParseData(configBytes, userData);
         }
 
         /// <summary>
@@ -242,7 +231,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否解析全局配置成功。</returns>
         public bool ParseData(byte[] configBytes, int startIndex, int length)
         {
-            return m_ConfigManager.ParseData(configBytes, startIndex, length);
+            return _configManager.ParseData(configBytes, startIndex, length);
         }
 
         /// <summary>
@@ -255,7 +244,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否解析全局配置成功。</returns>
         public bool ParseData(byte[] configBytes, int startIndex, int length, object userData)
         {
-            return m_ConfigManager.ParseData(configBytes, startIndex, length, userData);
+            return _configManager.ParseData(configBytes, startIndex, length, userData);
         }
 
         /// <summary>
@@ -265,7 +254,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>指定的全局配置项是否存在。</returns>
         public bool HasConfig(string configName)
         {
-            return m_ConfigManager.HasConfig(configName);
+            return _configManager.HasConfig(configName);
         }
 
         /// <summary>
@@ -275,7 +264,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的布尔值。</returns>
         public bool GetBool(string configName)
         {
-            return m_ConfigManager.GetBool(configName);
+            return _configManager.GetBool(configName);
         }
 
         /// <summary>
@@ -286,7 +275,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的布尔值。</returns>
         public bool GetBool(string configName, bool defaultValue)
         {
-            return m_ConfigManager.GetBool(configName, defaultValue);
+            return _configManager.GetBool(configName, defaultValue);
         }
 
         /// <summary>
@@ -296,7 +285,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的整数值。</returns>
         public int GetInt(string configName)
         {
-            return m_ConfigManager.GetInt(configName);
+            return _configManager.GetInt(configName);
         }
 
         /// <summary>
@@ -307,7 +296,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的整数值。</returns>
         public int GetInt(string configName, int defaultValue)
         {
-            return m_ConfigManager.GetInt(configName, defaultValue);
+            return _configManager.GetInt(configName, defaultValue);
         }
 
         /// <summary>
@@ -317,7 +306,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的浮点数值。</returns>
         public float GetFloat(string configName)
         {
-            return m_ConfigManager.GetFloat(configName);
+            return _configManager.GetFloat(configName);
         }
 
         /// <summary>
@@ -328,7 +317,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的浮点数值。</returns>
         public float GetFloat(string configName, float defaultValue)
         {
-            return m_ConfigManager.GetFloat(configName, defaultValue);
+            return _configManager.GetFloat(configName, defaultValue);
         }
 
         /// <summary>
@@ -338,7 +327,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的字符串值。</returns>
         public string GetString(string configName)
         {
-            return m_ConfigManager.GetString(configName);
+            return _configManager.GetString(configName);
         }
 
         /// <summary>
@@ -349,7 +338,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的字符串值。</returns>
         public string GetString(string configName, string defaultValue)
         {
-            return m_ConfigManager.GetString(configName, defaultValue);
+            return _configManager.GetString(configName, defaultValue);
         }
 
         /// <summary>
@@ -363,7 +352,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否增加全局配置项成功。</returns>
         public bool AddConfig(string configName, bool boolValue, int intValue, float floatValue, string stringValue)
         {
-            return m_ConfigManager.AddConfig(configName, boolValue, intValue, floatValue, stringValue);
+            return _configManager.AddConfig(configName, boolValue, intValue, floatValue, stringValue);
         }
 
         /// <summary>
@@ -373,7 +362,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否移除全局配置项成功。</returns>
         public bool RemoveConfig(string configName)
         {
-            return m_ConfigManager.RemoveConfig(configName);
+            return _configManager.RemoveConfig(configName);
         }
 
         /// <summary>
@@ -381,28 +370,28 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public void RemoveAllConfigs()
         {
-            m_ConfigManager.RemoveAllConfigs();
+            _configManager.RemoveAllConfigs();
         }
 
         private void OnReadDataSuccess(object sender, ReadDataSuccessEventArgs e)
         {
-            m_EventComponent.Fire(this, LoadConfigSuccessEventArgs.Create(e));
+            _eventComponent.Fire(this, LoadConfigSuccessEventArgs.Create(e));
         }
 
         private void OnReadDataFailure(object sender, ReadDataFailureEventArgs e)
         {
             Log.Warning("Load config failure, asset name '{0}', error message '{1}'.", e.DataAssetName, e.ErrorMessage);
-            m_EventComponent.Fire(this, LoadConfigFailureEventArgs.Create(e));
+            _eventComponent.Fire(this, LoadConfigFailureEventArgs.Create(e));
         }
 
         private void OnReadDataUpdate(object sender, ReadDataUpdateEventArgs e)
         {
-            m_EventComponent.Fire(this, LoadConfigUpdateEventArgs.Create(e));
+            _eventComponent.Fire(this, LoadConfigUpdateEventArgs.Create(e));
         }
 
         private void OnReadDataDependencyAsset(object sender, ReadDataDependencyAssetEventArgs e)
         {
-            m_EventComponent.Fire(this, LoadConfigDependencyAssetEventArgs.Create(e));
+            _eventComponent.Fire(this, LoadConfigDependencyAssetEventArgs.Create(e));
         }
     }
 }

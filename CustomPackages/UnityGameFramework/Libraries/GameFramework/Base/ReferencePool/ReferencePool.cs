@@ -16,7 +16,7 @@ namespace GameFramework
     public static partial class ReferencePool
     {
         private static readonly Dictionary<Type, ReferenceCollection> s_ReferenceCollections = new Dictionary<Type, ReferenceCollection>();
-        private static bool m_EnableStrictCheck = false;
+        private static bool _EnableStrictCheck = false;
 
         /// <summary>
         /// 获取或设置是否开启强制检查。
@@ -25,11 +25,11 @@ namespace GameFramework
         {
             get
             {
-                return m_EnableStrictCheck;
+                return _EnableStrictCheck;
             }
             set
             {
-                m_EnableStrictCheck = value;
+                _EnableStrictCheck = value;
             }
         }
 
@@ -181,7 +181,7 @@ namespace GameFramework
 
         private static void InternalCheckReferenceType(Type referenceType)
         {
-            if (!m_EnableStrictCheck)
+            if (!_EnableStrictCheck)
             {
                 return;
             }

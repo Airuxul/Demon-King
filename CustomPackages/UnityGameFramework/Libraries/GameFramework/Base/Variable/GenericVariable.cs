@@ -15,14 +15,14 @@ namespace GameFramework
     /// <typeparam name="T">变量类型。</typeparam>
     public abstract class Variable<T> : Variable
     {
-        private T m_Value;
+        private T _Value;
 
         /// <summary>
         /// 初始化变量的新实例。
         /// </summary>
         public Variable()
         {
-            m_Value = default(T);
+            _Value = default(T);
         }
 
         /// <summary>
@@ -43,11 +43,11 @@ namespace GameFramework
         {
             get
             {
-                return m_Value;
+                return _Value;
             }
             set
             {
-                m_Value = value;
+                _Value = value;
             }
         }
 
@@ -57,7 +57,7 @@ namespace GameFramework
         /// <returns>变量值。</returns>
         public override object GetValue()
         {
-            return m_Value;
+            return _Value;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace GameFramework
         /// <param name="value">变量值。</param>
         public override void SetValue(object value)
         {
-            m_Value = (T)value;
+            _Value = (T)value;
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace GameFramework
         /// </summary>
         public override void Clear()
         {
-            m_Value = default(T);
+            _Value = default(T);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace GameFramework
         /// <returns>变量字符串。</returns>
         public override string ToString()
         {
-            return (m_Value != null) ? m_Value.ToString() : "<Null>";
+            return (_Value != null) ? _Value.ToString() : "<Null>";
         }
     }
 }

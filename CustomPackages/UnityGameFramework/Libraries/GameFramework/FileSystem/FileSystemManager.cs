@@ -16,17 +16,17 @@ namespace GameFramework.FileSystem
     /// </summary>
     internal sealed class FileSystemManager : GameFrameworkModule, IFileSystemManager
     {
-        private readonly Dictionary<string, FileSystem> m_FileSystems;
+        private readonly Dictionary<string, FileSystem> _FileSystems;
 
-        private IFileSystemHelper m_FileSystemHelper;
+        private IFileSystemHelper _FileSystemHelper;
 
         /// <summary>
         /// 初始化文件系统管理器的新实例。
         /// </summary>
         public FileSystemManager()
         {
-            m_FileSystems = new Dictionary<string, FileSystem>(StringComparer.Ordinal);
-            m_FileSystemHelper = null;
+            _FileSystems = new Dictionary<string, FileSystem>(StringComparer.Ordinal);
+            _FileSystemHelper = null;
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace GameFramework.FileSystem
         {
             get
             {
-                return m_FileSystems.Count;
+                return _FileSystems.Count;
             }
         }
 
@@ -66,9 +66,9 @@ namespace GameFramework.FileSystem
         /// </summary>
         internal override void Shutdown()
         {
-            while (m_FileSystems.Count > 0)
+            while (_FileSystems.Count > 0)
             {
-                foreach (KeyValuePair<string, FileSystem> fileSystem in m_FileSystems)
+                foreach (KeyValuePair<string, FileSystem> fileSystem in _FileSystems)
                 {
                     DestroyFileSystem(fileSystem.Value, false);
                     break;
@@ -87,7 +87,7 @@ namespace GameFramework.FileSystem
                 throw new GameFrameworkException("File system helper is invalid.");
             }
 
-            m_FileSystemHelper = fileSystemHelper;
+            _FileSystemHelper = fileSystemHelper;
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace GameFramework.FileSystem
                 throw new GameFrameworkException("Full path is invalid.");
             }
 
-            return m_FileSystems.ContainsKey(Utility.Path.GetRegularPath(fullPath));
+            return _FileSystems.ContainsKey(Utility.Path.GetRegularPath(fullPath));
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace GameFramework.FileSystem
             }
 
             FileSystem fileSystem = null;
-            if (m_FileSystems.TryGetValue(Utility.Path.GetRegularPath(fullPath), out fileSystem))
+            if (_FileSystems.TryGetValue(Utility.Path.GetRegularPath(fullPath), out fileSystem))
             {
                 return fileSystem;
             }
@@ -136,7 +136,7 @@ namespace GameFramework.FileSystem
         /// <returns>创建的文件系统。</returns>
         public IFileSystem CreateFileSystem(string fullPath, FileSystemAccess access, int maxFileCount, int maxBlockCount)
         {
-            if (m_FileSystemHelper == null)
+            if (_FileSystemHelper == null)
             {
                 throw new GameFrameworkException("File system helper is invalid.");
             }
@@ -157,12 +157,12 @@ namespace GameFramework.FileSystem
             }
 
             fullPath = Utility.Path.GetRegularPath(fullPath);
-            if (m_FileSystems.ContainsKey(fullPath))
+            if (_FileSystems.ContainsKey(fullPath))
             {
                 throw new GameFrameworkException(Utility.Text.Format("File system '{0}' is already exist.", fullPath));
             }
 
-            FileSystemStream fileSystemStream = m_FileSystemHelper.CreateFileSystemStream(fullPath, access, true);
+            FileSystemStream fileSystemStream = _FileSystemHelper.CreateFileSystemStream(fullPath, access, true);
             if (fileSystemStream == null)
             {
                 throw new GameFrameworkException(Utility.Text.Format("Create file system stream for '{0}' failure.", fullPath));
@@ -174,7 +174,7 @@ namespace GameFramework.FileSystem
                 throw new GameFrameworkException(Utility.Text.Format("Create file system '{0}' failure.", fullPath));
             }
 
-            m_FileSystems.Add(fullPath, fileSystem);
+            _FileSystems.Add(fullPath, fileSystem);
             return fileSystem;
         }
 
@@ -186,7 +186,7 @@ namespace GameFramework.FileSystem
         /// <returns>加载的文件系统。</returns>
         public IFileSystem LoadFileSystem(string fullPath, FileSystemAccess access)
         {
-            if (m_FileSystemHelper == null)
+            if (_FileSystemHelper == null)
             {
                 throw new GameFrameworkException("File system helper is invalid.");
             }
@@ -202,12 +202,12 @@ namespace GameFramework.FileSystem
             }
 
             fullPath = Utility.Path.GetRegularPath(fullPath);
-            if (m_FileSystems.ContainsKey(fullPath))
+            if (_FileSystems.ContainsKey(fullPath))
             {
                 throw new GameFrameworkException(Utility.Text.Format("File system '{0}' is already exist.", fullPath));
             }
 
-            FileSystemStream fileSystemStream = m_FileSystemHelper.CreateFileSystemStream(fullPath, access, false);
+            FileSystemStream fileSystemStream = _FileSystemHelper.CreateFileSystemStream(fullPath, access, false);
             if (fileSystemStream == null)
             {
                 throw new GameFrameworkException(Utility.Text.Format("Create file system stream for '{0}' failure.", fullPath));
@@ -220,7 +220,7 @@ namespace GameFramework.FileSystem
                 throw new GameFrameworkException(Utility.Text.Format("Load file system '{0}' failure.", fullPath));
             }
 
-            m_FileSystems.Add(fullPath, fileSystem);
+            _FileSystems.Add(fullPath, fileSystem);
             return fileSystem;
         }
 
@@ -238,7 +238,7 @@ namespace GameFramework.FileSystem
 
             string fullPath = fileSystem.FullPath;
             ((FileSystem)fileSystem).Shutdown();
-            m_FileSystems.Remove(fullPath);
+            _FileSystems.Remove(fullPath);
 
             if (deletePhysicalFile && File.Exists(fullPath))
             {
@@ -253,8 +253,8 @@ namespace GameFramework.FileSystem
         public IFileSystem[] GetAllFileSystems()
         {
             int index = 0;
-            IFileSystem[] results = new IFileSystem[m_FileSystems.Count];
-            foreach (KeyValuePair<string, FileSystem> fileSystem in m_FileSystems)
+            IFileSystem[] results = new IFileSystem[_FileSystems.Count];
+            foreach (KeyValuePair<string, FileSystem> fileSystem in _FileSystems)
             {
                 results[index++] = fileSystem.Value;
             }
@@ -274,7 +274,7 @@ namespace GameFramework.FileSystem
             }
 
             results.Clear();
-            foreach (KeyValuePair<string, FileSystem> fileSystem in m_FileSystems)
+            foreach (KeyValuePair<string, FileSystem> fileSystem in _FileSystems)
             {
                 results.Add(fileSystem.Value);
             }

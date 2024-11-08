@@ -9,6 +9,7 @@ using GameFramework;
 using GameFramework.Download;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -22,99 +23,63 @@ namespace UnityGameFramework.Runtime
         private const int DefaultPriority = 0;
         private const int OneMegaBytes = 1024 * 1024;
 
-        private IDownloadManager m_DownloadManager = null;
-        private EventComponent m_EventComponent = null;
+        private IDownloadManager _downloadManager = null;
+        private EventComponent _eventComponent = null;
 
-        [SerializeField]
-        private Transform m_InstanceRoot = null;
+        [FormerlySerializedAs("_InstanceRoot")] [SerializeField]
+        private Transform instanceRoot = null;
 
-        [SerializeField]
-        private string m_DownloadAgentHelperTypeName = "UnityGameFramework.Runtime.UnityWebRequestDownloadAgentHelper";
+        [FormerlySerializedAs("_DownloadAgentHelperTypeName")] [SerializeField]
+        private string downloadAgentHelperTypeName = "UnityGameFramework.Runtime.UnityWebRequestDownloadAgentHelper";
 
-        [SerializeField]
-        private DownloadAgentHelperBase m_CustomDownloadAgentHelper = null;
+        [FormerlySerializedAs("_CustomDownloadAgentHelper")] [SerializeField]
+        private DownloadAgentHelperBase customDownloadAgentHelper = null;
 
-        [SerializeField]
-        private int m_DownloadAgentHelperCount = 3;
+        [FormerlySerializedAs("_DownloadAgentHelperCount")] [SerializeField]
+        private int downloadAgentHelperCount = 3;
 
-        [SerializeField]
-        private float m_Timeout = 30f;
+        [FormerlySerializedAs("_Timeout")] [SerializeField]
+        private float timeout = 30f;
 
-        [SerializeField]
-        private int m_FlushSize = OneMegaBytes;
+        [FormerlySerializedAs("_FlushSize")] [SerializeField]
+        private int flushSize = OneMegaBytes;
 
         /// <summary>
         /// 获取或设置下载是否被暂停。
         /// </summary>
         public bool Paused
         {
-            get
-            {
-                return m_DownloadManager.Paused;
-            }
-            set
-            {
-                m_DownloadManager.Paused = value;
-            }
+            get => _downloadManager.Paused;
+            set => _downloadManager.Paused = value;
         }
 
         /// <summary>
         /// 获取下载代理总数量。
         /// </summary>
-        public int TotalAgentCount
-        {
-            get
-            {
-                return m_DownloadManager.TotalAgentCount;
-            }
-        }
+        public int TotalAgentCount => _downloadManager.TotalAgentCount;
 
         /// <summary>
         /// 获取可用下载代理数量。
         /// </summary>
-        public int FreeAgentCount
-        {
-            get
-            {
-                return m_DownloadManager.FreeAgentCount;
-            }
-        }
+        public int FreeAgentCount => _downloadManager.FreeAgentCount;
 
         /// <summary>
         /// 获取工作中下载代理数量。
         /// </summary>
-        public int WorkingAgentCount
-        {
-            get
-            {
-                return m_DownloadManager.WorkingAgentCount;
-            }
-        }
+        public int WorkingAgentCount => _downloadManager.WorkingAgentCount;
 
         /// <summary>
         /// 获取等待下载任务数量。
         /// </summary>
-        public int WaitingTaskCount
-        {
-            get
-            {
-                return m_DownloadManager.WaitingTaskCount;
-            }
-        }
+        public int WaitingTaskCount => _downloadManager.WaitingTaskCount;
 
         /// <summary>
         /// 获取或设置下载超时时长，以秒为单位。
         /// </summary>
         public float Timeout
         {
-            get
-            {
-                return m_DownloadManager.Timeout;
-            }
-            set
-            {
-                m_DownloadManager.Timeout = m_Timeout = value;
-            }
+            get => _downloadManager.Timeout;
+            set => _downloadManager.Timeout = timeout = value;
         }
 
         /// <summary>
@@ -122,26 +87,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public int FlushSize
         {
-            get
-            {
-                return m_DownloadManager.FlushSize;
-            }
-            set
-            {
-                m_DownloadManager.FlushSize = m_FlushSize = value;
-            }
+            get => _downloadManager.FlushSize;
+            set => _downloadManager.FlushSize = flushSize = value;
         }
 
         /// <summary>
         /// 获取当前下载速度。
         /// </summary>
-        public float CurrentSpeed
-        {
-            get
-            {
-                return m_DownloadManager.CurrentSpeed;
-            }
-        }
+        public float CurrentSpeed => _downloadManager.CurrentSpeed;
 
         /// <summary>
         /// 游戏框架组件初始化。
@@ -150,38 +103,38 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_DownloadManager = GameFrameworkEntry.GetModule<IDownloadManager>();
-            if (m_DownloadManager == null)
+            _downloadManager = GameFrameworkEntry.GetModule<IDownloadManager>();
+            if (_downloadManager == null)
             {
                 Log.Fatal("Download manager is invalid.");
                 return;
             }
 
-            m_DownloadManager.DownloadStart += OnDownloadStart;
-            m_DownloadManager.DownloadUpdate += OnDownloadUpdate;
-            m_DownloadManager.DownloadSuccess += OnDownloadSuccess;
-            m_DownloadManager.DownloadFailure += OnDownloadFailure;
-            m_DownloadManager.FlushSize = m_FlushSize;
-            m_DownloadManager.Timeout = m_Timeout;
+            _downloadManager.DownloadStart += OnDownloadStart;
+            _downloadManager.DownloadUpdate += OnDownloadUpdate;
+            _downloadManager.DownloadSuccess += OnDownloadSuccess;
+            _downloadManager.DownloadFailure += OnDownloadFailure;
+            _downloadManager.FlushSize = flushSize;
+            _downloadManager.Timeout = timeout;
         }
 
         private void Start()
         {
-            m_EventComponent = GameEntry.GetComponent<EventComponent>();
-            if (m_EventComponent == null)
+            _eventComponent = GameEntry.GetComponent<EventComponent>();
+            if (_eventComponent == null)
             {
                 Log.Fatal("Event component is invalid.");
                 return;
             }
 
-            if (m_InstanceRoot == null)
+            if (instanceRoot == null)
             {
-                m_InstanceRoot = new GameObject("Download Agent Instances").transform;
-                m_InstanceRoot.SetParent(gameObject.transform);
-                m_InstanceRoot.localScale = Vector3.one;
+                instanceRoot = new GameObject("Download Agent Instances").transform;
+                instanceRoot.SetParent(gameObject.transform);
+                instanceRoot.localScale = Vector3.one;
             }
 
-            for (int i = 0; i < m_DownloadAgentHelperCount; i++)
+            for (int i = 0; i < downloadAgentHelperCount; i++)
             {
                 AddDownloadAgentHelper(i);
             }
@@ -194,7 +147,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>下载任务的信息。</returns>
         public TaskInfo GetDownloadInfo(int serialId)
         {
-            return m_DownloadManager.GetDownloadInfo(serialId);
+            return _downloadManager.GetDownloadInfo(serialId);
         }
 
         /// <summary>
@@ -204,7 +157,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>下载任务的信息。</returns>
         public TaskInfo[] GetDownloadInfos(string tag)
         {
-            return m_DownloadManager.GetDownloadInfos(tag);
+            return _downloadManager.GetDownloadInfos(tag);
         }
 
         /// <summary>
@@ -214,7 +167,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">下载任务的信息。</param>
         public void GetDownloadInfos(string tag, List<TaskInfo> results)
         {
-            m_DownloadManager.GetDownloadInfos(tag, results);
+            _downloadManager.GetDownloadInfos(tag, results);
         }
 
         /// <summary>
@@ -223,7 +176,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>所有下载任务的信息。</returns>
         public TaskInfo[] GetAllDownloadInfos()
         {
-            return m_DownloadManager.GetAllDownloadInfos();
+            return _downloadManager.GetAllDownloadInfos();
         }
 
         /// <summary>
@@ -232,7 +185,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">所有下载任务的信息。</param>
         public void GetAllDownloadInfos(List<TaskInfo> results)
         {
-            m_DownloadManager.GetAllDownloadInfos(results);
+            _downloadManager.GetAllDownloadInfos(results);
         }
 
         /// <summary>
@@ -332,7 +285,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增下载任务的序列编号。</returns>
         public int AddDownload(string downloadPath, string downloadUri, string tag, int priority, object userData)
         {
-            return m_DownloadManager.AddDownload(downloadPath, downloadUri, tag, priority, userData);
+            return _downloadManager.AddDownload(downloadPath, downloadUri, tag, priority, userData);
         }
 
         /// <summary>
@@ -342,7 +295,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否移除下载任务成功。</returns>
         public bool RemoveDownload(int serialId)
         {
-            return m_DownloadManager.RemoveDownload(serialId);
+            return _downloadManager.RemoveDownload(serialId);
         }
 
         /// <summary>
@@ -352,7 +305,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>移除下载任务的数量。</returns>
         public int RemoveDownloads(string tag)
         {
-            return m_DownloadManager.RemoveDownloads(tag);
+            return _downloadManager.RemoveDownloads(tag);
         }
 
         /// <summary>
@@ -361,7 +314,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>移除下载任务的数量。</returns>
         public int RemoveAllDownloads()
         {
-            return m_DownloadManager.RemoveAllDownloads();
+            return _downloadManager.RemoveAllDownloads();
         }
 
         /// <summary>
@@ -370,7 +323,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="index">下载代理辅助器索引。</param>
         private void AddDownloadAgentHelper(int index)
         {
-            DownloadAgentHelperBase downloadAgentHelper = Helper.CreateHelper(m_DownloadAgentHelperTypeName, m_CustomDownloadAgentHelper, index);
+            DownloadAgentHelperBase downloadAgentHelper = Helper.CreateHelper(downloadAgentHelperTypeName, customDownloadAgentHelper, index);
             if (downloadAgentHelper == null)
             {
                 Log.Error("Can not create download agent helper.");
@@ -379,31 +332,31 @@ namespace UnityGameFramework.Runtime
 
             downloadAgentHelper.name = Utility.Text.Format("Download Agent Helper - {0}", index);
             Transform transform = downloadAgentHelper.transform;
-            transform.SetParent(m_InstanceRoot);
+            transform.SetParent(instanceRoot);
             transform.localScale = Vector3.one;
 
-            m_DownloadManager.AddDownloadAgentHelper(downloadAgentHelper);
+            _downloadManager.AddDownloadAgentHelper(downloadAgentHelper);
         }
 
         private void OnDownloadStart(object sender, GameFramework.Download.DownloadStartEventArgs e)
         {
-            m_EventComponent.Fire(this, DownloadStartEventArgs.Create(e));
+            _eventComponent.Fire(this, DownloadStartEventArgs.Create(e));
         }
 
         private void OnDownloadUpdate(object sender, GameFramework.Download.DownloadUpdateEventArgs e)
         {
-            m_EventComponent.Fire(this, DownloadUpdateEventArgs.Create(e));
+            _eventComponent.Fire(this, DownloadUpdateEventArgs.Create(e));
         }
 
         private void OnDownloadSuccess(object sender, GameFramework.Download.DownloadSuccessEventArgs e)
         {
-            m_EventComponent.Fire(this, DownloadSuccessEventArgs.Create(e));
+            _eventComponent.Fire(this, DownloadSuccessEventArgs.Create(e));
         }
 
         private void OnDownloadFailure(object sender, GameFramework.Download.DownloadFailureEventArgs e)
         {
             Log.Warning("Download failure, download serial id '{0}', download path '{1}', download uri '{2}', error message '{3}'.", e.SerialId, e.DownloadPath, e.DownloadUri, e.ErrorMessage);
-            m_EventComponent.Fire(this, DownloadFailureEventArgs.Create(e));
+            _eventComponent.Fire(this, DownloadFailureEventArgs.Create(e));
         }
     }
 }

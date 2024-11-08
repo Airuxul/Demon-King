@@ -11,6 +11,7 @@ using GameFramework.Procedure;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -21,36 +22,24 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Procedure")]
     public sealed class ProcedureComponent : GameFrameworkComponent
     {
-        private IProcedureManager m_ProcedureManager = null;
-        private ProcedureBase m_EntranceProcedure = null;
+        private IProcedureManager _mProcedureManager = null;
+        private ProcedureBase _mEntranceProcedure = null;
 
-        [SerializeField]
-        private string[] m_AvailableProcedureTypeNames = null;
+        [FormerlySerializedAs("m_AvailableProcedureTypeNames")] [SerializeField]
+        private string[] mAvailableProcedureTypeNames = null;
 
-        [SerializeField]
-        private string m_EntranceProcedureTypeName = null;
+        [FormerlySerializedAs("m_EntranceProcedureTypeName")] [SerializeField]
+        private string mEntranceProcedureTypeName = null;
 
         /// <summary>
         /// 获取当前流程。
         /// </summary>
-        public ProcedureBase CurrentProcedure
-        {
-            get
-            {
-                return m_ProcedureManager.CurrentProcedure;
-            }
-        }
+        public ProcedureBase CurrentProcedure => _mProcedureManager.CurrentProcedure;
 
         /// <summary>
         /// 获取当前流程持续时间。
         /// </summary>
-        public float CurrentProcedureTime
-        {
-            get
-            {
-                return m_ProcedureManager.CurrentProcedureTime;
-            }
-        }
+        public float CurrentProcedureTime => _mProcedureManager.CurrentProcedureTime;
 
         /// <summary>
         /// 游戏框架组件初始化。
@@ -59,8 +48,8 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_ProcedureManager = GameFrameworkEntry.GetModule<IProcedureManager>();
-            if (m_ProcedureManager == null)
+            _mProcedureManager = GameFrameworkEntry.GetModule<IProcedureManager>();
+            if (_mProcedureManager == null)
             {
                 Log.Fatal("Procedure manager is invalid.");
             }
@@ -68,40 +57,40 @@ namespace UnityGameFramework.Runtime
 
         private IEnumerator Start()
         {
-            ProcedureBase[] procedures = new ProcedureBase[m_AvailableProcedureTypeNames.Length];
-            for (int i = 0; i < m_AvailableProcedureTypeNames.Length; i++)
+            ProcedureBase[] procedures = new ProcedureBase[mAvailableProcedureTypeNames.Length];
+            for (int i = 0; i < mAvailableProcedureTypeNames.Length; i++)
             {
-                Type procedureType = Utility.Assembly.GetType(m_AvailableProcedureTypeNames[i]);
+                Type procedureType = Utility.Assembly.GetType(mAvailableProcedureTypeNames[i]);
                 if (procedureType == null)
                 {
-                    Log.Error("Can not find procedure type '{0}'.", m_AvailableProcedureTypeNames[i]);
+                    Log.Error("Can not find procedure type '{0}'.", mAvailableProcedureTypeNames[i]);
                     yield break;
                 }
 
                 procedures[i] = (ProcedureBase)Activator.CreateInstance(procedureType);
                 if (procedures[i] == null)
                 {
-                    Log.Error("Can not create procedure instance '{0}'.", m_AvailableProcedureTypeNames[i]);
+                    Log.Error("Can not create procedure instance '{0}'.", mAvailableProcedureTypeNames[i]);
                     yield break;
                 }
 
-                if (m_EntranceProcedureTypeName == m_AvailableProcedureTypeNames[i])
+                if (mEntranceProcedureTypeName == mAvailableProcedureTypeNames[i])
                 {
-                    m_EntranceProcedure = procedures[i];
+                    _mEntranceProcedure = procedures[i];
                 }
             }
 
-            if (m_EntranceProcedure == null)
+            if (_mEntranceProcedure == null)
             {
                 Log.Error("Entrance procedure is invalid.");
                 yield break;
             }
 
-            m_ProcedureManager.Initialize(GameFrameworkEntry.GetModule<IFsmManager>(), procedures);
+            _mProcedureManager.Initialize(GameFrameworkEntry.GetModule<IFsmManager>(), procedures);
 
             yield return new WaitForEndOfFrame();
 
-            m_ProcedureManager.StartProcedure(m_EntranceProcedure.GetType());
+            _mProcedureManager.StartProcedure(_mEntranceProcedure.GetType());
         }
 
         /// <summary>
@@ -111,7 +100,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在流程。</returns>
         public bool HasProcedure<T>() where T : ProcedureBase
         {
-            return m_ProcedureManager.HasProcedure<T>();
+            return _mProcedureManager.HasProcedure<T>();
         }
 
         /// <summary>
@@ -121,7 +110,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在流程。</returns>
         public bool HasProcedure(Type procedureType)
         {
-            return m_ProcedureManager.HasProcedure(procedureType);
+            return _mProcedureManager.HasProcedure(procedureType);
         }
 
         /// <summary>
@@ -131,7 +120,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的流程。</returns>
         public ProcedureBase GetProcedure<T>() where T : ProcedureBase
         {
-            return m_ProcedureManager.GetProcedure<T>();
+            return _mProcedureManager.GetProcedure<T>();
         }
 
         /// <summary>
@@ -141,7 +130,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的流程。</returns>
         public ProcedureBase GetProcedure(Type procedureType)
         {
-            return m_ProcedureManager.GetProcedure(procedureType);
+            return _mProcedureManager.GetProcedure(procedureType);
         }
     }
 }

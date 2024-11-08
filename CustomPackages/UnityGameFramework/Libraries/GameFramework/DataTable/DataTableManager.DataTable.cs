@@ -19,9 +19,9 @@ namespace GameFramework.DataTable
         /// <typeparam name="T">数据表行的类型。</typeparam>
         private sealed class DataTable<T> : DataTableBase, IDataTable<T> where T : class, IDataRow, new()
         {
-            private readonly Dictionary<int, T> m_DataSet;
-            private T m_MinIdDataRow;
-            private T m_MaxIdDataRow;
+            private readonly Dictionary<int, T> _DataSet;
+            private T _MinIdDataRow;
+            private T _MaxIdDataRow;
 
             /// <summary>
             /// 初始化数据表的新实例。
@@ -30,9 +30,9 @@ namespace GameFramework.DataTable
             public DataTable(string name)
                 : base(name)
             {
-                m_DataSet = new Dictionary<int, T>();
-                m_MinIdDataRow = null;
-                m_MaxIdDataRow = null;
+                _DataSet = new Dictionary<int, T>();
+                _MinIdDataRow = null;
+                _MaxIdDataRow = null;
             }
 
             /// <summary>
@@ -53,7 +53,7 @@ namespace GameFramework.DataTable
             {
                 get
                 {
-                    return m_DataSet.Count;
+                    return _DataSet.Count;
                 }
             }
 
@@ -77,7 +77,7 @@ namespace GameFramework.DataTable
             {
                 get
                 {
-                    return m_MinIdDataRow;
+                    return _MinIdDataRow;
                 }
             }
 
@@ -88,7 +88,7 @@ namespace GameFramework.DataTable
             {
                 get
                 {
-                    return m_MaxIdDataRow;
+                    return _MaxIdDataRow;
                 }
             }
 
@@ -99,7 +99,7 @@ namespace GameFramework.DataTable
             /// <returns>是否存在数据表行。</returns>
             public override bool HasDataRow(int id)
             {
-                return m_DataSet.ContainsKey(id);
+                return _DataSet.ContainsKey(id);
             }
 
             /// <summary>
@@ -114,7 +114,7 @@ namespace GameFramework.DataTable
                     throw new GameFrameworkException("Condition is invalid.");
                 }
 
-                foreach (KeyValuePair<int, T> dataRow in m_DataSet)
+                foreach (KeyValuePair<int, T> dataRow in _DataSet)
                 {
                     if (condition(dataRow.Value))
                     {
@@ -133,7 +133,7 @@ namespace GameFramework.DataTable
             public T GetDataRow(int id)
             {
                 T dataRow = null;
-                if (m_DataSet.TryGetValue(id, out dataRow))
+                if (_DataSet.TryGetValue(id, out dataRow))
                 {
                     return dataRow;
                 }
@@ -154,7 +154,7 @@ namespace GameFramework.DataTable
                     throw new GameFrameworkException("Condition is invalid.");
                 }
 
-                foreach (KeyValuePair<int, T> dataRow in m_DataSet)
+                foreach (KeyValuePair<int, T> dataRow in _DataSet)
                 {
                     if (condition(dataRow.Value))
                     {
@@ -178,7 +178,7 @@ namespace GameFramework.DataTable
                 }
 
                 List<T> results = new List<T>();
-                foreach (KeyValuePair<int, T> dataRow in m_DataSet)
+                foreach (KeyValuePair<int, T> dataRow in _DataSet)
                 {
                     if (condition(dataRow.Value))
                     {
@@ -207,7 +207,7 @@ namespace GameFramework.DataTable
                 }
 
                 results.Clear();
-                foreach (KeyValuePair<int, T> dataRow in m_DataSet)
+                foreach (KeyValuePair<int, T> dataRow in _DataSet)
                 {
                     if (condition(dataRow.Value))
                     {
@@ -229,7 +229,7 @@ namespace GameFramework.DataTable
                 }
 
                 List<T> results = new List<T>();
-                foreach (KeyValuePair<int, T> dataRow in m_DataSet)
+                foreach (KeyValuePair<int, T> dataRow in _DataSet)
                 {
                     results.Add(dataRow.Value);
                 }
@@ -256,7 +256,7 @@ namespace GameFramework.DataTable
                 }
 
                 results.Clear();
-                foreach (KeyValuePair<int, T> dataRow in m_DataSet)
+                foreach (KeyValuePair<int, T> dataRow in _DataSet)
                 {
                     results.Add(dataRow.Value);
                 }
@@ -283,7 +283,7 @@ namespace GameFramework.DataTable
                 }
 
                 List<T> results = new List<T>();
-                foreach (KeyValuePair<int, T> dataRow in m_DataSet)
+                foreach (KeyValuePair<int, T> dataRow in _DataSet)
                 {
                     if (condition(dataRow.Value))
                     {
@@ -319,7 +319,7 @@ namespace GameFramework.DataTable
                 }
 
                 results.Clear();
-                foreach (KeyValuePair<int, T> dataRow in m_DataSet)
+                foreach (KeyValuePair<int, T> dataRow in _DataSet)
                 {
                     if (condition(dataRow.Value))
                     {
@@ -337,8 +337,8 @@ namespace GameFramework.DataTable
             public T[] GetAllDataRows()
             {
                 int index = 0;
-                T[] results = new T[m_DataSet.Count];
-                foreach (KeyValuePair<int, T> dataRow in m_DataSet)
+                T[] results = new T[_DataSet.Count];
+                foreach (KeyValuePair<int, T> dataRow in _DataSet)
                 {
                     results[index++] = dataRow.Value;
                 }
@@ -358,7 +358,7 @@ namespace GameFramework.DataTable
                 }
 
                 results.Clear();
-                foreach (KeyValuePair<int, T> dataRow in m_DataSet)
+                foreach (KeyValuePair<int, T> dataRow in _DataSet)
                 {
                     results.Add(dataRow.Value);
                 }
@@ -438,25 +438,25 @@ namespace GameFramework.DataTable
                     return false;
                 }
 
-                if (!m_DataSet.Remove(id))
+                if (!_DataSet.Remove(id))
                 {
                     return false;
                 }
 
-                if (m_MinIdDataRow != null && m_MinIdDataRow.Id == id || m_MaxIdDataRow != null && m_MaxIdDataRow.Id == id)
+                if (_MinIdDataRow != null && _MinIdDataRow.Id == id || _MaxIdDataRow != null && _MaxIdDataRow.Id == id)
                 {
-                    m_MinIdDataRow = null;
-                    m_MaxIdDataRow = null;
-                    foreach (KeyValuePair<int, T> dataRow in m_DataSet)
+                    _MinIdDataRow = null;
+                    _MaxIdDataRow = null;
+                    foreach (KeyValuePair<int, T> dataRow in _DataSet)
                     {
-                        if (m_MinIdDataRow == null || m_MinIdDataRow.Id > dataRow.Key)
+                        if (_MinIdDataRow == null || _MinIdDataRow.Id > dataRow.Key)
                         {
-                            m_MinIdDataRow = dataRow.Value;
+                            _MinIdDataRow = dataRow.Value;
                         }
 
-                        if (m_MaxIdDataRow == null || m_MaxIdDataRow.Id < dataRow.Key)
+                        if (_MaxIdDataRow == null || _MaxIdDataRow.Id < dataRow.Key)
                         {
-                            m_MaxIdDataRow = dataRow.Value;
+                            _MaxIdDataRow = dataRow.Value;
                         }
                     }
                 }
@@ -469,9 +469,9 @@ namespace GameFramework.DataTable
             /// </summary>
             public override void RemoveAllDataRows()
             {
-                m_DataSet.Clear();
-                m_MinIdDataRow = null;
-                m_MaxIdDataRow = null;
+                _DataSet.Clear();
+                _MinIdDataRow = null;
+                _MaxIdDataRow = null;
             }
 
             /// <summary>
@@ -480,7 +480,7 @@ namespace GameFramework.DataTable
             /// <returns>循环访问集合的枚举数。</returns>
             public IEnumerator<T> GetEnumerator()
             {
-                return m_DataSet.Values.GetEnumerator();
+                return _DataSet.Values.GetEnumerator();
             }
 
             /// <summary>
@@ -489,7 +489,7 @@ namespace GameFramework.DataTable
             /// <returns>循环访问集合的枚举数。</returns>
             IEnumerator IEnumerable.GetEnumerator()
             {
-                return m_DataSet.Values.GetEnumerator();
+                return _DataSet.Values.GetEnumerator();
             }
 
             /// <summary>
@@ -497,26 +497,26 @@ namespace GameFramework.DataTable
             /// </summary>
             internal override void Shutdown()
             {
-                m_DataSet.Clear();
+                _DataSet.Clear();
             }
 
             private void InternalAddDataRow(T dataRow)
             {
-                if (m_DataSet.ContainsKey(dataRow.Id))
+                if (_DataSet.ContainsKey(dataRow.Id))
                 {
                     throw new GameFrameworkException(Utility.Text.Format("Already exist '{0}' in data table '{1}'.", dataRow.Id, new TypeNamePair(typeof(T), Name)));
                 }
 
-                m_DataSet.Add(dataRow.Id, dataRow);
+                _DataSet.Add(dataRow.Id, dataRow);
 
-                if (m_MinIdDataRow == null || m_MinIdDataRow.Id > dataRow.Id)
+                if (_MinIdDataRow == null || _MinIdDataRow.Id > dataRow.Id)
                 {
-                    m_MinIdDataRow = dataRow;
+                    _MinIdDataRow = dataRow;
                 }
 
-                if (m_MaxIdDataRow == null || m_MaxIdDataRow.Id < dataRow.Id)
+                if (_MaxIdDataRow == null || _MaxIdDataRow.Id < dataRow.Id)
                 {
-                    m_MaxIdDataRow = dataRow;
+                    _MaxIdDataRow = dataRow;
                 }
             }
         }

@@ -17,16 +17,16 @@ namespace GameFramework.ObjectPool
         /// <typeparam name="T">对象类型。</typeparam>
         private sealed class Object<T> : IReference where T : ObjectBase
         {
-            private T m_Object;
-            private int m_SpawnCount;
+            private T _Object;
+            private int _SpawnCount;
 
             /// <summary>
             /// 初始化内部对象的新实例。
             /// </summary>
             public Object()
             {
-                m_Object = null;
-                m_SpawnCount = 0;
+                _Object = null;
+                _SpawnCount = 0;
             }
 
             /// <summary>
@@ -36,7 +36,7 @@ namespace GameFramework.ObjectPool
             {
                 get
                 {
-                    return m_Object.Name;
+                    return _Object.Name;
                 }
             }
 
@@ -47,11 +47,11 @@ namespace GameFramework.ObjectPool
             {
                 get
                 {
-                    return m_Object.Locked;
+                    return _Object.Locked;
                 }
                 internal set
                 {
-                    m_Object.Locked = value;
+                    _Object.Locked = value;
                 }
             }
 
@@ -62,11 +62,11 @@ namespace GameFramework.ObjectPool
             {
                 get
                 {
-                    return m_Object.Priority;
+                    return _Object.Priority;
                 }
                 internal set
                 {
-                    m_Object.Priority = value;
+                    _Object.Priority = value;
                 }
             }
 
@@ -77,7 +77,7 @@ namespace GameFramework.ObjectPool
             {
                 get
                 {
-                    return m_Object.CustomCanReleaseFlag;
+                    return _Object.CustomCanReleaseFlag;
                 }
             }
 
@@ -88,7 +88,7 @@ namespace GameFramework.ObjectPool
             {
                 get
                 {
-                    return m_Object.LastUseTime;
+                    return _Object.LastUseTime;
                 }
             }
 
@@ -99,7 +99,7 @@ namespace GameFramework.ObjectPool
             {
                 get
                 {
-                    return m_SpawnCount > 0;
+                    return _SpawnCount > 0;
                 }
             }
 
@@ -110,7 +110,7 @@ namespace GameFramework.ObjectPool
             {
                 get
                 {
-                    return m_SpawnCount;
+                    return _SpawnCount;
                 }
             }
 
@@ -128,8 +128,8 @@ namespace GameFramework.ObjectPool
                 }
 
                 Object<T> internalObject = ReferencePool.Acquire<Object<T>>();
-                internalObject.m_Object = obj;
-                internalObject.m_SpawnCount = spawned ? 1 : 0;
+                internalObject._Object = obj;
+                internalObject._SpawnCount = spawned ? 1 : 0;
                 if (spawned)
                 {
                     obj.OnSpawn();
@@ -143,8 +143,8 @@ namespace GameFramework.ObjectPool
             /// </summary>
             public void Clear()
             {
-                m_Object = null;
-                m_SpawnCount = 0;
+                _Object = null;
+                _SpawnCount = 0;
             }
 
             /// <summary>
@@ -153,7 +153,7 @@ namespace GameFramework.ObjectPool
             /// <returns>对象。</returns>
             public T Peek()
             {
-                return m_Object;
+                return _Object;
             }
 
             /// <summary>
@@ -162,10 +162,10 @@ namespace GameFramework.ObjectPool
             /// <returns>对象。</returns>
             public T Spawn()
             {
-                m_SpawnCount++;
-                m_Object.LastUseTime = DateTime.UtcNow;
-                m_Object.OnSpawn();
-                return m_Object;
+                _SpawnCount++;
+                _Object.LastUseTime = DateTime.UtcNow;
+                _Object.OnSpawn();
+                return _Object;
             }
 
             /// <summary>
@@ -173,10 +173,10 @@ namespace GameFramework.ObjectPool
             /// </summary>
             public void Unspawn()
             {
-                m_Object.OnUnspawn();
-                m_Object.LastUseTime = DateTime.UtcNow;
-                m_SpawnCount--;
-                if (m_SpawnCount < 0)
+                _Object.OnUnspawn();
+                _Object.LastUseTime = DateTime.UtcNow;
+                _SpawnCount--;
+                if (_SpawnCount < 0)
                 {
                     throw new GameFrameworkException(Utility.Text.Format("Object '{0}' spawn count is less than 0.", Name));
                 }
@@ -188,8 +188,8 @@ namespace GameFramework.ObjectPool
             /// <param name="isShutdown">是否是关闭对象池时触发。</param>
             public void Release(bool isShutdown)
             {
-                m_Object.Release(isShutdown);
-                ReferencePool.Release(m_Object);
+                _Object.Release(isShutdown);
+                ReferencePool.Release(_Object);
             }
         }
     }

@@ -17,11 +17,11 @@ namespace GameFramework.Entity
         /// </summary>
         private sealed class EntityGroup : IEntityGroup
         {
-            private readonly string m_Name;
-            private readonly IEntityGroupHelper m_EntityGroupHelper;
-            private readonly IObjectPool<EntityInstanceObject> m_InstancePool;
-            private readonly GameFrameworkLinkedList<IEntity> m_Entities;
-            private LinkedListNode<IEntity> m_CachedNode;
+            private readonly string _Name;
+            private readonly IEntityGroupHelper _EntityGroupHelper;
+            private readonly IObjectPool<EntityInstanceObject> _InstancePool;
+            private readonly GameFrameworkLinkedList<IEntity> _Entities;
+            private LinkedListNode<IEntity> _CachedNode;
 
             /// <summary>
             /// 初始化实体组的新实例。
@@ -45,12 +45,12 @@ namespace GameFramework.Entity
                     throw new GameFrameworkException("Entity group helper is invalid.");
                 }
 
-                m_Name = name;
-                m_EntityGroupHelper = entityGroupHelper;
-                m_InstancePool = objectPoolManager.CreateSingleSpawnObjectPool<EntityInstanceObject>(Utility.Text.Format("Entity Instance Pool ({0})", name), instanceCapacity, instanceExpireTime, instancePriority);
-                m_InstancePool.AutoReleaseInterval = instanceAutoReleaseInterval;
-                m_Entities = new GameFrameworkLinkedList<IEntity>();
-                m_CachedNode = null;
+                _Name = name;
+                _EntityGroupHelper = entityGroupHelper;
+                _InstancePool = objectPoolManager.CreateSingleSpawnObjectPool<EntityInstanceObject>(Utility.Text.Format("Entity Instance Pool ({0})", name), instanceCapacity, instanceExpireTime, instancePriority);
+                _InstancePool.AutoReleaseInterval = instanceAutoReleaseInterval;
+                _Entities = new GameFrameworkLinkedList<IEntity>();
+                _CachedNode = null;
             }
 
             /// <summary>
@@ -60,7 +60,7 @@ namespace GameFramework.Entity
             {
                 get
                 {
-                    return m_Name;
+                    return _Name;
                 }
             }
 
@@ -71,7 +71,7 @@ namespace GameFramework.Entity
             {
                 get
                 {
-                    return m_Entities.Count;
+                    return _Entities.Count;
                 }
             }
 
@@ -82,11 +82,11 @@ namespace GameFramework.Entity
             {
                 get
                 {
-                    return m_InstancePool.AutoReleaseInterval;
+                    return _InstancePool.AutoReleaseInterval;
                 }
                 set
                 {
-                    m_InstancePool.AutoReleaseInterval = value;
+                    _InstancePool.AutoReleaseInterval = value;
                 }
             }
 
@@ -97,11 +97,11 @@ namespace GameFramework.Entity
             {
                 get
                 {
-                    return m_InstancePool.Capacity;
+                    return _InstancePool.Capacity;
                 }
                 set
                 {
-                    m_InstancePool.Capacity = value;
+                    _InstancePool.Capacity = value;
                 }
             }
 
@@ -112,11 +112,11 @@ namespace GameFramework.Entity
             {
                 get
                 {
-                    return m_InstancePool.ExpireTime;
+                    return _InstancePool.ExpireTime;
                 }
                 set
                 {
-                    m_InstancePool.ExpireTime = value;
+                    _InstancePool.ExpireTime = value;
                 }
             }
 
@@ -127,11 +127,11 @@ namespace GameFramework.Entity
             {
                 get
                 {
-                    return m_InstancePool.Priority;
+                    return _InstancePool.Priority;
                 }
                 set
                 {
-                    m_InstancePool.Priority = value;
+                    _InstancePool.Priority = value;
                 }
             }
 
@@ -142,7 +142,7 @@ namespace GameFramework.Entity
             {
                 get
                 {
-                    return m_EntityGroupHelper;
+                    return _EntityGroupHelper;
                 }
             }
 
@@ -153,13 +153,13 @@ namespace GameFramework.Entity
             /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
             public void Update(float elapseSeconds, float realElapseSeconds)
             {
-                LinkedListNode<IEntity> current = m_Entities.First;
+                LinkedListNode<IEntity> current = _Entities.First;
                 while (current != null)
                 {
-                    m_CachedNode = current.Next;
+                    _CachedNode = current.Next;
                     current.Value.OnUpdate(elapseSeconds, realElapseSeconds);
-                    current = m_CachedNode;
-                    m_CachedNode = null;
+                    current = _CachedNode;
+                    _CachedNode = null;
                 }
             }
 
@@ -170,7 +170,7 @@ namespace GameFramework.Entity
             /// <returns>实体组中是否存在实体。</returns>
             public bool HasEntity(int entityId)
             {
-                foreach (IEntity entity in m_Entities)
+                foreach (IEntity entity in _Entities)
                 {
                     if (entity.Id == entityId)
                     {
@@ -193,7 +193,7 @@ namespace GameFramework.Entity
                     throw new GameFrameworkException("Entity asset name is invalid.");
                 }
 
-                foreach (IEntity entity in m_Entities)
+                foreach (IEntity entity in _Entities)
                 {
                     if (entity.EntityAssetName == entityAssetName)
                     {
@@ -211,7 +211,7 @@ namespace GameFramework.Entity
             /// <returns>要获取的实体。</returns>
             public IEntity GetEntity(int entityId)
             {
-                foreach (IEntity entity in m_Entities)
+                foreach (IEntity entity in _Entities)
                 {
                     if (entity.Id == entityId)
                     {
@@ -234,7 +234,7 @@ namespace GameFramework.Entity
                     throw new GameFrameworkException("Entity asset name is invalid.");
                 }
 
-                foreach (IEntity entity in m_Entities)
+                foreach (IEntity entity in _Entities)
                 {
                     if (entity.EntityAssetName == entityAssetName)
                     {
@@ -258,7 +258,7 @@ namespace GameFramework.Entity
                 }
 
                 List<IEntity> results = new List<IEntity>();
-                foreach (IEntity entity in m_Entities)
+                foreach (IEntity entity in _Entities)
                 {
                     if (entity.EntityAssetName == entityAssetName)
                     {
@@ -287,7 +287,7 @@ namespace GameFramework.Entity
                 }
 
                 results.Clear();
-                foreach (IEntity entity in m_Entities)
+                foreach (IEntity entity in _Entities)
                 {
                     if (entity.EntityAssetName == entityAssetName)
                     {
@@ -303,7 +303,7 @@ namespace GameFramework.Entity
             public IEntity[] GetAllEntities()
             {
                 List<IEntity> results = new List<IEntity>();
-                foreach (IEntity entity in m_Entities)
+                foreach (IEntity entity in _Entities)
                 {
                     results.Add(entity);
                 }
@@ -323,7 +323,7 @@ namespace GameFramework.Entity
                 }
 
                 results.Clear();
-                foreach (IEntity entity in m_Entities)
+                foreach (IEntity entity in _Entities)
                 {
                     results.Add(entity);
                 }
@@ -335,7 +335,7 @@ namespace GameFramework.Entity
             /// <param name="entity">要增加的实体。</param>
             public void AddEntity(IEntity entity)
             {
-                m_Entities.AddLast(entity);
+                _Entities.AddLast(entity);
             }
 
             /// <summary>
@@ -344,30 +344,30 @@ namespace GameFramework.Entity
             /// <param name="entity">要移除的实体。</param>
             public void RemoveEntity(IEntity entity)
             {
-                if (m_CachedNode != null && m_CachedNode.Value == entity)
+                if (_CachedNode != null && _CachedNode.Value == entity)
                 {
-                    m_CachedNode = m_CachedNode.Next;
+                    _CachedNode = _CachedNode.Next;
                 }
 
-                if (!m_Entities.Remove(entity))
+                if (!_Entities.Remove(entity))
                 {
-                    throw new GameFrameworkException(Utility.Text.Format("Entity group '{0}' not exists specified entity '[{1}]{2}'.", m_Name, entity.Id, entity.EntityAssetName));
+                    throw new GameFrameworkException(Utility.Text.Format("Entity group '{0}' not exists specified entity '[{1}]{2}'.", _Name, entity.Id, entity.EntityAssetName));
                 }
             }
 
             public void RegisterEntityInstanceObject(EntityInstanceObject obj, bool spawned)
             {
-                m_InstancePool.Register(obj, spawned);
+                _InstancePool.Register(obj, spawned);
             }
 
             public EntityInstanceObject SpawnEntityInstanceObject(string name)
             {
-                return m_InstancePool.Spawn(name);
+                return _InstancePool.Spawn(name);
             }
 
             public void UnspawnEntity(IEntity entity)
             {
-                m_InstancePool.Unspawn(entity.Handle);
+                _InstancePool.Unspawn(entity.Handle);
             }
 
             public void SetEntityInstanceLocked(object entityInstance, bool locked)
@@ -377,7 +377,7 @@ namespace GameFramework.Entity
                     throw new GameFrameworkException("Entity instance is invalid.");
                 }
 
-                m_InstancePool.SetLocked(entityInstance, locked);
+                _InstancePool.SetLocked(entityInstance, locked);
             }
 
             public void SetEntityInstancePriority(object entityInstance, int priority)
@@ -387,7 +387,7 @@ namespace GameFramework.Entity
                     throw new GameFrameworkException("Entity instance is invalid.");
                 }
 
-                m_InstancePool.SetPriority(entityInstance, priority);
+                _InstancePool.SetPriority(entityInstance, priority);
             }
         }
     }

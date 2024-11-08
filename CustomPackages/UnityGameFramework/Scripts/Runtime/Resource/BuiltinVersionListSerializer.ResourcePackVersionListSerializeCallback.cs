@@ -33,10 +33,10 @@ namespace UnityGameFramework.Runtime
                 return false;
             }
 
-            Utility.Random.GetRandomBytes(s_CachedHashBytes);
+            Utility.Random.GetRandomBytes(SCachedHashBytes);
             using (BinaryWriter binaryWriter = new BinaryWriter(stream, Encoding.UTF8))
             {
-                binaryWriter.Write(s_CachedHashBytes);
+                binaryWriter.Write(SCachedHashBytes);
                 binaryWriter.Write(versionList.Offset);
                 binaryWriter.Write(versionList.Length);
                 binaryWriter.Write(versionList.HashCode);
@@ -44,9 +44,9 @@ namespace UnityGameFramework.Runtime
                 binaryWriter.Write7BitEncodedInt32(resources.Length);
                 foreach (ResourcePackVersionList.Resource resource in resources)
                 {
-                    binaryWriter.WriteEncryptedString(resource.Name, s_CachedHashBytes);
-                    binaryWriter.WriteEncryptedString(resource.Variant, s_CachedHashBytes);
-                    binaryWriter.WriteEncryptedString(resource.Extension != DefaultExtension ? resource.Extension : null, s_CachedHashBytes);
+                    binaryWriter.WriteEncryptedString(resource.Name, SCachedHashBytes);
+                    binaryWriter.WriteEncryptedString(resource.Variant, SCachedHashBytes);
+                    binaryWriter.WriteEncryptedString(resource.Extension != DefaultExtension ? resource.Extension : null, SCachedHashBytes);
                     binaryWriter.Write(resource.LoadType);
                     binaryWriter.Write7BitEncodedInt64(resource.Offset);
                     binaryWriter.Write7BitEncodedInt32(resource.Length);
@@ -56,7 +56,7 @@ namespace UnityGameFramework.Runtime
                 }
             }
 
-            Array.Clear(s_CachedHashBytes, 0, CachedHashBytesLength);
+            Array.Clear(SCachedHashBytes, 0, CachedHashBytesLength);
             return true;
         }
 

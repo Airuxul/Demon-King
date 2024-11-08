@@ -12,36 +12,36 @@ namespace GameFramework.Sound
     /// </summary>
     public sealed class PlaySoundParams : IReference
     {
-        private bool m_Referenced;
-        private float m_Time;
-        private bool m_MuteInSoundGroup;
-        private bool m_Loop;
-        private int m_Priority;
-        private float m_VolumeInSoundGroup;
-        private float m_FadeInSeconds;
-        private float m_Pitch;
-        private float m_PanStereo;
-        private float m_SpatialBlend;
-        private float m_MaxDistance;
-        private float m_DopplerLevel;
+        private bool _Referenced;
+        private float _Time;
+        private bool _MuteInSoundGroup;
+        private bool _Loop;
+        private int _Priority;
+        private float _VolumeInSoundGroup;
+        private float _FadeInSeconds;
+        private float _Pitch;
+        private float _PanStereo;
+        private float _SpatialBlend;
+        private float _MaxDistance;
+        private float _DopplerLevel;
 
         /// <summary>
         /// 初始化播放声音参数的新实例。
         /// </summary>
         public PlaySoundParams()
         {
-            m_Referenced = false;
-            m_Time = Constant.DefaultTime;
-            m_MuteInSoundGroup = Constant.DefaultMute;
-            m_Loop = Constant.DefaultLoop;
-            m_Priority = Constant.DefaultPriority;
-            m_VolumeInSoundGroup = Constant.DefaultVolume;
-            m_FadeInSeconds = Constant.DefaultFadeInSeconds;
-            m_Pitch = Constant.DefaultPitch;
-            m_PanStereo = Constant.DefaultPanStereo;
-            m_SpatialBlend = Constant.DefaultSpatialBlend;
-            m_MaxDistance = Constant.DefaultMaxDistance;
-            m_DopplerLevel = Constant.DefaultDopplerLevel;
+            _Referenced = false;
+            _Time = Constant.DefaultTime;
+            _MuteInSoundGroup = Constant.DefaultMute;
+            _Loop = Constant.DefaultLoop;
+            _Priority = Constant.DefaultPriority;
+            _VolumeInSoundGroup = Constant.DefaultVolume;
+            _FadeInSeconds = Constant.DefaultFadeInSeconds;
+            _Pitch = Constant.DefaultPitch;
+            _PanStereo = Constant.DefaultPanStereo;
+            _SpatialBlend = Constant.DefaultSpatialBlend;
+            _MaxDistance = Constant.DefaultMaxDistance;
+            _DopplerLevel = Constant.DefaultDopplerLevel;
         }
 
         /// <summary>
@@ -51,11 +51,11 @@ namespace GameFramework.Sound
         {
             get
             {
-                return m_Time;
+                return _Time;
             }
             set
             {
-                m_Time = value;
+                _Time = value;
             }
         }
 
@@ -66,11 +66,11 @@ namespace GameFramework.Sound
         {
             get
             {
-                return m_MuteInSoundGroup;
+                return _MuteInSoundGroup;
             }
             set
             {
-                m_MuteInSoundGroup = value;
+                _MuteInSoundGroup = value;
             }
         }
 
@@ -81,11 +81,11 @@ namespace GameFramework.Sound
         {
             get
             {
-                return m_Loop;
+                return _Loop;
             }
             set
             {
-                m_Loop = value;
+                _Loop = value;
             }
         }
 
@@ -96,11 +96,11 @@ namespace GameFramework.Sound
         {
             get
             {
-                return m_Priority;
+                return _Priority;
             }
             set
             {
-                m_Priority = value;
+                _Priority = value;
             }
         }
 
@@ -111,11 +111,11 @@ namespace GameFramework.Sound
         {
             get
             {
-                return m_VolumeInSoundGroup;
+                return _VolumeInSoundGroup;
             }
             set
             {
-                m_VolumeInSoundGroup = value;
+                _VolumeInSoundGroup = value;
             }
         }
 
@@ -126,11 +126,11 @@ namespace GameFramework.Sound
         {
             get
             {
-                return m_FadeInSeconds;
+                return _FadeInSeconds;
             }
             set
             {
-                m_FadeInSeconds = value;
+                _FadeInSeconds = value;
             }
         }
 
@@ -141,11 +141,11 @@ namespace GameFramework.Sound
         {
             get
             {
-                return m_Pitch;
+                return _Pitch;
             }
             set
             {
-                m_Pitch = value;
+                _Pitch = value;
             }
         }
 
@@ -156,11 +156,11 @@ namespace GameFramework.Sound
         {
             get
             {
-                return m_PanStereo;
+                return _PanStereo;
             }
             set
             {
-                m_PanStereo = value;
+                _PanStereo = value;
             }
         }
 
@@ -171,11 +171,11 @@ namespace GameFramework.Sound
         {
             get
             {
-                return m_SpatialBlend;
+                return _SpatialBlend;
             }
             set
             {
-                m_SpatialBlend = value;
+                _SpatialBlend = value;
             }
         }
 
@@ -186,11 +186,11 @@ namespace GameFramework.Sound
         {
             get
             {
-                return m_MaxDistance;
+                return _MaxDistance;
             }
             set
             {
-                m_MaxDistance = value;
+                _MaxDistance = value;
             }
         }
 
@@ -201,11 +201,11 @@ namespace GameFramework.Sound
         {
             get
             {
-                return m_DopplerLevel;
+                return _DopplerLevel;
             }
             set
             {
-                m_DopplerLevel = value;
+                _DopplerLevel = value;
             }
         }
 
@@ -213,7 +213,7 @@ namespace GameFramework.Sound
         {
             get
             {
-                return m_Referenced;
+                return _Referenced;
             }
         }
 
@@ -224,7 +224,7 @@ namespace GameFramework.Sound
         public static PlaySoundParams Create()
         {
             PlaySoundParams playSoundParams = ReferencePool.Acquire<PlaySoundParams>();
-            playSoundParams.m_Referenced = true;
+            playSoundParams._Referenced = true;
             return playSoundParams;
         }
 
@@ -233,17 +233,17 @@ namespace GameFramework.Sound
         /// </summary>
         public void Clear()
         {
-            m_Time = Constant.DefaultTime;
-            m_MuteInSoundGroup = Constant.DefaultMute;
-            m_Loop = Constant.DefaultLoop;
-            m_Priority = Constant.DefaultPriority;
-            m_VolumeInSoundGroup = Constant.DefaultVolume;
-            m_FadeInSeconds = Constant.DefaultFadeInSeconds;
-            m_Pitch = Constant.DefaultPitch;
-            m_PanStereo = Constant.DefaultPanStereo;
-            m_SpatialBlend = Constant.DefaultSpatialBlend;
-            m_MaxDistance = Constant.DefaultMaxDistance;
-            m_DopplerLevel = Constant.DefaultDopplerLevel;
+            _Time = Constant.DefaultTime;
+            _MuteInSoundGroup = Constant.DefaultMute;
+            _Loop = Constant.DefaultLoop;
+            _Priority = Constant.DefaultPriority;
+            _VolumeInSoundGroup = Constant.DefaultVolume;
+            _FadeInSeconds = Constant.DefaultFadeInSeconds;
+            _Pitch = Constant.DefaultPitch;
+            _PanStereo = Constant.DefaultPanStereo;
+            _SpatialBlend = Constant.DefaultSpatialBlend;
+            _MaxDistance = Constant.DefaultMaxDistance;
+            _DopplerLevel = Constant.DefaultDopplerLevel;
         }
     }
 }

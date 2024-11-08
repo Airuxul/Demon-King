@@ -18,17 +18,17 @@ namespace GameFramework.DataNode
         {
             private static readonly DataNode[] EmptyDataNodeArray = new DataNode[] { };
 
-            private string m_Name;
-            private Variable m_Data;
-            private DataNode m_Parent;
-            private List<DataNode> m_Childs;
+            private string _Name;
+            private Variable _Data;
+            private DataNode _Parent;
+            private List<DataNode> _Childs;
 
             public DataNode()
             {
-                m_Name = null;
-                m_Data = null;
-                m_Parent = null;
-                m_Childs = null;
+                _Name = null;
+                _Data = null;
+                _Parent = null;
+                _Childs = null;
             }
 
             /// <summary>
@@ -45,8 +45,8 @@ namespace GameFramework.DataNode
                 }
 
                 DataNode node = ReferencePool.Acquire<DataNode>();
-                node.m_Name = name;
-                node.m_Parent = parent;
+                node._Name = name;
+                node._Parent = parent;
                 return node;
             }
 
@@ -57,7 +57,7 @@ namespace GameFramework.DataNode
             {
                 get
                 {
-                    return m_Name;
+                    return _Name;
                 }
             }
 
@@ -68,7 +68,7 @@ namespace GameFramework.DataNode
             {
                 get
                 {
-                    return m_Parent == null ? m_Name : Utility.Text.Format("{0}{1}{2}", m_Parent.FullName, PathSplitSeparator[0], m_Name);
+                    return _Parent == null ? _Name : Utility.Text.Format("{0}{1}{2}", _Parent.FullName, PathSplitSeparator[0], _Name);
                 }
             }
 
@@ -79,7 +79,7 @@ namespace GameFramework.DataNode
             {
                 get
                 {
-                    return m_Parent;
+                    return _Parent;
                 }
             }
 
@@ -90,7 +90,7 @@ namespace GameFramework.DataNode
             {
                 get
                 {
-                    return m_Childs != null ? m_Childs.Count : 0;
+                    return _Childs != null ? _Childs.Count : 0;
                 }
             }
 
@@ -101,7 +101,7 @@ namespace GameFramework.DataNode
             /// <returns>指定类型的数据。</returns>
             public T GetData<T>() where T : Variable
             {
-                return (T)m_Data;
+                return (T)_Data;
             }
 
             /// <summary>
@@ -110,7 +110,7 @@ namespace GameFramework.DataNode
             /// <returns>数据结点数据。</returns>
             public Variable GetData()
             {
-                return m_Data;
+                return _Data;
             }
 
             /// <summary>
@@ -129,12 +129,12 @@ namespace GameFramework.DataNode
             /// <param name="data">要设置的数据。</param>
             public void SetData(Variable data)
             {
-                if (m_Data != null)
+                if (_Data != null)
                 {
-                    ReferencePool.Release(m_Data);
+                    ReferencePool.Release(_Data);
                 }
 
-                m_Data = data;
+                _Data = data;
             }
 
             /// <summary>
@@ -159,12 +159,12 @@ namespace GameFramework.DataNode
                     throw new GameFrameworkException("Name is invalid.");
                 }
 
-                if (m_Childs == null)
+                if (_Childs == null)
                 {
                     return false;
                 }
 
-                foreach (DataNode child in m_Childs)
+                foreach (DataNode child in _Childs)
                 {
                     if (child.Name == name)
                     {
@@ -182,7 +182,7 @@ namespace GameFramework.DataNode
             /// <returns>指定索引的子数据结点，如果索引越界，则返回空。</returns>
             public IDataNode GetChild(int index)
             {
-                return index >= 0 && index < ChildCount ? m_Childs[index] : null;
+                return index >= 0 && index < ChildCount ? _Childs[index] : null;
             }
 
             /// <summary>
@@ -197,12 +197,12 @@ namespace GameFramework.DataNode
                     throw new GameFrameworkException("Name is invalid.");
                 }
 
-                if (m_Childs == null)
+                if (_Childs == null)
                 {
                     return null;
                 }
 
-                foreach (DataNode child in m_Childs)
+                foreach (DataNode child in _Childs)
                 {
                     if (child.Name == name)
                     {
@@ -228,12 +228,12 @@ namespace GameFramework.DataNode
 
                 node = Create(name, this);
 
-                if (m_Childs == null)
+                if (_Childs == null)
                 {
-                    m_Childs = new List<DataNode>();
+                    _Childs = new List<DataNode>();
                 }
 
-                m_Childs.Add(node);
+                _Childs.Add(node);
 
                 return node;
             }
@@ -244,12 +244,12 @@ namespace GameFramework.DataNode
             /// <returns>所有子数据结点。</returns>
             public IDataNode[] GetAllChild()
             {
-                if (m_Childs == null)
+                if (_Childs == null)
                 {
                     return EmptyDataNodeArray;
                 }
 
-                return m_Childs.ToArray();
+                return _Childs.ToArray();
             }
 
             /// <summary>
@@ -264,12 +264,12 @@ namespace GameFramework.DataNode
                 }
 
                 results.Clear();
-                if (m_Childs == null)
+                if (_Childs == null)
                 {
                     return;
                 }
 
-                foreach (DataNode child in m_Childs)
+                foreach (DataNode child in _Childs)
                 {
                     results.Add(child);
                 }
@@ -287,7 +287,7 @@ namespace GameFramework.DataNode
                     return;
                 }
 
-                m_Childs.Remove(node);
+                _Childs.Remove(node);
                 ReferencePool.Release(node);
             }
 
@@ -303,26 +303,26 @@ namespace GameFramework.DataNode
                     return;
                 }
 
-                m_Childs.Remove(node);
+                _Childs.Remove(node);
                 ReferencePool.Release(node);
             }
 
             public void Clear()
             {
-                if (m_Data != null)
+                if (_Data != null)
                 {
-                    ReferencePool.Release(m_Data);
-                    m_Data = null;
+                    ReferencePool.Release(_Data);
+                    _Data = null;
                 }
 
-                if (m_Childs != null)
+                if (_Childs != null)
                 {
-                    foreach (DataNode child in m_Childs)
+                    foreach (DataNode child in _Childs)
                     {
                         ReferencePool.Release(child);
                     }
 
-                    m_Childs.Clear();
+                    _Childs.Clear();
                 }
             }
 
@@ -341,12 +341,12 @@ namespace GameFramework.DataNode
             /// <returns>数据字符串。</returns>
             public string ToDataString()
             {
-                if (m_Data == null)
+                if (_Data == null)
                 {
                     return "<Null>";
                 }
 
-                return Utility.Text.Format("[{0}] {1}", m_Data.Type.Name, m_Data);
+                return Utility.Text.Format("[{0}] {1}", _Data.Type.Name, _Data);
             }
 
             /// <summary>
@@ -374,8 +374,8 @@ namespace GameFramework.DataNode
 
             void IReference.Clear()
             {
-                m_Name = null;
-                m_Parent = null;
+                _Name = null;
+                _Parent = null;
                 Clear();
             }
         }

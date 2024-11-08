@@ -7,6 +7,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -15,60 +16,30 @@ namespace UnityGameFramework.Runtime
         [Serializable]
         private sealed class EntityGroup
         {
-            [SerializeField]
-            private string m_Name = null;
+            [FormerlySerializedAs("_Name")] [SerializeField]
+            private string name = null;
 
-            [SerializeField]
-            private float m_InstanceAutoReleaseInterval = 60f;
+            [FormerlySerializedAs("_InstanceAutoReleaseInterval")] [SerializeField]
+            private float instanceAutoReleaseInterval = 60f;
 
-            [SerializeField]
-            private int m_InstanceCapacity = 16;
+            [FormerlySerializedAs("_InstanceCapacity")] [SerializeField]
+            private int instanceCapacity = 16;
 
-            [SerializeField]
-            private float m_InstanceExpireTime = 60f;
+            [FormerlySerializedAs("_InstanceExpireTime")] [SerializeField]
+            private float instanceExpireTime = 60f;
 
-            [SerializeField]
-            private int m_InstancePriority = 0;
+            [FormerlySerializedAs("_InstancePriority")] [SerializeField]
+            private int instancePriority = 0;
 
-            public string Name
-            {
-                get
-                {
-                    return m_Name;
-                }
-            }
+            public string Name => name;
 
-            public float InstanceAutoReleaseInterval
-            {
-                get
-                {
-                    return m_InstanceAutoReleaseInterval;
-                }
-            }
+            public float InstanceAutoReleaseInterval => instanceAutoReleaseInterval;
 
-            public int InstanceCapacity
-            {
-                get
-                {
-                    return m_InstanceCapacity;
-                }
-            }
+            public int InstanceCapacity => instanceCapacity;
 
-            public float InstanceExpireTime
-            {
-                get
-                {
-                    return m_InstanceExpireTime;
-                }
-            }
+            public float InstanceExpireTime => instanceExpireTime;
 
-            public int InstancePriority
-            {
-                get
-                {
-                    return m_InstancePriority;
-                }
-            }
+            public int InstancePriority => instancePriority;
         }
     }
 }

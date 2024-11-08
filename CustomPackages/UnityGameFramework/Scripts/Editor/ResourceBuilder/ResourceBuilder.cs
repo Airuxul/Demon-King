@@ -18,10 +18,10 @@ namespace UnityGameFramework.Editor.ResourceTools
     /// </summary>
     internal sealed class ResourceBuilder : EditorWindow
     {
-        private ResourceBuilderController m_Controller = null;
-        private bool m_OrderBuildResources = false;
-        private int m_CompressionHelperTypeNameIndex = 0;
-        private int m_BuildEventHandlerTypeNameIndex = 0;
+        private ResourceBuilderController _Controller = null;
+        private bool _OrderBuildResources = false;
+        private int _CompressionHelperTypeNameIndex = 0;
+        private int _BuildEventHandlerTypeNameIndex = 0;
 
         [MenuItem("Game Framework/Resource Tools/Resource Builder", false, 40)]
         private static void Open()
@@ -36,48 +36,48 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         private void OnEnable()
         {
-            m_Controller = new ResourceBuilderController();
-            m_Controller.OnLoadingResource += OnLoadingResource;
-            m_Controller.OnLoadingAsset += OnLoadingAsset;
-            m_Controller.OnLoadCompleted += OnLoadCompleted;
-            m_Controller.OnAnalyzingAsset += OnAnalyzingAsset;
-            m_Controller.OnAnalyzeCompleted += OnAnalyzeCompleted;
-            m_Controller.ProcessingAssetBundle += OnProcessingAssetBundle;
-            m_Controller.ProcessingBinary += OnProcessingBinary;
-            m_Controller.ProcessResourceComplete += OnProcessResourceComplete;
-            m_Controller.BuildResourceError += OnBuildResourceError;
+            _Controller = new ResourceBuilderController();
+            _Controller.OnLoadingResource += OnLoadingResource;
+            _Controller.OnLoadingAsset += OnLoadingAsset;
+            _Controller.OnLoadCompleted += OnLoadCompleted;
+            _Controller.OnAnalyzingAsset += OnAnalyzingAsset;
+            _Controller.OnAnalyzeCompleted += OnAnalyzeCompleted;
+            _Controller.ProcessingAssetBundle += OnProcessingAssetBundle;
+            _Controller.ProcessingBinary += OnProcessingBinary;
+            _Controller.ProcessResourceComplete += OnProcessResourceComplete;
+            _Controller.BuildResourceError += OnBuildResourceError;
 
-            m_OrderBuildResources = false;
+            _OrderBuildResources = false;
 
-            if (m_Controller.Load())
+            if (_Controller.Load())
             {
                 Debug.Log("Load configuration success.");
 
-                m_CompressionHelperTypeNameIndex = 0;
-                string[] compressionHelperTypeNames = m_Controller.GetCompressionHelperTypeNames();
+                _CompressionHelperTypeNameIndex = 0;
+                string[] compressionHelperTypeNames = _Controller.GetCompressionHelperTypeNames();
                 for (int i = 0; i < compressionHelperTypeNames.Length; i++)
                 {
-                    if (m_Controller.CompressionHelperTypeName == compressionHelperTypeNames[i])
+                    if (_Controller.CompressionHelperTypeName == compressionHelperTypeNames[i])
                     {
-                        m_CompressionHelperTypeNameIndex = i;
+                        _CompressionHelperTypeNameIndex = i;
                         break;
                     }
                 }
 
-                m_Controller.RefreshCompressionHelper();
+                _Controller.RefreshCompressionHelper();
 
-                m_BuildEventHandlerTypeNameIndex = 0;
-                string[] buildEventHandlerTypeNames = m_Controller.GetBuildEventHandlerTypeNames();
+                _BuildEventHandlerTypeNameIndex = 0;
+                string[] buildEventHandlerTypeNames = _Controller.GetBuildEventHandlerTypeNames();
                 for (int i = 0; i < buildEventHandlerTypeNames.Length; i++)
                 {
-                    if (m_Controller.BuildEventHandlerTypeName == buildEventHandlerTypeNames[i])
+                    if (_Controller.BuildEventHandlerTypeName == buildEventHandlerTypeNames[i])
                     {
-                        m_BuildEventHandlerTypeNameIndex = i;
+                        _BuildEventHandlerTypeNameIndex = i;
                         break;
                     }
                 }
 
-                m_Controller.RefreshBuildEventHandler();
+                _Controller.RefreshBuildEventHandler();
             }
             else
             {
@@ -87,9 +87,9 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         private void Update()
         {
-            if (m_OrderBuildResources)
+            if (_OrderBuildResources)
             {
-                m_OrderBuildResources = false;
+                _OrderBuildResources = false;
                 BuildResources();
             }
         }
@@ -105,37 +105,37 @@ namespace UnityGameFramework.Editor.ResourceTools
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Product Name", GUILayout.Width(160f));
-                        EditorGUILayout.LabelField(m_Controller.ProductName);
+                        EditorGUILayout.LabelField(_Controller.ProductName);
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Company Name", GUILayout.Width(160f));
-                        EditorGUILayout.LabelField(m_Controller.CompanyName);
+                        EditorGUILayout.LabelField(_Controller.CompanyName);
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Game Identifier", GUILayout.Width(160f));
-                        EditorGUILayout.LabelField(m_Controller.GameIdentifier);
+                        EditorGUILayout.LabelField(_Controller.GameIdentifier);
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Game Framework Version", GUILayout.Width(160f));
-                        EditorGUILayout.LabelField(m_Controller.GameFrameworkVersion);
+                        EditorGUILayout.LabelField(_Controller.GameFrameworkVersion);
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Unity Version", GUILayout.Width(160f));
-                        EditorGUILayout.LabelField(m_Controller.UnityVersion);
+                        EditorGUILayout.LabelField(_Controller.UnityVersion);
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Applicable Game Version", GUILayout.Width(160f));
-                        EditorGUILayout.LabelField(m_Controller.ApplicableGameVersion);
+                        EditorGUILayout.LabelField(_Controller.ApplicableGameVersion);
                     }
                     EditorGUILayout.EndHorizontal();
                 }
@@ -181,19 +181,19 @@ namespace UnityGameFramework.Editor.ResourceTools
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("AssetBundle Compression", GUILayout.Width(160f));
-                        m_Controller.AssetBundleCompression = (AssetBundleCompressionType)EditorGUILayout.EnumPopup(m_Controller.AssetBundleCompression);
+                        _Controller.AssetBundleCompression = (AssetBundleCompressionType)EditorGUILayout.EnumPopup(_Controller.AssetBundleCompression);
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Compression Helper", GUILayout.Width(160f));
-                        string[] names = m_Controller.GetCompressionHelperTypeNames();
-                        int selectedIndex = EditorGUILayout.Popup(m_CompressionHelperTypeNameIndex, names);
-                        if (selectedIndex != m_CompressionHelperTypeNameIndex)
+                        string[] names = _Controller.GetCompressionHelperTypeNames();
+                        int selectedIndex = EditorGUILayout.Popup(_CompressionHelperTypeNameIndex, names);
+                        if (selectedIndex != _CompressionHelperTypeNameIndex)
                         {
-                            m_CompressionHelperTypeNameIndex = selectedIndex;
-                            m_Controller.CompressionHelperTypeName = selectedIndex <= 0 ? string.Empty : names[selectedIndex];
-                            if (m_Controller.RefreshCompressionHelper())
+                            _CompressionHelperTypeNameIndex = selectedIndex;
+                            _Controller.CompressionHelperTypeName = selectedIndex <= 0 ? string.Empty : names[selectedIndex];
+                            if (_Controller.RefreshCompressionHelper())
                             {
                                 Debug.Log("Set compression helper success.");
                             }
@@ -207,7 +207,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Additional Compression", GUILayout.Width(160f));
-                        m_Controller.AdditionalCompressionSelected = EditorGUILayout.ToggleLeft("Additional Compression for Output Full Resources with Compression Helper", m_Controller.AdditionalCompressionSelected);
+                        _Controller.AdditionalCompressionSelected = EditorGUILayout.ToggleLeft("Additional Compression for Output Full Resources with Compression Helper", _Controller.AdditionalCompressionSelected);
                     }
                     EditorGUILayout.EndHorizontal();
                 }
@@ -219,19 +219,19 @@ namespace UnityGameFramework.Editor.ResourceTools
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Force Rebuild AssetBundle", GUILayout.Width(160f));
-                        m_Controller.ForceRebuildAssetBundleSelected = EditorGUILayout.Toggle(m_Controller.ForceRebuildAssetBundleSelected);
+                        _Controller.ForceRebuildAssetBundleSelected = EditorGUILayout.Toggle(_Controller.ForceRebuildAssetBundleSelected);
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Build Event Handler", GUILayout.Width(160f));
-                        string[] names = m_Controller.GetBuildEventHandlerTypeNames();
-                        int selectedIndex = EditorGUILayout.Popup(m_BuildEventHandlerTypeNameIndex, names);
-                        if (selectedIndex != m_BuildEventHandlerTypeNameIndex)
+                        string[] names = _Controller.GetBuildEventHandlerTypeNames();
+                        int selectedIndex = EditorGUILayout.Popup(_BuildEventHandlerTypeNameIndex, names);
+                        if (selectedIndex != _BuildEventHandlerTypeNameIndex)
                         {
-                            m_BuildEventHandlerTypeNameIndex = selectedIndex;
-                            m_Controller.BuildEventHandlerTypeName = selectedIndex <= 0 ? string.Empty : names[selectedIndex];
-                            if (m_Controller.RefreshBuildEventHandler())
+                            _BuildEventHandlerTypeNameIndex = selectedIndex;
+                            _Controller.BuildEventHandlerTypeName = selectedIndex <= 0 ? string.Empty : names[selectedIndex];
+                            if (_Controller.RefreshBuildEventHandler())
                             {
                                 Debug.Log("Set build event handler success.");
                             }
@@ -245,19 +245,19 @@ namespace UnityGameFramework.Editor.ResourceTools
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Internal Resource Version", GUILayout.Width(160f));
-                        m_Controller.InternalResourceVersion = EditorGUILayout.IntField(m_Controller.InternalResourceVersion);
+                        _Controller.InternalResourceVersion = EditorGUILayout.IntField(_Controller.InternalResourceVersion);
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Resource Version", GUILayout.Width(160f));
-                        GUILayout.Label(Utility.Text.Format("{0} ({1})", m_Controller.ApplicableGameVersion, m_Controller.InternalResourceVersion));
+                        GUILayout.Label(Utility.Text.Format("{0} ({1})", _Controller.ApplicableGameVersion, _Controller.InternalResourceVersion));
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Output Directory", GUILayout.Width(160f));
-                        m_Controller.OutputDirectory = EditorGUILayout.TextField(m_Controller.OutputDirectory);
+                        _Controller.OutputDirectory = EditorGUILayout.TextField(_Controller.OutputDirectory);
                         if (GUILayout.Button("Browse...", GUILayout.Width(80f)))
                         {
                             BrowseOutputDirectory();
@@ -267,40 +267,40 @@ namespace UnityGameFramework.Editor.ResourceTools
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Working Path", GUILayout.Width(160f));
-                        GUILayout.Label(m_Controller.WorkingPath);
+                        GUILayout.Label(_Controller.WorkingPath);
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
                     {
-                        EditorGUI.BeginDisabledGroup(!m_Controller.OutputPackageSelected);
+                        EditorGUI.BeginDisabledGroup(!_Controller.OutputPackageSelected);
                         EditorGUILayout.LabelField("Output Package Path", GUILayout.Width(160f));
-                        GUILayout.Label(m_Controller.OutputPackagePath);
+                        GUILayout.Label(_Controller.OutputPackagePath);
                         EditorGUI.EndDisabledGroup();
-                        m_Controller.OutputPackageSelected = EditorGUILayout.ToggleLeft("Generate", m_Controller.OutputPackageSelected, GUILayout.Width(70f));
+                        _Controller.OutputPackageSelected = EditorGUILayout.ToggleLeft("Generate", _Controller.OutputPackageSelected, GUILayout.Width(70f));
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
                     {
-                        EditorGUI.BeginDisabledGroup(!m_Controller.OutputFullSelected);
+                        EditorGUI.BeginDisabledGroup(!_Controller.OutputFullSelected);
                         EditorGUILayout.LabelField("Output Full Path", GUILayout.Width(160f));
-                        GUILayout.Label(m_Controller.OutputFullPath);
+                        GUILayout.Label(_Controller.OutputFullPath);
                         EditorGUI.EndDisabledGroup();
-                        m_Controller.OutputFullSelected = EditorGUILayout.ToggleLeft("Generate", m_Controller.OutputFullSelected, GUILayout.Width(70f));
+                        _Controller.OutputFullSelected = EditorGUILayout.ToggleLeft("Generate", _Controller.OutputFullSelected, GUILayout.Width(70f));
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
                     {
-                        EditorGUI.BeginDisabledGroup(!m_Controller.OutputPackedSelected);
+                        EditorGUI.BeginDisabledGroup(!_Controller.OutputPackedSelected);
                         EditorGUILayout.LabelField("Output Packed Path", GUILayout.Width(160f));
-                        GUILayout.Label(m_Controller.OutputPackedPath);
+                        GUILayout.Label(_Controller.OutputPackedPath);
                         EditorGUI.EndDisabledGroup();
-                        m_Controller.OutputPackedSelected = EditorGUILayout.ToggleLeft("Generate", m_Controller.OutputPackedSelected, GUILayout.Width(70f));
+                        _Controller.OutputPackedSelected = EditorGUILayout.ToggleLeft("Generate", _Controller.OutputPackedSelected, GUILayout.Width(70f));
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Build Report Path", GUILayout.Width(160f));
-                        GUILayout.Label(m_Controller.BuildReportPath);
+                        GUILayout.Label(_Controller.BuildReportPath);
                     }
                     EditorGUILayout.EndHorizontal();
                 }
@@ -312,11 +312,11 @@ namespace UnityGameFramework.Editor.ResourceTools
                 GUILayout.Space(2f);
                 EditorGUILayout.BeginHorizontal();
                 {
-                    EditorGUI.BeginDisabledGroup(m_Controller.Platforms == Platform.Undefined || string.IsNullOrEmpty(m_Controller.CompressionHelperTypeName) || !m_Controller.IsValidOutputDirectory);
+                    EditorGUI.BeginDisabledGroup(_Controller.Platforms == Platform.Undefined || string.IsNullOrEmpty(_Controller.CompressionHelperTypeName) || !_Controller.IsValidOutputDirectory);
                     {
                         if (GUILayout.Button("Start Build Resources"))
                         {
-                            m_OrderBuildResources = true;
+                            _OrderBuildResources = true;
                         }
                     }
                     EditorGUI.EndDisabledGroup();
@@ -332,10 +332,10 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         private void BrowseOutputDirectory()
         {
-            string directory = EditorUtility.OpenFolderPanel("Select Output Directory", m_Controller.OutputDirectory, string.Empty);
+            string directory = EditorUtility.OpenFolderPanel("Select Output Directory", _Controller.OutputDirectory, string.Empty);
             if (!string.IsNullOrEmpty(directory))
             {
-                m_Controller.OutputDirectory = directory;
+                _Controller.OutputDirectory = directory;
             }
         }
 
@@ -343,7 +343,7 @@ namespace UnityGameFramework.Editor.ResourceTools
         {
             message = string.Empty;
             messageType = MessageType.Error;
-            if (m_Controller.Platforms == Platform.Undefined)
+            if (_Controller.Platforms == Platform.Undefined)
             {
                 if (!string.IsNullOrEmpty(message))
                 {
@@ -353,7 +353,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 message += "Platform is invalid.";
             }
 
-            if (string.IsNullOrEmpty(m_Controller.CompressionHelperTypeName))
+            if (string.IsNullOrEmpty(_Controller.CompressionHelperTypeName))
             {
                 if (!string.IsNullOrEmpty(message))
                 {
@@ -363,7 +363,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 message += "Compression helper is invalid.";
             }
 
-            if (!m_Controller.IsValidOutputDirectory)
+            if (!_Controller.IsValidOutputDirectory)
             {
                 if (!string.IsNullOrEmpty(message))
                 {
@@ -379,31 +379,31 @@ namespace UnityGameFramework.Editor.ResourceTools
             }
 
             messageType = MessageType.Info;
-            if (Directory.Exists(m_Controller.OutputPackagePath))
+            if (Directory.Exists(_Controller.OutputPackagePath))
             {
-                message += Utility.Text.Format("{0} will be overwritten.", m_Controller.OutputPackagePath);
+                message += Utility.Text.Format("{0} will be overwritten.", _Controller.OutputPackagePath);
                 messageType = MessageType.Warning;
             }
 
-            if (Directory.Exists(m_Controller.OutputFullPath))
+            if (Directory.Exists(_Controller.OutputFullPath))
             {
                 if (message.Length > 0)
                 {
                     message += " ";
                 }
 
-                message += Utility.Text.Format("{0} will be overwritten.", m_Controller.OutputFullPath);
+                message += Utility.Text.Format("{0} will be overwritten.", _Controller.OutputFullPath);
                 messageType = MessageType.Warning;
             }
 
-            if (Directory.Exists(m_Controller.OutputPackedPath))
+            if (Directory.Exists(_Controller.OutputPackedPath))
             {
                 if (message.Length > 0)
                 {
                     message += " ";
                 }
 
-                message += Utility.Text.Format("{0} will be overwritten.", m_Controller.OutputPackedPath);
+                message += Utility.Text.Format("{0} will be overwritten.", _Controller.OutputPackedPath);
                 messageType = MessageType.Warning;
             }
 
@@ -417,7 +417,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         private void BuildResources()
         {
-            if (m_Controller.BuildResources())
+            if (_Controller.BuildResources())
             {
                 Debug.Log("Build resources success.");
                 SaveConfiguration();
@@ -430,7 +430,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         private void SaveConfiguration()
         {
-            if (m_Controller.Save())
+            if (_Controller.Save())
             {
                 Debug.Log("Save configuration success.");
             }
@@ -442,7 +442,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         private void DrawPlatform(Platform platform, string platformName)
         {
-            m_Controller.SelectPlatform(platform, EditorGUILayout.ToggleLeft(platformName, m_Controller.IsPlatformSelected(platform)));
+            _Controller.SelectPlatform(platform, EditorGUILayout.ToggleLeft(platformName, _Controller.IsPlatformSelected(platform)));
         }
 
         private void OnLoadingResource(int index, int count)

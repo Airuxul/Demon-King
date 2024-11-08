@@ -18,14 +18,14 @@ namespace GameFramework.DataNode
         private static readonly string[] PathSplitSeparator = new string[] { ".", "/", "\\" };
 
         private const string RootName = "<Root>";
-        private DataNode m_Root;
+        private DataNode _Root;
 
         /// <summary>
         /// 初始化数据结点管理器的新实例。
         /// </summary>
         public DataNodeManager()
         {
-            m_Root = DataNode.Create(RootName, null);
+            _Root = DataNode.Create(RootName, null);
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace GameFramework.DataNode
         {
             get
             {
-                return m_Root;
+                return _Root;
             }
         }
 
@@ -53,8 +53,8 @@ namespace GameFramework.DataNode
         /// </summary>
         internal override void Shutdown()
         {
-            ReferencePool.Release(m_Root);
-            m_Root = null;
+            ReferencePool.Release(_Root);
+            _Root = null;
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace GameFramework.DataNode
         /// <returns>指定位置的数据结点，如果没有找到，则返回空。</returns>
         public IDataNode GetNode(string path, IDataNode node)
         {
-            IDataNode current = node ?? m_Root;
+            IDataNode current = node ?? _Root;
             string[] splitedPath = GetSplitedPath(path);
             foreach (string i in splitedPath)
             {
@@ -209,7 +209,7 @@ namespace GameFramework.DataNode
         /// <returns>指定位置的数据结点，如果没有找到，则增加相应的数据结点。</returns>
         public IDataNode GetOrAddNode(string path, IDataNode node)
         {
-            IDataNode current = node ?? m_Root;
+            IDataNode current = node ?? _Root;
             string[] splitedPath = GetSplitedPath(path);
             foreach (string i in splitedPath)
             {
@@ -235,7 +235,7 @@ namespace GameFramework.DataNode
         /// <param name="node">查找起始结点。</param>
         public void RemoveNode(string path, IDataNode node)
         {
-            IDataNode current = node ?? m_Root;
+            IDataNode current = node ?? _Root;
             IDataNode parent = current.Parent;
             string[] splitedPath = GetSplitedPath(path);
             foreach (string i in splitedPath)
@@ -259,7 +259,7 @@ namespace GameFramework.DataNode
         /// </summary>
         public void Clear()
         {
-            m_Root.Clear();
+            _Root.Clear();
         }
 
         /// <summary>

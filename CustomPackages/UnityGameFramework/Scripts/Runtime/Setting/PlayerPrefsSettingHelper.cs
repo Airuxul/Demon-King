@@ -20,13 +20,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 获取游戏配置项数量。
         /// </summary>
-        public override int Count
-        {
-            get
-            {
-                return -1;
-            }
-        }
+        public override int Count => -1;
 
         /// <summary>
         /// 加载游戏配置。

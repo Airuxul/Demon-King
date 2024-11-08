@@ -18,8 +18,8 @@ namespace GameFramework
     [StructLayout(LayoutKind.Auto)]
     public struct GameFrameworkLinkedListRange<T> : IEnumerable<T>, IEnumerable
     {
-        private readonly LinkedListNode<T> m_First;
-        private readonly LinkedListNode<T> m_Terminal;
+        private readonly LinkedListNode<T> _First;
+        private readonly LinkedListNode<T> _Terminal;
 
         /// <summary>
         /// 初始化游戏框架链表范围的新实例。
@@ -33,8 +33,8 @@ namespace GameFramework
                 throw new GameFrameworkException("Range is invalid.");
             }
 
-            m_First = first;
-            m_Terminal = terminal;
+            _First = first;
+            _Terminal = terminal;
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace GameFramework
         {
             get
             {
-                return m_First != null && m_Terminal != null && m_First != m_Terminal;
+                return _First != null && _Terminal != null && _First != _Terminal;
             }
         }
 
@@ -55,7 +55,7 @@ namespace GameFramework
         {
             get
             {
-                return m_First;
+                return _First;
             }
         }
 
@@ -66,7 +66,7 @@ namespace GameFramework
         {
             get
             {
-                return m_Terminal;
+                return _Terminal;
             }
         }
 
@@ -83,7 +83,7 @@ namespace GameFramework
                 }
 
                 int count = 0;
-                for (LinkedListNode<T> current = m_First; current != null && current != m_Terminal; current = current.Next)
+                for (LinkedListNode<T> current = _First; current != null && current != _Terminal; current = current.Next)
                 {
                     count++;
                 }
@@ -99,7 +99,7 @@ namespace GameFramework
         /// <returns>是否包含指定值。</returns>
         public bool Contains(T value)
         {
-            for (LinkedListNode<T> current = m_First; current != null && current != m_Terminal; current = current.Next)
+            for (LinkedListNode<T> current = _First; current != null && current != _Terminal; current = current.Next)
             {
                 if (current.Value.Equals(value))
                 {
@@ -143,9 +143,9 @@ namespace GameFramework
         [StructLayout(LayoutKind.Auto)]
         public struct Enumerator : IEnumerator<T>, IEnumerator
         {
-            private readonly GameFrameworkLinkedListRange<T> m_GameFrameworkLinkedListRange;
-            private LinkedListNode<T> m_Current;
-            private T m_CurrentValue;
+            private readonly GameFrameworkLinkedListRange<T> _GameFrameworkLinkedListRange;
+            private LinkedListNode<T> _Current;
+            private T _CurrentValue;
 
             internal Enumerator(GameFrameworkLinkedListRange<T> range)
             {
@@ -154,9 +154,9 @@ namespace GameFramework
                     throw new GameFrameworkException("Range is invalid.");
                 }
 
-                m_GameFrameworkLinkedListRange = range;
-                m_Current = m_GameFrameworkLinkedListRange.m_First;
-                m_CurrentValue = default(T);
+                _GameFrameworkLinkedListRange = range;
+                _Current = _GameFrameworkLinkedListRange._First;
+                _CurrentValue = default(T);
             }
 
             /// <summary>
@@ -166,7 +166,7 @@ namespace GameFramework
             {
                 get
                 {
-                    return m_CurrentValue;
+                    return _CurrentValue;
                 }
             }
 
@@ -177,7 +177,7 @@ namespace GameFramework
             {
                 get
                 {
-                    return m_CurrentValue;
+                    return _CurrentValue;
                 }
             }
 
@@ -194,13 +194,13 @@ namespace GameFramework
             /// <returns>返回下一个结点。</returns>
             public bool MoveNext()
             {
-                if (m_Current == null || m_Current == m_GameFrameworkLinkedListRange.m_Terminal)
+                if (_Current == null || _Current == _GameFrameworkLinkedListRange._Terminal)
                 {
                     return false;
                 }
 
-                m_CurrentValue = m_Current.Value;
-                m_Current = m_Current.Next;
+                _CurrentValue = _Current.Value;
+                _Current = _Current.Next;
                 return true;
             }
 
@@ -209,8 +209,8 @@ namespace GameFramework
             /// </summary>
             void IEnumerator.Reset()
             {
-                m_Current = m_GameFrameworkLinkedListRange.m_First;
-                m_CurrentValue = default(T);
+                _Current = _GameFrameworkLinkedListRange._First;
+                _CurrentValue = default(T);
             }
         }
     }

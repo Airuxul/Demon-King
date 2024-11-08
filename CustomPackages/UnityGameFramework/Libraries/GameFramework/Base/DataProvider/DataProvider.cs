@@ -19,15 +19,15 @@ namespace GameFramework
         private const int BlockSize = 1024 * 4;
         private static byte[] s_CachedBytes = null;
 
-        private readonly T m_Owner;
-        private readonly LoadAssetCallbacks m_LoadAssetCallbacks;
-        private readonly LoadBinaryCallbacks m_LoadBinaryCallbacks;
-        private IResourceManager m_ResourceManager;
-        private IDataProviderHelper<T> m_DataProviderHelper;
-        private EventHandler<ReadDataSuccessEventArgs> m_ReadDataSuccessEventHandler;
-        private EventHandler<ReadDataFailureEventArgs> m_ReadDataFailureEventHandler;
-        private EventHandler<ReadDataUpdateEventArgs> m_ReadDataUpdateEventHandler;
-        private EventHandler<ReadDataDependencyAssetEventArgs> m_ReadDataDependencyAssetEventHandler;
+        private readonly T _Owner;
+        private readonly LoadAssetCallbacks _LoadAssetCallbacks;
+        private readonly LoadBinaryCallbacks _LoadBinaryCallbacks;
+        private IResourceManager _ResourceManager;
+        private IDataProviderHelper<T> _DataProviderHelper;
+        private EventHandler<ReadDataSuccessEventArgs> _ReadDataSuccessEventHandler;
+        private EventHandler<ReadDataFailureEventArgs> _ReadDataFailureEventHandler;
+        private EventHandler<ReadDataUpdateEventArgs> _ReadDataUpdateEventHandler;
+        private EventHandler<ReadDataDependencyAssetEventArgs> _ReadDataDependencyAssetEventHandler;
 
         /// <summary>
         /// 初始化数据提供者的新实例。
@@ -35,15 +35,15 @@ namespace GameFramework
         /// <param name="owner">数据提供者的持有者。</param>
         public DataProvider(T owner)
         {
-            m_Owner = owner;
-            m_LoadAssetCallbacks = new LoadAssetCallbacks(LoadAssetSuccessCallback, LoadAssetOrBinaryFailureCallback, LoadAssetUpdateCallback, LoadAssetDependencyAssetCallback);
-            m_LoadBinaryCallbacks = new LoadBinaryCallbacks(LoadBinarySuccessCallback, LoadAssetOrBinaryFailureCallback);
-            m_ResourceManager = null;
-            m_DataProviderHelper = null;
-            m_ReadDataSuccessEventHandler = null;
-            m_ReadDataFailureEventHandler = null;
-            m_ReadDataUpdateEventHandler = null;
-            m_ReadDataDependencyAssetEventHandler = null;
+            _Owner = owner;
+            _LoadAssetCallbacks = new LoadAssetCallbacks(LoadAssetSuccessCallback, LoadAssetOrBinaryFailureCallback, LoadAssetUpdateCallback, LoadAssetDependencyAssetCallback);
+            _LoadBinaryCallbacks = new LoadBinaryCallbacks(LoadBinarySuccessCallback, LoadAssetOrBinaryFailureCallback);
+            _ResourceManager = null;
+            _DataProviderHelper = null;
+            _ReadDataSuccessEventHandler = null;
+            _ReadDataFailureEventHandler = null;
+            _ReadDataUpdateEventHandler = null;
+            _ReadDataDependencyAssetEventHandler = null;
         }
 
         /// <summary>
@@ -64,11 +64,11 @@ namespace GameFramework
         {
             add
             {
-                m_ReadDataSuccessEventHandler += value;
+                _ReadDataSuccessEventHandler += value;
             }
             remove
             {
-                m_ReadDataSuccessEventHandler -= value;
+                _ReadDataSuccessEventHandler -= value;
             }
         }
 
@@ -79,11 +79,11 @@ namespace GameFramework
         {
             add
             {
-                m_ReadDataFailureEventHandler += value;
+                _ReadDataFailureEventHandler += value;
             }
             remove
             {
-                m_ReadDataFailureEventHandler -= value;
+                _ReadDataFailureEventHandler -= value;
             }
         }
 
@@ -94,11 +94,11 @@ namespace GameFramework
         {
             add
             {
-                m_ReadDataUpdateEventHandler += value;
+                _ReadDataUpdateEventHandler += value;
             }
             remove
             {
-                m_ReadDataUpdateEventHandler -= value;
+                _ReadDataUpdateEventHandler -= value;
             }
         }
 
@@ -109,11 +109,11 @@ namespace GameFramework
         {
             add
             {
-                m_ReadDataDependencyAssetEventHandler += value;
+                _ReadDataDependencyAssetEventHandler += value;
             }
             remove
             {
-                m_ReadDataDependencyAssetEventHandler -= value;
+                _ReadDataDependencyAssetEventHandler -= value;
             }
         }
 
@@ -181,56 +181,56 @@ namespace GameFramework
         /// <param name="userData">用户自定义数据。</param>
         public void ReadData(string dataAssetName, int priority, object userData)
         {
-            if (m_ResourceManager == null)
+            if (_ResourceManager == null)
             {
                 throw new GameFrameworkException("You must set resource manager first.");
             }
 
-            if (m_DataProviderHelper == null)
+            if (_DataProviderHelper == null)
             {
                 throw new GameFrameworkException("You must set data provider helper first.");
             }
 
-            HasAssetResult result = m_ResourceManager.HasAsset(dataAssetName);
+            HasAssetResult result = _ResourceManager.HasAsset(dataAssetName);
             switch (result)
             {
                 case HasAssetResult.AssetOnDisk:
                 case HasAssetResult.AssetOnFileSystem:
-                    m_ResourceManager.LoadAsset(dataAssetName, priority, m_LoadAssetCallbacks, userData);
+                    _ResourceManager.LoadAsset(dataAssetName, priority, _LoadAssetCallbacks, userData);
                     break;
 
                 case HasAssetResult.BinaryOnDisk:
-                    m_ResourceManager.LoadBinary(dataAssetName, m_LoadBinaryCallbacks, userData);
+                    _ResourceManager.LoadBinary(dataAssetName, _LoadBinaryCallbacks, userData);
                     break;
 
                 case HasAssetResult.BinaryOnFileSystem:
-                    int dataLength = m_ResourceManager.GetBinaryLength(dataAssetName);
+                    int dataLength = _ResourceManager.GetBinaryLength(dataAssetName);
                     EnsureCachedBytesSize(dataLength);
-                    if (dataLength != m_ResourceManager.LoadBinaryFromFileSystem(dataAssetName, s_CachedBytes))
+                    if (dataLength != _ResourceManager.LoadBinaryFromFileSystem(dataAssetName, s_CachedBytes))
                     {
                         throw new GameFrameworkException(Utility.Text.Format("Load binary '{0}' from file system with internal error.", dataAssetName));
                     }
 
                     try
                     {
-                        if (!m_DataProviderHelper.ReadData(m_Owner, dataAssetName, s_CachedBytes, 0, dataLength, userData))
+                        if (!_DataProviderHelper.ReadData(_Owner, dataAssetName, s_CachedBytes, 0, dataLength, userData))
                         {
                             throw new GameFrameworkException(Utility.Text.Format("Load data failure in data provider helper, data asset name '{0}'.", dataAssetName));
                         }
 
-                        if (m_ReadDataSuccessEventHandler != null)
+                        if (_ReadDataSuccessEventHandler != null)
                         {
                             ReadDataSuccessEventArgs loadDataSuccessEventArgs = ReadDataSuccessEventArgs.Create(dataAssetName, 0f, userData);
-                            m_ReadDataSuccessEventHandler(this, loadDataSuccessEventArgs);
+                            _ReadDataSuccessEventHandler(this, loadDataSuccessEventArgs);
                             ReferencePool.Release(loadDataSuccessEventArgs);
                         }
                     }
                     catch (Exception exception)
                     {
-                        if (m_ReadDataFailureEventHandler != null)
+                        if (_ReadDataFailureEventHandler != null)
                         {
                             ReadDataFailureEventArgs loadDataFailureEventArgs = ReadDataFailureEventArgs.Create(dataAssetName, exception.ToString(), userData);
-                            m_ReadDataFailureEventHandler(this, loadDataFailureEventArgs);
+                            _ReadDataFailureEventHandler(this, loadDataFailureEventArgs);
                             ReferencePool.Release(loadDataFailureEventArgs);
                             return;
                         }
@@ -263,7 +263,7 @@ namespace GameFramework
         /// <returns>是否解析内容成功。</returns>
         public bool ParseData(string dataString, object userData)
         {
-            if (m_DataProviderHelper == null)
+            if (_DataProviderHelper == null)
             {
                 throw new GameFrameworkException("You must set data helper first.");
             }
@@ -275,7 +275,7 @@ namespace GameFramework
 
             try
             {
-                return m_DataProviderHelper.ParseData(m_Owner, dataString, userData);
+                return _DataProviderHelper.ParseData(_Owner, dataString, userData);
             }
             catch (Exception exception)
             {
@@ -341,7 +341,7 @@ namespace GameFramework
         /// <returns>是否解析内容成功。</returns>
         public bool ParseData(byte[] dataBytes, int startIndex, int length, object userData)
         {
-            if (m_DataProviderHelper == null)
+            if (_DataProviderHelper == null)
             {
                 throw new GameFrameworkException("You must set data helper first.");
             }
@@ -358,7 +358,7 @@ namespace GameFramework
 
             try
             {
-                return m_DataProviderHelper.ParseData(m_Owner, dataBytes, startIndex, length, userData);
+                return _DataProviderHelper.ParseData(_Owner, dataBytes, startIndex, length, userData);
             }
             catch (Exception exception)
             {
@@ -382,7 +382,7 @@ namespace GameFramework
                 throw new GameFrameworkException("Resource manager is invalid.");
             }
 
-            m_ResourceManager = resourceManager;
+            _ResourceManager = resourceManager;
         }
 
         /// <summary>
@@ -396,31 +396,31 @@ namespace GameFramework
                 throw new GameFrameworkException("Data provider helper is invalid.");
             }
 
-            m_DataProviderHelper = dataProviderHelper;
+            _DataProviderHelper = dataProviderHelper;
         }
 
         private void LoadAssetSuccessCallback(string dataAssetName, object dataAsset, float duration, object userData)
         {
             try
             {
-                if (!m_DataProviderHelper.ReadData(m_Owner, dataAssetName, dataAsset, userData))
+                if (!_DataProviderHelper.ReadData(_Owner, dataAssetName, dataAsset, userData))
                 {
                     throw new GameFrameworkException(Utility.Text.Format("Load data failure in data provider helper, data asset name '{0}'.", dataAssetName));
                 }
 
-                if (m_ReadDataSuccessEventHandler != null)
+                if (_ReadDataSuccessEventHandler != null)
                 {
                     ReadDataSuccessEventArgs loadDataSuccessEventArgs = ReadDataSuccessEventArgs.Create(dataAssetName, duration, userData);
-                    m_ReadDataSuccessEventHandler(this, loadDataSuccessEventArgs);
+                    _ReadDataSuccessEventHandler(this, loadDataSuccessEventArgs);
                     ReferencePool.Release(loadDataSuccessEventArgs);
                 }
             }
             catch (Exception exception)
             {
-                if (m_ReadDataFailureEventHandler != null)
+                if (_ReadDataFailureEventHandler != null)
                 {
                     ReadDataFailureEventArgs loadDataFailureEventArgs = ReadDataFailureEventArgs.Create(dataAssetName, exception.ToString(), userData);
-                    m_ReadDataFailureEventHandler(this, loadDataFailureEventArgs);
+                    _ReadDataFailureEventHandler(this, loadDataFailureEventArgs);
                     ReferencePool.Release(loadDataFailureEventArgs);
                     return;
                 }
@@ -429,17 +429,17 @@ namespace GameFramework
             }
             finally
             {
-                m_DataProviderHelper.ReleaseDataAsset(m_Owner, dataAsset);
+                _DataProviderHelper.ReleaseDataAsset(_Owner, dataAsset);
             }
         }
 
         private void LoadAssetOrBinaryFailureCallback(string dataAssetName, LoadResourceStatus status, string errorMessage, object userData)
         {
             string appendErrorMessage = Utility.Text.Format("Load data failure, data asset name '{0}', status '{1}', error message '{2}'.", dataAssetName, status, errorMessage);
-            if (m_ReadDataFailureEventHandler != null)
+            if (_ReadDataFailureEventHandler != null)
             {
                 ReadDataFailureEventArgs loadDataFailureEventArgs = ReadDataFailureEventArgs.Create(dataAssetName, appendErrorMessage, userData);
-                m_ReadDataFailureEventHandler(this, loadDataFailureEventArgs);
+                _ReadDataFailureEventHandler(this, loadDataFailureEventArgs);
                 ReferencePool.Release(loadDataFailureEventArgs);
                 return;
             }
@@ -449,20 +449,20 @@ namespace GameFramework
 
         private void LoadAssetUpdateCallback(string dataAssetName, float progress, object userData)
         {
-            if (m_ReadDataUpdateEventHandler != null)
+            if (_ReadDataUpdateEventHandler != null)
             {
                 ReadDataUpdateEventArgs loadDataUpdateEventArgs = ReadDataUpdateEventArgs.Create(dataAssetName, progress, userData);
-                m_ReadDataUpdateEventHandler(this, loadDataUpdateEventArgs);
+                _ReadDataUpdateEventHandler(this, loadDataUpdateEventArgs);
                 ReferencePool.Release(loadDataUpdateEventArgs);
             }
         }
 
         private void LoadAssetDependencyAssetCallback(string dataAssetName, string dependencyAssetName, int loadedCount, int totalCount, object userData)
         {
-            if (m_ReadDataDependencyAssetEventHandler != null)
+            if (_ReadDataDependencyAssetEventHandler != null)
             {
                 ReadDataDependencyAssetEventArgs loadDataDependencyAssetEventArgs = ReadDataDependencyAssetEventArgs.Create(dataAssetName, dependencyAssetName, loadedCount, totalCount, userData);
-                m_ReadDataDependencyAssetEventHandler(this, loadDataDependencyAssetEventArgs);
+                _ReadDataDependencyAssetEventHandler(this, loadDataDependencyAssetEventArgs);
                 ReferencePool.Release(loadDataDependencyAssetEventArgs);
             }
         }
@@ -471,24 +471,24 @@ namespace GameFramework
         {
             try
             {
-                if (!m_DataProviderHelper.ReadData(m_Owner, dataAssetName, dataBytes, 0, dataBytes.Length, userData))
+                if (!_DataProviderHelper.ReadData(_Owner, dataAssetName, dataBytes, 0, dataBytes.Length, userData))
                 {
                     throw new GameFrameworkException(Utility.Text.Format("Load data failure in data provider helper, data asset name '{0}'.", dataAssetName));
                 }
 
-                if (m_ReadDataSuccessEventHandler != null)
+                if (_ReadDataSuccessEventHandler != null)
                 {
                     ReadDataSuccessEventArgs loadDataSuccessEventArgs = ReadDataSuccessEventArgs.Create(dataAssetName, duration, userData);
-                    m_ReadDataSuccessEventHandler(this, loadDataSuccessEventArgs);
+                    _ReadDataSuccessEventHandler(this, loadDataSuccessEventArgs);
                     ReferencePool.Release(loadDataSuccessEventArgs);
                 }
             }
             catch (Exception exception)
             {
-                if (m_ReadDataFailureEventHandler != null)
+                if (_ReadDataFailureEventHandler != null)
                 {
                     ReadDataFailureEventArgs loadDataFailureEventArgs = ReadDataFailureEventArgs.Create(dataAssetName, exception.ToString(), userData);
-                    m_ReadDataFailureEventHandler(this, loadDataFailureEventArgs);
+                    _ReadDataFailureEventHandler(this, loadDataFailureEventArgs);
                     ReferencePool.Release(loadDataFailureEventArgs);
                     return;
                 }

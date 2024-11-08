@@ -35,13 +35,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 获取显示实体成功事件编号。
         /// </summary>
-        public override int Id
-        {
-            get
-            {
-                return EventId;
-            }
-        }
+        public override int Id => EventId;
 
         /// <summary>
         /// 获取实体逻辑类型。

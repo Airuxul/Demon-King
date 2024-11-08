@@ -15,7 +15,7 @@ namespace GameFramework.FileSystem
     /// </summary>
     public sealed class CommonFileSystemStream : FileSystemStream, IDisposable
     {
-        private readonly FileStream m_FileStream;
+        private readonly FileStream _FileStream;
 
         /// <summary>
         /// 初始化通用文件系统流的新实例。
@@ -33,15 +33,15 @@ namespace GameFramework.FileSystem
             switch (access)
             {
                 case FileSystemAccess.Read:
-                    m_FileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    _FileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     break;
 
                 case FileSystemAccess.Write:
-                    m_FileStream = new FileStream(fullPath, createNew ? FileMode.Create : FileMode.Open, FileAccess.Write, FileShare.Read);
+                    _FileStream = new FileStream(fullPath, createNew ? FileMode.Create : FileMode.Open, FileAccess.Write, FileShare.Read);
                     break;
 
                 case FileSystemAccess.ReadWrite:
-                    m_FileStream = new FileStream(fullPath, createNew ? FileMode.Create : FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
+                    _FileStream = new FileStream(fullPath, createNew ? FileMode.Create : FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
                     break;
 
                 default:
@@ -56,11 +56,11 @@ namespace GameFramework.FileSystem
         {
             get
             {
-                return m_FileStream.Position;
+                return _FileStream.Position;
             }
             set
             {
-                m_FileStream.Position = value;
+                _FileStream.Position = value;
             }
         }
 
@@ -71,7 +71,7 @@ namespace GameFramework.FileSystem
         {
             get
             {
-                return m_FileStream.Length;
+                return _FileStream.Length;
             }
         }
 
@@ -81,7 +81,7 @@ namespace GameFramework.FileSystem
         /// <param name="length">要设置的文件系统流的长度。</param>
         protected internal override void SetLength(long length)
         {
-            m_FileStream.SetLength(length);
+            _FileStream.SetLength(length);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace GameFramework.FileSystem
         /// <param name="origin">要定位的文件系统流位置的方式。</param>
         protected internal override void Seek(long offset, SeekOrigin origin)
         {
-            m_FileStream.Seek(offset, origin);
+            _FileStream.Seek(offset, origin);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace GameFramework.FileSystem
         /// <returns>读取的字节，若已经到达文件结尾，则返回 -1。</returns>
         protected internal override int ReadByte()
         {
-            return m_FileStream.ReadByte();
+            return _FileStream.ReadByte();
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace GameFramework.FileSystem
         /// <returns>实际读取了多少字节。</returns>
         protected internal override int Read(byte[] buffer, int startIndex, int length)
         {
-            return m_FileStream.Read(buffer, startIndex, length);
+            return _FileStream.Read(buffer, startIndex, length);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace GameFramework.FileSystem
         /// <param name="value">要写入的字节。</param>
         protected internal override void WriteByte(byte value)
         {
-            m_FileStream.WriteByte(value);
+            _FileStream.WriteByte(value);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace GameFramework.FileSystem
         /// <param name="length">存储写入文件内容的二进制流的长度。</param>
         protected internal override void Write(byte[] buffer, int startIndex, int length)
         {
-            m_FileStream.Write(buffer, startIndex, length);
+            _FileStream.Write(buffer, startIndex, length);
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace GameFramework.FileSystem
         /// </summary>
         protected internal override void Flush()
         {
-            m_FileStream.Flush();
+            _FileStream.Flush();
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace GameFramework.FileSystem
         /// </summary>
         protected internal override void Close()
         {
-            m_FileStream.Close();
+            _FileStream.Close();
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace GameFramework.FileSystem
         /// </summary>
         public void Dispose()
         {
-            m_FileStream.Dispose();
+            _FileStream.Dispose();
         }
     }
 }

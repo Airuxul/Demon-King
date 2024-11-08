@@ -18,12 +18,12 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(DownloadComponent))]
     internal sealed class DownloadComponentInspector : GameFrameworkInspector
     {
-        private SerializedProperty m_InstanceRoot = null;
-        private SerializedProperty m_DownloadAgentHelperCount = null;
-        private SerializedProperty m_Timeout = null;
-        private SerializedProperty m_FlushSize = null;
+        private SerializedProperty _InstanceRoot = null;
+        private SerializedProperty _DownloadAgentHelperCount = null;
+        private SerializedProperty _Timeout = null;
+        private SerializedProperty _FlushSize = null;
 
-        private HelperInfo<DownloadAgentHelperBase> m_DownloadAgentHelperInfo = new HelperInfo<DownloadAgentHelperBase>("DownloadAgent");
+        private HelperInfo<DownloadAgentHelperBase> _DownloadAgentHelperInfo = new HelperInfo<DownloadAgentHelperBase>("DownloadAgent");
 
         public override void OnInspectorGUI()
         {
@@ -35,14 +35,14 @@ namespace UnityGameFramework.Editor
 
             EditorGUI.BeginDisabledGroup(EditorApplication.isPlayingOrWillChangePlaymode);
             {
-                EditorGUILayout.PropertyField(m_InstanceRoot);
-                m_DownloadAgentHelperInfo.Draw();
-                m_DownloadAgentHelperCount.intValue = EditorGUILayout.IntSlider("Download Agent Helper Count", m_DownloadAgentHelperCount.intValue, 1, 16);
+                EditorGUILayout.PropertyField(_InstanceRoot);
+                _DownloadAgentHelperInfo.Draw();
+                _DownloadAgentHelperCount.intValue = EditorGUILayout.IntSlider("Download Agent Helper Count", _DownloadAgentHelperCount.intValue, 1, 16);
             }
             EditorGUI.EndDisabledGroup();
 
-            float timeout = EditorGUILayout.Slider("Timeout", m_Timeout.floatValue, 0f, 120f);
-            if (timeout != m_Timeout.floatValue)
+            float timeout = EditorGUILayout.Slider("Timeout", _Timeout.floatValue, 0f, 120f);
+            if (timeout != _Timeout.floatValue)
             {
                 if (EditorApplication.isPlaying)
                 {
@@ -50,12 +50,12 @@ namespace UnityGameFramework.Editor
                 }
                 else
                 {
-                    m_Timeout.floatValue = timeout;
+                    _Timeout.floatValue = timeout;
                 }
             }
 
-            int flushSize = EditorGUILayout.DelayedIntField("Flush Size", m_FlushSize.intValue);
-            if (flushSize != m_FlushSize.intValue)
+            int flushSize = EditorGUILayout.DelayedIntField("Flush Size", _FlushSize.intValue);
+            if (flushSize != _FlushSize.intValue)
             {
                 if (EditorApplication.isPlaying)
                 {
@@ -63,7 +63,7 @@ namespace UnityGameFramework.Editor
                 }
                 else
                 {
-                    m_FlushSize.intValue = flushSize;
+                    _FlushSize.intValue = flushSize;
                 }
             }
 
@@ -132,12 +132,12 @@ namespace UnityGameFramework.Editor
 
         private void OnEnable()
         {
-            m_InstanceRoot = serializedObject.FindProperty("m_InstanceRoot");
-            m_DownloadAgentHelperCount = serializedObject.FindProperty("m_DownloadAgentHelperCount");
-            m_Timeout = serializedObject.FindProperty("m_Timeout");
-            m_FlushSize = serializedObject.FindProperty("m_FlushSize");
+            _InstanceRoot = serializedObject.FindProperty("_InstanceRoot");
+            _DownloadAgentHelperCount = serializedObject.FindProperty("_DownloadAgentHelperCount");
+            _Timeout = serializedObject.FindProperty("_Timeout");
+            _FlushSize = serializedObject.FindProperty("_FlushSize");
 
-            m_DownloadAgentHelperInfo.Init(serializedObject);
+            _DownloadAgentHelperInfo.Init(serializedObject);
 
             RefreshTypeNames();
         }
@@ -149,7 +149,7 @@ namespace UnityGameFramework.Editor
 
         private void RefreshTypeNames()
         {
-            m_DownloadAgentHelperInfo.Refresh();
+            _DownloadAgentHelperInfo.Refresh();
             serializedObject.ApplyModifiedProperties();
         }
     }

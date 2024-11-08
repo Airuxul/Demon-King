@@ -16,14 +16,14 @@ namespace GameFramework.Sound
         /// </summary>
         private sealed class SoundAgent : ISoundAgent
         {
-            private readonly SoundGroup m_SoundGroup;
-            private readonly ISoundHelper m_SoundHelper;
-            private readonly ISoundAgentHelper m_SoundAgentHelper;
-            private int m_SerialId;
-            private object m_SoundAsset;
-            private DateTime m_SetSoundAssetTime;
-            private bool m_MuteInSoundGroup;
-            private float m_VolumeInSoundGroup;
+            private readonly SoundGroup _SoundGroup;
+            private readonly ISoundHelper _SoundHelper;
+            private readonly ISoundAgentHelper _SoundAgentHelper;
+            private int _SerialId;
+            private object _SoundAsset;
+            private DateTime _SetSoundAssetTime;
+            private bool _MuteInSoundGroup;
+            private float _VolumeInSoundGroup;
 
             /// <summary>
             /// 初始化声音代理的新实例。
@@ -48,12 +48,12 @@ namespace GameFramework.Sound
                     throw new GameFrameworkException("Sound agent helper is invalid.");
                 }
 
-                m_SoundGroup = soundGroup;
-                m_SoundHelper = soundHelper;
-                m_SoundAgentHelper = soundAgentHelper;
-                m_SoundAgentHelper.ResetSoundAgent += OnResetSoundAgent;
-                m_SerialId = 0;
-                m_SoundAsset = null;
+                _SoundGroup = soundGroup;
+                _SoundHelper = soundHelper;
+                _SoundAgentHelper = soundAgentHelper;
+                _SoundAgentHelper.ResetSoundAgent += OnResetSoundAgent;
+                _SerialId = 0;
+                _SoundAsset = null;
                 Reset();
             }
 
@@ -64,7 +64,7 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SoundGroup;
+                    return _SoundGroup;
                 }
             }
 
@@ -75,11 +75,11 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SerialId;
+                    return _SerialId;
                 }
                 set
                 {
-                    m_SerialId = value;
+                    _SerialId = value;
                 }
             }
 
@@ -90,7 +90,7 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SoundAgentHelper.IsPlaying;
+                    return _SoundAgentHelper.IsPlaying;
                 }
             }
 
@@ -101,7 +101,7 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SoundAgentHelper.Length;
+                    return _SoundAgentHelper.Length;
                 }
             }
 
@@ -112,11 +112,11 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SoundAgentHelper.Time;
+                    return _SoundAgentHelper.Time;
                 }
                 set
                 {
-                    m_SoundAgentHelper.Time = value;
+                    _SoundAgentHelper.Time = value;
                 }
             }
 
@@ -127,7 +127,7 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SoundAgentHelper.Mute;
+                    return _SoundAgentHelper.Mute;
                 }
             }
 
@@ -138,11 +138,11 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_MuteInSoundGroup;
+                    return _MuteInSoundGroup;
                 }
                 set
                 {
-                    m_MuteInSoundGroup = value;
+                    _MuteInSoundGroup = value;
                     RefreshMute();
                 }
             }
@@ -154,11 +154,11 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SoundAgentHelper.Loop;
+                    return _SoundAgentHelper.Loop;
                 }
                 set
                 {
-                    m_SoundAgentHelper.Loop = value;
+                    _SoundAgentHelper.Loop = value;
                 }
             }
 
@@ -169,11 +169,11 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SoundAgentHelper.Priority;
+                    return _SoundAgentHelper.Priority;
                 }
                 set
                 {
-                    m_SoundAgentHelper.Priority = value;
+                    _SoundAgentHelper.Priority = value;
                 }
             }
 
@@ -184,7 +184,7 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SoundAgentHelper.Volume;
+                    return _SoundAgentHelper.Volume;
                 }
             }
 
@@ -195,11 +195,11 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_VolumeInSoundGroup;
+                    return _VolumeInSoundGroup;
                 }
                 set
                 {
-                    m_VolumeInSoundGroup = value;
+                    _VolumeInSoundGroup = value;
                     RefreshVolume();
                 }
             }
@@ -211,11 +211,11 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SoundAgentHelper.Pitch;
+                    return _SoundAgentHelper.Pitch;
                 }
                 set
                 {
-                    m_SoundAgentHelper.Pitch = value;
+                    _SoundAgentHelper.Pitch = value;
                 }
             }
 
@@ -226,11 +226,11 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SoundAgentHelper.PanStereo;
+                    return _SoundAgentHelper.PanStereo;
                 }
                 set
                 {
-                    m_SoundAgentHelper.PanStereo = value;
+                    _SoundAgentHelper.PanStereo = value;
                 }
             }
 
@@ -241,11 +241,11 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SoundAgentHelper.SpatialBlend;
+                    return _SoundAgentHelper.SpatialBlend;
                 }
                 set
                 {
-                    m_SoundAgentHelper.SpatialBlend = value;
+                    _SoundAgentHelper.SpatialBlend = value;
                 }
             }
 
@@ -256,11 +256,11 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SoundAgentHelper.MaxDistance;
+                    return _SoundAgentHelper.MaxDistance;
                 }
                 set
                 {
-                    m_SoundAgentHelper.MaxDistance = value;
+                    _SoundAgentHelper.MaxDistance = value;
                 }
             }
 
@@ -271,11 +271,11 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SoundAgentHelper.DopplerLevel;
+                    return _SoundAgentHelper.DopplerLevel;
                 }
                 set
                 {
-                    m_SoundAgentHelper.DopplerLevel = value;
+                    _SoundAgentHelper.DopplerLevel = value;
                 }
             }
 
@@ -286,7 +286,7 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SoundAgentHelper;
+                    return _SoundAgentHelper;
                 }
             }
 
@@ -297,7 +297,7 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return m_SetSoundAssetTime;
+                    return _SetSoundAssetTime;
                 }
             }
 
@@ -306,7 +306,7 @@ namespace GameFramework.Sound
             /// </summary>
             public void Play()
             {
-                m_SoundAgentHelper.Play(Constant.DefaultFadeInSeconds);
+                _SoundAgentHelper.Play(Constant.DefaultFadeInSeconds);
             }
 
             /// <summary>
@@ -315,7 +315,7 @@ namespace GameFramework.Sound
             /// <param name="fadeInSeconds">声音淡入时间，以秒为单位。</param>
             public void Play(float fadeInSeconds)
             {
-                m_SoundAgentHelper.Play(fadeInSeconds);
+                _SoundAgentHelper.Play(fadeInSeconds);
             }
 
             /// <summary>
@@ -323,7 +323,7 @@ namespace GameFramework.Sound
             /// </summary>
             public void Stop()
             {
-                m_SoundAgentHelper.Stop(Constant.DefaultFadeOutSeconds);
+                _SoundAgentHelper.Stop(Constant.DefaultFadeOutSeconds);
             }
 
             /// <summary>
@@ -332,7 +332,7 @@ namespace GameFramework.Sound
             /// <param name="fadeOutSeconds">声音淡出时间，以秒为单位。</param>
             public void Stop(float fadeOutSeconds)
             {
-                m_SoundAgentHelper.Stop(fadeOutSeconds);
+                _SoundAgentHelper.Stop(fadeOutSeconds);
             }
 
             /// <summary>
@@ -340,7 +340,7 @@ namespace GameFramework.Sound
             /// </summary>
             public void Pause()
             {
-                m_SoundAgentHelper.Pause(Constant.DefaultFadeOutSeconds);
+                _SoundAgentHelper.Pause(Constant.DefaultFadeOutSeconds);
             }
 
             /// <summary>
@@ -349,7 +349,7 @@ namespace GameFramework.Sound
             /// <param name="fadeOutSeconds">声音淡出时间，以秒为单位。</param>
             public void Pause(float fadeOutSeconds)
             {
-                m_SoundAgentHelper.Pause(fadeOutSeconds);
+                _SoundAgentHelper.Pause(fadeOutSeconds);
             }
 
             /// <summary>
@@ -357,7 +357,7 @@ namespace GameFramework.Sound
             /// </summary>
             public void Resume()
             {
-                m_SoundAgentHelper.Resume(Constant.DefaultFadeInSeconds);
+                _SoundAgentHelper.Resume(Constant.DefaultFadeInSeconds);
             }
 
             /// <summary>
@@ -366,7 +366,7 @@ namespace GameFramework.Sound
             /// <param name="fadeInSeconds">声音淡入时间，以秒为单位。</param>
             public void Resume(float fadeInSeconds)
             {
-                m_SoundAgentHelper.Resume(fadeInSeconds);
+                _SoundAgentHelper.Resume(fadeInSeconds);
             }
 
             /// <summary>
@@ -374,13 +374,13 @@ namespace GameFramework.Sound
             /// </summary>
             public void Reset()
             {
-                if (m_SoundAsset != null)
+                if (_SoundAsset != null)
                 {
-                    m_SoundHelper.ReleaseSoundAsset(m_SoundAsset);
-                    m_SoundAsset = null;
+                    _SoundHelper.ReleaseSoundAsset(_SoundAsset);
+                    _SoundAsset = null;
                 }
 
-                m_SetSoundAssetTime = DateTime.MinValue;
+                _SetSoundAssetTime = DateTime.MinValue;
                 Time = Constant.DefaultTime;
                 MuteInSoundGroup = Constant.DefaultMute;
                 Loop = Constant.DefaultLoop;
@@ -391,25 +391,25 @@ namespace GameFramework.Sound
                 SpatialBlend = Constant.DefaultSpatialBlend;
                 MaxDistance = Constant.DefaultMaxDistance;
                 DopplerLevel = Constant.DefaultDopplerLevel;
-                m_SoundAgentHelper.Reset();
+                _SoundAgentHelper.Reset();
             }
 
             internal bool SetSoundAsset(object soundAsset)
             {
                 Reset();
-                m_SoundAsset = soundAsset;
-                m_SetSoundAssetTime = DateTime.UtcNow;
-                return m_SoundAgentHelper.SetSoundAsset(soundAsset);
+                _SoundAsset = soundAsset;
+                _SetSoundAssetTime = DateTime.UtcNow;
+                return _SoundAgentHelper.SetSoundAsset(soundAsset);
             }
 
             internal void RefreshMute()
             {
-                m_SoundAgentHelper.Mute = m_SoundGroup.Mute || m_MuteInSoundGroup;
+                _SoundAgentHelper.Mute = _SoundGroup.Mute || _MuteInSoundGroup;
             }
 
             internal void RefreshVolume()
             {
-                m_SoundAgentHelper.Volume = m_SoundGroup.Volume * m_VolumeInSoundGroup;
+                _SoundAgentHelper.Volume = _SoundGroup.Volume * _VolumeInSoundGroup;
             }
 
             private void OnResetSoundAgent(object sender, ResetSoundAgentEventArgs e)

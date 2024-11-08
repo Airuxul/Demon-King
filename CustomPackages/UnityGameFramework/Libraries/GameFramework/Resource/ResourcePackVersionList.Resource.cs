@@ -17,15 +17,15 @@ namespace GameFramework.Resource
         [StructLayout(LayoutKind.Auto)]
         public struct Resource
         {
-            private readonly string m_Name;
-            private readonly string m_Variant;
-            private readonly string m_Extension;
-            private readonly byte m_LoadType;
-            private readonly long m_Offset;
-            private readonly int m_Length;
-            private readonly int m_HashCode;
-            private readonly int m_CompressedLength;
-            private readonly int m_CompressedHashCode;
+            private readonly string _Name;
+            private readonly string _Variant;
+            private readonly string _Extension;
+            private readonly byte _LoadType;
+            private readonly long _Offset;
+            private readonly int _Length;
+            private readonly int _HashCode;
+            private readonly int _CompressedLength;
+            private readonly int _CompressedHashCode;
 
             /// <summary>
             /// 初始化资源的新实例。
@@ -46,15 +46,15 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException("Name is invalid.");
                 }
 
-                m_Name = name;
-                m_Variant = variant;
-                m_Extension = extension;
-                m_LoadType = loadType;
-                m_Offset = offset;
-                m_Length = length;
-                m_HashCode = hashCode;
-                m_CompressedLength = compressedLength;
-                m_CompressedHashCode = compressedHashCode;
+                _Name = name;
+                _Variant = variant;
+                _Extension = extension;
+                _LoadType = loadType;
+                _Offset = offset;
+                _Length = length;
+                _HashCode = hashCode;
+                _CompressedLength = compressedLength;
+                _CompressedHashCode = compressedHashCode;
             }
 
             /// <summary>
@@ -64,7 +64,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return m_Name;
+                    return _Name;
                 }
             }
 
@@ -75,7 +75,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return m_Variant;
+                    return _Variant;
                 }
             }
 
@@ -86,7 +86,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return m_Extension;
+                    return _Extension;
                 }
             }
 
@@ -97,7 +97,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return m_LoadType;
+                    return _LoadType;
                 }
             }
 
@@ -108,7 +108,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return m_Offset;
+                    return _Offset;
                 }
             }
 
@@ -119,7 +119,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return m_Length;
+                    return _Length;
                 }
             }
 
@@ -130,7 +130,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return m_HashCode;
+                    return _HashCode;
                 }
             }
 
@@ -141,7 +141,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return m_CompressedLength;
+                    return _CompressedLength;
                 }
             }
 
@@ -152,7 +152,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return m_CompressedHashCode;
+                    return _CompressedHashCode;
                 }
             }
         }

@@ -11,6 +11,7 @@ using GameFramework.Resource;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -23,45 +24,33 @@ namespace UnityGameFramework.Runtime
     {
         private const int DefaultPriority = 0;
 
-        private IDataTableManager m_DataTableManager = null;
-        private EventComponent m_EventComponent = null;
+        private IDataTableManager _dataTableManager = null;
+        private EventComponent _eventComponent = null;
 
-        [SerializeField]
-        private bool m_EnableLoadDataTableUpdateEvent = false;
+        [FormerlySerializedAs("_EnableLoadDataTableUpdateEvent")] [SerializeField]
+        private bool enableLoadDataTableUpdateEvent = false;
 
-        [SerializeField]
-        private bool m_EnableLoadDataTableDependencyAssetEvent = false;
+        [FormerlySerializedAs("_EnableLoadDataTableDependencyAssetEvent")] [SerializeField]
+        private bool enableLoadDataTableDependencyAssetEvent = false;
 
-        [SerializeField]
-        private string m_DataTableHelperTypeName = "UnityGameFramework.Runtime.DefaultDataTableHelper";
+        [FormerlySerializedAs("_DataTableHelperTypeName")] [SerializeField]
+        private string dataTableHelperTypeName = "UnityGameFramework.Runtime.DefaultDataTableHelper";
 
-        [SerializeField]
-        private DataTableHelperBase m_CustomDataTableHelper = null;
+        [FormerlySerializedAs("_CustomDataTableHelper")] [SerializeField]
+        private DataTableHelperBase customDataTableHelper = null;
 
-        [SerializeField]
-        private int m_CachedBytesSize = 0;
+        [FormerlySerializedAs("_CachedBytesSize")] [SerializeField]
+        private int cachedBytesSize = 0;
 
         /// <summary>
         /// 获取数据表数量。
         /// </summary>
-        public int Count
-        {
-            get
-            {
-                return m_DataTableManager.Count;
-            }
-        }
+        public int Count => _dataTableManager.Count;
 
         /// <summary>
         /// 获取缓冲二进制流的大小。
         /// </summary>
-        public int CachedBytesSize
-        {
-            get
-            {
-                return m_DataTableManager.CachedBytesSize;
-            }
-        }
+        public int CachedBytesSize => _dataTableManager.CachedBytesSize;
 
         /// <summary>
         /// 游戏框架组件初始化。
@@ -70,8 +59,8 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_DataTableManager = GameFrameworkEntry.GetModule<IDataTableManager>();
-            if (m_DataTableManager == null)
+            _dataTableManager = GameFrameworkEntry.GetModule<IDataTableManager>();
+            if (_dataTableManager == null)
             {
                 Log.Fatal("Data table manager is invalid.");
                 return;
@@ -87,8 +76,8 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            m_EventComponent = GameEntry.GetComponent<EventComponent>();
-            if (m_EventComponent == null)
+            _eventComponent = GameEntry.GetComponent<EventComponent>();
+            if (_eventComponent == null)
             {
                 Log.Fatal("Event component is invalid.");
                 return;
@@ -96,14 +85,14 @@ namespace UnityGameFramework.Runtime
 
             if (baseComponent.EditorResourceMode)
             {
-                m_DataTableManager.SetResourceManager(baseComponent.EditorResourceHelper);
+                _dataTableManager.SetResourceManager(baseComponent.EditorResourceHelper);
             }
             else
             {
-                m_DataTableManager.SetResourceManager(GameFrameworkEntry.GetModule<IResourceManager>());
+                _dataTableManager.SetResourceManager(GameFrameworkEntry.GetModule<IResourceManager>());
             }
 
-            DataTableHelperBase dataTableHelper = Helper.CreateHelper(m_DataTableHelperTypeName, m_CustomDataTableHelper);
+            DataTableHelperBase dataTableHelper = Helper.CreateHelper(dataTableHelperTypeName, customDataTableHelper);
             if (dataTableHelper == null)
             {
                 Log.Error("Can not create data table helper.");
@@ -115,11 +104,11 @@ namespace UnityGameFramework.Runtime
             transform.SetParent(this.transform);
             transform.localScale = Vector3.one;
 
-            m_DataTableManager.SetDataProviderHelper(dataTableHelper);
-            m_DataTableManager.SetDataTableHelper(dataTableHelper);
-            if (m_CachedBytesSize > 0)
+            _dataTableManager.SetDataProviderHelper(dataTableHelper);
+            _dataTableManager.SetDataTableHelper(dataTableHelper);
+            if (cachedBytesSize > 0)
             {
-                EnsureCachedBytesSize(m_CachedBytesSize);
+                EnsureCachedBytesSize(cachedBytesSize);
             }
         }
 
@@ -129,7 +118,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="ensureSize">要确保二进制流缓存分配内存的大小。</param>
         public void EnsureCachedBytesSize(int ensureSize)
         {
-            m_DataTableManager.EnsureCachedBytesSize(ensureSize);
+            _dataTableManager.EnsureCachedBytesSize(ensureSize);
         }
 
         /// <summary>
@@ -137,7 +126,7 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public void FreeCachedBytes()
         {
-            m_DataTableManager.FreeCachedBytes();
+            _dataTableManager.FreeCachedBytes();
         }
 
         /// <summary>
@@ -147,7 +136,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在数据表。</returns>
         public bool HasDataTable<T>() where T : IDataRow
         {
-            return m_DataTableManager.HasDataTable<T>();
+            return _dataTableManager.HasDataTable<T>();
         }
 
         /// <summary>
@@ -157,7 +146,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在数据表。</returns>
         public bool HasDataTable(Type dataRowType)
         {
-            return m_DataTableManager.HasDataTable(dataRowType);
+            return _dataTableManager.HasDataTable(dataRowType);
         }
 
         /// <summary>
@@ -168,7 +157,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在数据表。</returns>
         public bool HasDataTable<T>(string name) where T : IDataRow
         {
-            return m_DataTableManager.HasDataTable<T>(name);
+            return _dataTableManager.HasDataTable<T>(name);
         }
 
         /// <summary>
@@ -179,7 +168,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在数据表。</returns>
         public bool HasDataTable(Type dataRowType, string name)
         {
-            return m_DataTableManager.HasDataTable(dataRowType, name);
+            return _dataTableManager.HasDataTable(dataRowType, name);
         }
 
         /// <summary>
@@ -189,7 +178,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的数据表。</returns>
         public IDataTable<T> GetDataTable<T>() where T : IDataRow
         {
-            return m_DataTableManager.GetDataTable<T>();
+            return _dataTableManager.GetDataTable<T>();
         }
 
         /// <summary>
@@ -199,7 +188,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的数据表。</returns>
         public DataTableBase GetDataTable(Type dataRowType)
         {
-            return m_DataTableManager.GetDataTable(dataRowType);
+            return _dataTableManager.GetDataTable(dataRowType);
         }
 
         /// <summary>
@@ -210,7 +199,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的数据表。</returns>
         public IDataTable<T> GetDataTable<T>(string name) where T : IDataRow
         {
-            return m_DataTableManager.GetDataTable<T>(name);
+            return _dataTableManager.GetDataTable<T>(name);
         }
 
         /// <summary>
@@ -221,7 +210,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的数据表。</returns>
         public DataTableBase GetDataTable(Type dataRowType, string name)
         {
-            return m_DataTableManager.GetDataTable(dataRowType, name);
+            return _dataTableManager.GetDataTable(dataRowType, name);
         }
 
         /// <summary>
@@ -229,7 +218,7 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public DataTableBase[] GetAllDataTables()
         {
-            return m_DataTableManager.GetAllDataTables();
+            return _dataTableManager.GetAllDataTables();
         }
 
         /// <summary>
@@ -238,7 +227,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">所有数据表。</param>
         public void GetAllDataTables(List<DataTableBase> results)
         {
-            m_DataTableManager.GetAllDataTables(results);
+            _dataTableManager.GetAllDataTables(results);
         }
 
         /// <summary>
@@ -269,17 +258,17 @@ namespace UnityGameFramework.Runtime
         /// <returns>要创建的数据表。</returns>
         public IDataTable<T> CreateDataTable<T>(string name) where T : class, IDataRow, new()
         {
-            IDataTable<T> dataTable = m_DataTableManager.CreateDataTable<T>(name);
+            IDataTable<T> dataTable = _dataTableManager.CreateDataTable<T>(name);
             DataTableBase dataTableBase = (DataTableBase)dataTable;
             dataTableBase.ReadDataSuccess += OnReadDataSuccess;
             dataTableBase.ReadDataFailure += OnReadDataFailure;
 
-            if (m_EnableLoadDataTableUpdateEvent)
+            if (enableLoadDataTableUpdateEvent)
             {
                 dataTableBase.ReadDataUpdate += OnReadDataUpdate;
             }
 
-            if (m_EnableLoadDataTableDependencyAssetEvent)
+            if (enableLoadDataTableDependencyAssetEvent)
             {
                 dataTableBase.ReadDataDependencyAsset += OnReadDataDependencyAsset;
             }
@@ -295,16 +284,16 @@ namespace UnityGameFramework.Runtime
         /// <returns>要创建的数据表。</returns>
         public DataTableBase CreateDataTable(Type dataRowType, string name)
         {
-            DataTableBase dataTable = m_DataTableManager.CreateDataTable(dataRowType, name);
+            DataTableBase dataTable = _dataTableManager.CreateDataTable(dataRowType, name);
             dataTable.ReadDataSuccess += OnReadDataSuccess;
             dataTable.ReadDataFailure += OnReadDataFailure;
 
-            if (m_EnableLoadDataTableUpdateEvent)
+            if (enableLoadDataTableUpdateEvent)
             {
                 dataTable.ReadDataUpdate += OnReadDataUpdate;
             }
 
-            if (m_EnableLoadDataTableDependencyAssetEvent)
+            if (enableLoadDataTableDependencyAssetEvent)
             {
                 dataTable.ReadDataDependencyAsset += OnReadDataDependencyAsset;
             }
@@ -319,7 +308,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否销毁数据表成功。</returns>
         public bool DestroyDataTable<T>() where T : IDataRow, new()
         {
-            return m_DataTableManager.DestroyDataTable<T>();
+            return _dataTableManager.DestroyDataTable<T>();
         }
 
         /// <summary>
@@ -329,7 +318,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否销毁数据表成功。</returns>
         public bool DestroyDataTable(Type dataRowType)
         {
-            return m_DataTableManager.DestroyDataTable(dataRowType);
+            return _dataTableManager.DestroyDataTable(dataRowType);
         }
 
         /// <summary>
@@ -340,7 +329,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否销毁数据表成功。</returns>
         public bool DestroyDataTable<T>(string name) where T : IDataRow
         {
-            return m_DataTableManager.DestroyDataTable<T>(name);
+            return _dataTableManager.DestroyDataTable<T>(name);
         }
 
         /// <summary>
@@ -351,7 +340,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否销毁数据表成功。</returns>
         public bool DestroyDataTable(Type dataRowType, string name)
         {
-            return m_DataTableManager.DestroyDataTable(dataRowType, name);
+            return _dataTableManager.DestroyDataTable(dataRowType, name);
         }
 
         /// <summary>
@@ -362,7 +351,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否销毁数据表成功。</returns>
         public bool DestroyDataTable<T>(IDataTable<T> dataTable) where T : IDataRow
         {
-            return m_DataTableManager.DestroyDataTable(dataTable);
+            return _dataTableManager.DestroyDataTable(dataTable);
         }
 
         /// <summary>
@@ -372,28 +361,28 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否销毁数据表成功。</returns>
         public bool DestroyDataTable(DataTableBase dataTable)
         {
-            return m_DataTableManager.DestroyDataTable(dataTable);
+            return _dataTableManager.DestroyDataTable(dataTable);
         }
 
         private void OnReadDataSuccess(object sender, ReadDataSuccessEventArgs e)
         {
-            m_EventComponent.Fire(this, LoadDataTableSuccessEventArgs.Create(e));
+            _eventComponent.Fire(this, LoadDataTableSuccessEventArgs.Create(e));
         }
 
         private void OnReadDataFailure(object sender, ReadDataFailureEventArgs e)
         {
             Log.Warning("Load data table failure, asset name '{0}', error message '{1}'.", e.DataAssetName, e.ErrorMessage);
-            m_EventComponent.Fire(this, LoadDataTableFailureEventArgs.Create(e));
+            _eventComponent.Fire(this, LoadDataTableFailureEventArgs.Create(e));
         }
 
         private void OnReadDataUpdate(object sender, ReadDataUpdateEventArgs e)
         {
-            m_EventComponent.Fire(this, LoadDataTableUpdateEventArgs.Create(e));
+            _eventComponent.Fire(this, LoadDataTableUpdateEventArgs.Create(e));
         }
 
         private void OnReadDataDependencyAsset(object sender, ReadDataDependencyAssetEventArgs e)
         {
-            m_EventComponent.Fire(this, LoadDataTableDependencyAssetEventArgs.Create(e));
+            _eventComponent.Fire(this, LoadDataTableDependencyAssetEventArgs.Create(e));
         }
     }
 }

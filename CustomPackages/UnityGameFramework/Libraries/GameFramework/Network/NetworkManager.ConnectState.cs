@@ -13,20 +13,20 @@ namespace GameFramework.Network
     {
         private sealed class ConnectState
         {
-            private readonly Socket m_Socket;
-            private readonly object m_UserData;
+            private readonly Socket _Socket;
+            private readonly object _UserData;
 
             public ConnectState(Socket socket, object userData)
             {
-                m_Socket = socket;
-                m_UserData = userData;
+                _Socket = socket;
+                _UserData = userData;
             }
 
             public Socket Socket
             {
                 get
                 {
-                    return m_Socket;
+                    return _Socket;
                 }
             }
 
@@ -34,7 +34,7 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    return m_UserData;
+                    return _UserData;
                 }
             }
         }

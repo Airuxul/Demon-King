@@ -16,22 +16,22 @@ namespace GameFramework.Download
         {
             private static int s_Serial = 0;
 
-            private DownloadTaskStatus m_Status;
-            private string m_DownloadPath;
-            private string m_DownloadUri;
-            private int m_FlushSize;
-            private float m_Timeout;
+            private DownloadTaskStatus _Status;
+            private string _DownloadPath;
+            private string _DownloadUri;
+            private int _FlushSize;
+            private float _Timeout;
 
             /// <summary>
             /// 初始化下载任务的新实例。
             /// </summary>
             public DownloadTask()
             {
-                m_Status = DownloadTaskStatus.Todo;
-                m_DownloadPath = null;
-                m_DownloadUri = null;
-                m_FlushSize = 0;
-                m_Timeout = 0f;
+                _Status = DownloadTaskStatus.Todo;
+                _DownloadPath = null;
+                _DownloadUri = null;
+                _FlushSize = 0;
+                _Timeout = 0f;
             }
 
             /// <summary>
@@ -41,11 +41,11 @@ namespace GameFramework.Download
             {
                 get
                 {
-                    return m_Status;
+                    return _Status;
                 }
                 set
                 {
-                    m_Status = value;
+                    _Status = value;
                 }
             }
 
@@ -56,7 +56,7 @@ namespace GameFramework.Download
             {
                 get
                 {
-                    return m_DownloadPath;
+                    return _DownloadPath;
                 }
             }
 
@@ -67,7 +67,7 @@ namespace GameFramework.Download
             {
                 get
                 {
-                    return m_DownloadUri;
+                    return _DownloadUri;
                 }
             }
 
@@ -78,7 +78,7 @@ namespace GameFramework.Download
             {
                 get
                 {
-                    return m_FlushSize;
+                    return _FlushSize;
                 }
             }
 
@@ -89,7 +89,7 @@ namespace GameFramework.Download
             {
                 get
                 {
-                    return m_Timeout;
+                    return _Timeout;
                 }
             }
 
@@ -100,7 +100,7 @@ namespace GameFramework.Download
             {
                 get
                 {
-                    return m_DownloadPath;
+                    return _DownloadPath;
                 }
             }
 
@@ -119,10 +119,10 @@ namespace GameFramework.Download
             {
                 DownloadTask downloadTask = ReferencePool.Acquire<DownloadTask>();
                 downloadTask.Initialize(++s_Serial, tag, priority, userData);
-                downloadTask.m_DownloadPath = downloadPath;
-                downloadTask.m_DownloadUri = downloadUri;
-                downloadTask.m_FlushSize = flushSize;
-                downloadTask.m_Timeout = timeout;
+                downloadTask._DownloadPath = downloadPath;
+                downloadTask._DownloadUri = downloadUri;
+                downloadTask._FlushSize = flushSize;
+                downloadTask._Timeout = timeout;
                 return downloadTask;
             }
 
@@ -132,11 +132,11 @@ namespace GameFramework.Download
             public override void Clear()
             {
                 base.Clear();
-                m_Status = DownloadTaskStatus.Todo;
-                m_DownloadPath = null;
-                m_DownloadUri = null;
-                m_FlushSize = 0;
-                m_Timeout = 0f;
+                _Status = DownloadTaskStatus.Todo;
+                _DownloadPath = null;
+                _DownloadUri = null;
+                _FlushSize = 0;
+                _Timeout = 0f;
             }
         }
     }

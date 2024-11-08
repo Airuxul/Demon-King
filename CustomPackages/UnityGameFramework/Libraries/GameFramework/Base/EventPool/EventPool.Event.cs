@@ -14,20 +14,20 @@ namespace GameFramework
         /// </summary>
         private sealed class Event : IReference
         {
-            private object m_Sender;
-            private T m_EventArgs;
+            private object _Sender;
+            private T _EventArgs;
 
             public Event()
             {
-                m_Sender = null;
-                m_EventArgs = null;
+                _Sender = null;
+                _EventArgs = null;
             }
 
             public object Sender
             {
                 get
                 {
-                    return m_Sender;
+                    return _Sender;
                 }
             }
 
@@ -35,22 +35,22 @@ namespace GameFramework
             {
                 get
                 {
-                    return m_EventArgs;
+                    return _EventArgs;
                 }
             }
 
             public static Event Create(object sender, T e)
             {
                 Event eventNode = ReferencePool.Acquire<Event>();
-                eventNode.m_Sender = sender;
-                eventNode.m_EventArgs = e;
+                eventNode._Sender = sender;
+                eventNode._EventArgs = e;
                 return eventNode;
             }
 
             public void Clear()
             {
-                m_Sender = null;
-                m_EventArgs = null;
+                _Sender = null;
+                _EventArgs = null;
             }
         }
     }

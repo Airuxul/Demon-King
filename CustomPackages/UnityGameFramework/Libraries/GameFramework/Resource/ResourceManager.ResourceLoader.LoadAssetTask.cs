@@ -15,11 +15,11 @@ namespace GameFramework.Resource
         {
             private sealed class LoadAssetTask : LoadResourceTaskBase
             {
-                private LoadAssetCallbacks m_LoadAssetCallbacks;
+                private LoadAssetCallbacks _LoadAssetCallbacks;
 
                 public LoadAssetTask()
                 {
-                    m_LoadAssetCallbacks = null;
+                    _LoadAssetCallbacks = null;
                 }
 
                 public override bool IsScene
@@ -34,31 +34,31 @@ namespace GameFramework.Resource
                 {
                     LoadAssetTask loadAssetTask = ReferencePool.Acquire<LoadAssetTask>();
                     loadAssetTask.Initialize(assetName, assetType, priority, resourceInfo, dependencyAssetNames, userData);
-                    loadAssetTask.m_LoadAssetCallbacks = loadAssetCallbacks;
+                    loadAssetTask._LoadAssetCallbacks = loadAssetCallbacks;
                     return loadAssetTask;
                 }
 
                 public override void Clear()
                 {
                     base.Clear();
-                    m_LoadAssetCallbacks = null;
+                    _LoadAssetCallbacks = null;
                 }
 
                 public override void OnLoadAssetSuccess(LoadResourceAgent agent, object asset, float duration)
                 {
                     base.OnLoadAssetSuccess(agent, asset, duration);
-                    if (m_LoadAssetCallbacks.LoadAssetSuccessCallback != null)
+                    if (_LoadAssetCallbacks.LoadAssetSuccessCallback != null)
                     {
-                        m_LoadAssetCallbacks.LoadAssetSuccessCallback(AssetName, asset, duration, UserData);
+                        _LoadAssetCallbacks.LoadAssetSuccessCallback(AssetName, asset, duration, UserData);
                     }
                 }
 
                 public override void OnLoadAssetFailure(LoadResourceAgent agent, LoadResourceStatus status, string errorMessage)
                 {
                     base.OnLoadAssetFailure(agent, status, errorMessage);
-                    if (m_LoadAssetCallbacks.LoadAssetFailureCallback != null)
+                    if (_LoadAssetCallbacks.LoadAssetFailureCallback != null)
                     {
-                        m_LoadAssetCallbacks.LoadAssetFailureCallback(AssetName, status, errorMessage, UserData);
+                        _LoadAssetCallbacks.LoadAssetFailureCallback(AssetName, status, errorMessage, UserData);
                     }
                 }
 
@@ -67,9 +67,9 @@ namespace GameFramework.Resource
                     base.OnLoadAssetUpdate(agent, type, progress);
                     if (type == LoadResourceProgress.LoadAsset)
                     {
-                        if (m_LoadAssetCallbacks.LoadAssetUpdateCallback != null)
+                        if (_LoadAssetCallbacks.LoadAssetUpdateCallback != null)
                         {
-                            m_LoadAssetCallbacks.LoadAssetUpdateCallback(AssetName, progress, UserData);
+                            _LoadAssetCallbacks.LoadAssetUpdateCallback(AssetName, progress, UserData);
                         }
                     }
                 }
@@ -77,9 +77,9 @@ namespace GameFramework.Resource
                 public override void OnLoadDependencyAsset(LoadResourceAgent agent, string dependencyAssetName, object dependencyAsset)
                 {
                     base.OnLoadDependencyAsset(agent, dependencyAssetName, dependencyAsset);
-                    if (m_LoadAssetCallbacks.LoadAssetDependencyAssetCallback != null)
+                    if (_LoadAssetCallbacks.LoadAssetDependencyAssetCallback != null)
                     {
-                        m_LoadAssetCallbacks.LoadAssetDependencyAssetCallback(AssetName, dependencyAssetName, LoadedDependencyAssetCount, TotalDependencyAssetCount, UserData);
+                        _LoadAssetCallbacks.LoadAssetDependencyAssetCallback(AssetName, dependencyAssetName, LoadedDependencyAssetCount, TotalDependencyAssetCount, UserData);
                     }
                 }
             }

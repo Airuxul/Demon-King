@@ -11,26 +11,26 @@ namespace UnityGameFramework.Editor.ResourceTools
     {
         private sealed class ResourceCode
         {
-            private readonly Platform m_Platform;
-            private readonly int m_Length;
-            private readonly int m_HashCode;
-            private readonly int m_CompressedLength;
-            private readonly int m_CompressedHashCode;
+            private readonly Platform _Platform;
+            private readonly int _Length;
+            private readonly int _HashCode;
+            private readonly int _CompressedLength;
+            private readonly int _CompressedHashCode;
 
             public ResourceCode(Platform platform, int length, int hashCode, int compressedLength, int compressedHashCode)
             {
-                m_Platform = platform;
-                m_Length = length;
-                m_HashCode = hashCode;
-                m_CompressedLength = compressedLength;
-                m_CompressedHashCode = compressedHashCode;
+                _Platform = platform;
+                _Length = length;
+                _HashCode = hashCode;
+                _CompressedLength = compressedLength;
+                _CompressedHashCode = compressedHashCode;
             }
 
             public Platform Platform
             {
                 get
                 {
-                    return m_Platform;
+                    return _Platform;
                 }
             }
 
@@ -38,7 +38,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             {
                 get
                 {
-                    return m_Length;
+                    return _Length;
                 }
             }
 
@@ -46,7 +46,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             {
                 get
                 {
-                    return m_HashCode;
+                    return _HashCode;
                 }
             }
 
@@ -54,7 +54,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             {
                 get
                 {
-                    return m_CompressedLength;
+                    return _CompressedLength;
                 }
             }
 
@@ -62,7 +62,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             {
                 get
                 {
-                    return m_CompressedHashCode;
+                    return _CompressedHashCode;
                 }
             }
         }

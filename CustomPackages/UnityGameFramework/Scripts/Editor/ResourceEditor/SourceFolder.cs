@@ -16,13 +16,13 @@ namespace UnityGameFramework.Editor.ResourceTools
     {
         private static Texture s_CachedIcon = null;
 
-        private readonly List<SourceFolder> m_Folders;
-        private readonly List<SourceAsset> m_Assets;
+        private readonly List<SourceFolder> _Folders;
+        private readonly List<SourceAsset> _Assets;
 
         public SourceFolder(string name, SourceFolder folder)
         {
-            m_Folders = new List<SourceFolder>();
-            m_Assets = new List<SourceAsset>();
+            _Folders = new List<SourceFolder>();
+            _Assets = new List<SourceAsset>();
 
             Name = name;
             Folder = folder;
@@ -71,13 +71,13 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         public void Clear()
         {
-            m_Folders.Clear();
-            m_Assets.Clear();
+            _Folders.Clear();
+            _Assets.Clear();
         }
 
         public SourceFolder[] GetFolders()
         {
-            return m_Folders.ToArray();
+            return _Folders.ToArray();
         }
 
         public SourceFolder GetFolder(string name)
@@ -87,7 +87,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 throw new GameFrameworkException("Source folder name is invalid.");
             }
 
-            foreach (SourceFolder folder in m_Folders)
+            foreach (SourceFolder folder in _Folders)
             {
                 if (folder.Name == name)
                 {
@@ -112,14 +112,14 @@ namespace UnityGameFramework.Editor.ResourceTools
             }
 
             folder = new SourceFolder(name, this);
-            m_Folders.Add(folder);
+            _Folders.Add(folder);
 
             return folder;
         }
 
         public SourceAsset[] GetAssets()
         {
-            return m_Assets.ToArray();
+            return _Assets.ToArray();
         }
 
         public SourceAsset GetAsset(string name)
@@ -129,7 +129,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 throw new GameFrameworkException("Source asset name is invalid.");
             }
 
-            foreach (SourceAsset asset in m_Assets)
+            foreach (SourceAsset asset in _Assets)
             {
                 if (asset.Name == name)
                 {
@@ -164,7 +164,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             }
 
             asset = new SourceAsset(guid, path, name, this);
-            m_Assets.Add(asset);
+            _Assets.Add(asset);
 
             return asset;
         }

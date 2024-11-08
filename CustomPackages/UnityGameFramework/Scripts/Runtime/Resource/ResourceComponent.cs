@@ -13,6 +13,7 @@ using GameFramework.Resource;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -26,213 +27,141 @@ namespace UnityGameFramework.Runtime
         private const int DefaultPriority = 0;
         private const int OneMegaBytes = 1024 * 1024;
 
-        private IResourceManager m_ResourceManager = null;
-        private EventComponent m_EventComponent = null;
-        private bool m_EditorResourceMode = false;
-        private bool m_ForceUnloadUnusedAssets = false;
-        private bool m_PreorderUnloadUnusedAssets = false;
-        private bool m_PerformGCCollect = false;
-        private AsyncOperation m_AsyncOperation = null;
-        private float m_LastUnloadUnusedAssetsOperationElapseSeconds = 0f;
-        private ResourceHelperBase m_ResourceHelper = null;
+        private IResourceManager _resourceManager = null;
+        private EventComponent _eventComponent = null;
+        private bool _editorResourceMode = false;
+        private bool _forceUnloadUnusedAssets = false;
+        private bool _preorderUnloadUnusedAssets = false;
+        private bool _performGCCollect = false;
+        private AsyncOperation _asyncOperation = null;
+        private float _lastUnloadUnusedAssetsOperationElapseSeconds = 0f;
+        private ResourceHelperBase _resourceHelper = null;
 
-        [SerializeField]
-        private ResourceMode m_ResourceMode = ResourceMode.Package;
+        [FormerlySerializedAs("_ResourceMode")] [SerializeField]
+        private ResourceMode resourceMode = ResourceMode.Package;
 
-        [SerializeField]
-        private ReadWritePathType m_ReadWritePathType = ReadWritePathType.Unspecified;
+        [FormerlySerializedAs("_ReadWritePathType")] [SerializeField]
+        private ReadWritePathType readWritePathType = ReadWritePathType.Unspecified;
 
-        [SerializeField]
-        private float m_MinUnloadUnusedAssetsInterval = 60f;
+        [FormerlySerializedAs("_MinUnloadUnusedAssetsInterval")] [SerializeField]
+        private float minUnloadUnusedAssetsInterval = 60f;
 
-        [SerializeField]
-        private float m_MaxUnloadUnusedAssetsInterval = 300f;
+        [FormerlySerializedAs("_MaxUnloadUnusedAssetsInterval")] [SerializeField]
+        private float maxUnloadUnusedAssetsInterval = 300f;
 
-        [SerializeField]
-        private float m_AssetAutoReleaseInterval = 60f;
+        [FormerlySerializedAs("_AssetAutoReleaseInterval")] [SerializeField]
+        private float assetAutoReleaseInterval = 60f;
 
-        [SerializeField]
-        private int m_AssetCapacity = 64;
+        [FormerlySerializedAs("_AssetCapacity")] [SerializeField]
+        private int assetCapacity = 64;
 
-        [SerializeField]
-        private float m_AssetExpireTime = 60f;
+        [FormerlySerializedAs("_AssetExpireTime")] [SerializeField]
+        private float assetExpireTime = 60f;
 
-        [SerializeField]
-        private int m_AssetPriority = 0;
+        [FormerlySerializedAs("_AssetPriority")] [SerializeField]
+        private int assetPriority = 0;
 
-        [SerializeField]
-        private float m_ResourceAutoReleaseInterval = 60f;
+        [FormerlySerializedAs("_ResourceAutoReleaseInterval")] [SerializeField]
+        private float resourceAutoReleaseInterval = 60f;
 
-        [SerializeField]
-        private int m_ResourceCapacity = 16;
+        [FormerlySerializedAs("_ResourceCapacity")] [SerializeField]
+        private int resourceCapacity = 16;
 
-        [SerializeField]
-        private float m_ResourceExpireTime = 60f;
+        [FormerlySerializedAs("_ResourceExpireTime")] [SerializeField]
+        private float resourceExpireTime = 60f;
 
-        [SerializeField]
-        private int m_ResourcePriority = 0;
+        [FormerlySerializedAs("_ResourcePriority")] [SerializeField]
+        private int resourcePriority = 0;
 
-        [SerializeField]
-        private string m_UpdatePrefixUri = null;
+        [FormerlySerializedAs("_UpdatePrefixUri")] [SerializeField]
+        private string updatePrefixUri = null;
 
-        [SerializeField]
-        private int m_GenerateReadWriteVersionListLength = OneMegaBytes;
+        [FormerlySerializedAs("_GenerateReadWriteVersionListLength")] [SerializeField]
+        private int generateReadWriteVersionListLength = OneMegaBytes;
 
-        [SerializeField]
-        private int m_UpdateRetryCount = 3;
+        [FormerlySerializedAs("_UpdateRetryCount")] [SerializeField]
+        private int updateRetryCount = 3;
 
-        [SerializeField]
-        private Transform m_InstanceRoot = null;
+        [FormerlySerializedAs("_InstanceRoot")] [SerializeField]
+        private Transform instanceRoot = null;
 
-        [SerializeField]
-        private string m_ResourceHelperTypeName = "UnityGameFramework.Runtime.DefaultResourceHelper";
+        [FormerlySerializedAs("_ResourceHelperTypeName")] [SerializeField]
+        private string resourceHelperTypeName = "UnityGameFramework.Runtime.DefaultResourceHelper";
 
-        [SerializeField]
-        private ResourceHelperBase m_CustomResourceHelper = null;
+        [FormerlySerializedAs("_CustomResourceHelper")] [SerializeField]
+        private ResourceHelperBase customResourceHelper = null;
 
-        [SerializeField]
-        private string m_LoadResourceAgentHelperTypeName = "UnityGameFramework.Runtime.DefaultLoadResourceAgentHelper";
+        [FormerlySerializedAs("_LoadResourceAgentHelperTypeName")] [SerializeField]
+        private string loadResourceAgentHelperTypeName = "UnityGameFramework.Runtime.DefaultLoadResourceAgentHelper";
 
-        [SerializeField]
-        private LoadResourceAgentHelperBase m_CustomLoadResourceAgentHelper = null;
+        [FormerlySerializedAs("_CustomLoadResourceAgentHelper")] [SerializeField]
+        private LoadResourceAgentHelperBase customLoadResourceAgentHelper = null;
 
-        [SerializeField]
-        private int m_LoadResourceAgentHelperCount = 3;
+        [FormerlySerializedAs("_LoadResourceAgentHelperCount")] [SerializeField]
+        private int loadResourceAgentHelperCount = 3;
 
         /// <summary>
         /// 获取资源只读路径。
         /// </summary>
-        public string ReadOnlyPath
-        {
-            get
-            {
-                return m_ResourceManager.ReadOnlyPath;
-            }
-        }
+        public string ReadOnlyPath => _resourceManager.ReadOnlyPath;
 
         /// <summary>
         /// 获取资源读写路径。
         /// </summary>
-        public string ReadWritePath
-        {
-            get
-            {
-                return m_ResourceManager.ReadWritePath;
-            }
-        }
+        public string ReadWritePath => _resourceManager.ReadWritePath;
 
         /// <summary>
         /// 获取资源模式。
         /// </summary>
-        public ResourceMode ResourceMode
-        {
-            get
-            {
-                return m_ResourceManager.ResourceMode;
-            }
-        }
+        public ResourceMode ResourceMode => _resourceManager.ResourceMode;
 
         /// <summary>
         /// 获取资源读写路径类型。
         /// </summary>
-        public ReadWritePathType ReadWritePathType
-        {
-            get
-            {
-                return m_ReadWritePathType;
-            }
-        }
+        public ReadWritePathType ReadWritePathType => readWritePathType;
 
         /// <summary>
         /// 设置当前变体。
         /// </summary>
-        public string CurrentVariant
-        {
-            get
-            {
-                return m_ResourceManager.CurrentVariant;
-            }
-        }
+        public string CurrentVariant => _resourceManager.CurrentVariant;
 
         /// <summary>
         /// 获取单机模式版本资源列表序列化器。
         /// </summary>
-        public PackageVersionListSerializer PackageVersionListSerializer
-        {
-            get
-            {
-                return m_ResourceManager.PackageVersionListSerializer;
-            }
-        }
+        public PackageVersionListSerializer PackageVersionListSerializer => _resourceManager.PackageVersionListSerializer;
 
         /// <summary>
         /// 获取可更新模式版本资源列表序列化器。
         /// </summary>
-        public UpdatableVersionListSerializer UpdatableVersionListSerializer
-        {
-            get
-            {
-                return m_ResourceManager.UpdatableVersionListSerializer;
-            }
-        }
+        public UpdatableVersionListSerializer UpdatableVersionListSerializer => _resourceManager.UpdatableVersionListSerializer;
 
         /// <summary>
         /// 获取本地只读区版本资源列表序列化器。
         /// </summary>
-        public ReadOnlyVersionListSerializer ReadOnlyVersionListSerializer
-        {
-            get
-            {
-                return m_ResourceManager.ReadOnlyVersionListSerializer;
-            }
-        }
+        public ReadOnlyVersionListSerializer ReadOnlyVersionListSerializer => _resourceManager.ReadOnlyVersionListSerializer;
 
         /// <summary>
         /// 获取本地读写区版本资源列表序列化器。
         /// </summary>
-        public ReadWriteVersionListSerializer ReadWriteVersionListSerializer
-        {
-            get
-            {
-                return m_ResourceManager.ReadWriteVersionListSerializer;
-            }
-        }
+        public ReadWriteVersionListSerializer ReadWriteVersionListSerializer => _resourceManager.ReadWriteVersionListSerializer;
 
         /// <summary>
         /// 获取资源包版本资源列表序列化器。
         /// </summary>
-        public ResourcePackVersionListSerializer ResourcePackVersionListSerializer
-        {
-            get
-            {
-                return m_ResourceManager.ResourcePackVersionListSerializer;
-            }
-        }
+        public ResourcePackVersionListSerializer ResourcePackVersionListSerializer => _resourceManager.ResourcePackVersionListSerializer;
 
         /// <summary>
         /// 获取无用资源释放的等待时长，以秒为单位。
         /// </summary>
-        public float LastUnloadUnusedAssetsOperationElapseSeconds
-        {
-            get
-            {
-                return m_LastUnloadUnusedAssetsOperationElapseSeconds;
-            }
-        }
+        public float LastUnloadUnusedAssetsOperationElapseSeconds => _lastUnloadUnusedAssetsOperationElapseSeconds;
 
         /// <summary>
         /// 获取或设置无用资源释放的最小间隔时间，以秒为单位。
         /// </summary>
         public float MinUnloadUnusedAssetsInterval
         {
-            get
-            {
-                return m_MinUnloadUnusedAssetsInterval;
-            }
-            set
-            {
-                m_MinUnloadUnusedAssetsInterval = value;
-            }
+            get => minUnloadUnusedAssetsInterval;
+            set => minUnloadUnusedAssetsInterval = value;
         }
 
         /// <summary>
@@ -240,84 +169,42 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public float MaxUnloadUnusedAssetsInterval
         {
-            get
-            {
-                return m_MaxUnloadUnusedAssetsInterval;
-            }
-            set
-            {
-                m_MaxUnloadUnusedAssetsInterval = value;
-            }
+            get => maxUnloadUnusedAssetsInterval;
+            set => maxUnloadUnusedAssetsInterval = value;
         }
 
         /// <summary>
         /// 获取当前资源适用的游戏版本号。
         /// </summary>
-        public string ApplicableGameVersion
-        {
-            get
-            {
-                return m_ResourceManager.ApplicableGameVersion;
-            }
-        }
+        public string ApplicableGameVersion => _resourceManager.ApplicableGameVersion;
 
         /// <summary>
         /// 获取当前内部资源版本号。
         /// </summary>
-        public int InternalResourceVersion
-        {
-            get
-            {
-                return m_ResourceManager.InternalResourceVersion;
-            }
-        }
+        public int InternalResourceVersion => _resourceManager.InternalResourceVersion;
 
         /// <summary>
         /// 获取资源数量。
         /// </summary>
-        public int AssetCount
-        {
-            get
-            {
-                return m_ResourceManager.AssetCount;
-            }
-        }
+        public int AssetCount => _resourceManager.AssetCount;
 
         /// <summary>
         /// 获取资源数量。
         /// </summary>
-        public int ResourceCount
-        {
-            get
-            {
-                return m_ResourceManager.ResourceCount;
-            }
-        }
+        public int ResourceCount => _resourceManager.ResourceCount;
 
         /// <summary>
         /// 获取资源组数量。
         /// </summary>
-        public int ResourceGroupCount
-        {
-            get
-            {
-                return m_ResourceManager.ResourceGroupCount;
-            }
-        }
+        public int ResourceGroupCount => _resourceManager.ResourceGroupCount;
 
         /// <summary>
         /// 获取或设置资源更新下载地址。
         /// </summary>
         public string UpdatePrefixUri
         {
-            get
-            {
-                return m_ResourceManager.UpdatePrefixUri;
-            }
-            set
-            {
-                m_ResourceManager.UpdatePrefixUri = m_UpdatePrefixUri = value;
-            }
+            get => _resourceManager.UpdatePrefixUri;
+            set => _resourceManager.UpdatePrefixUri = updatePrefixUri = value;
         }
 
         /// <summary>
@@ -325,154 +212,76 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public int GenerateReadWriteVersionListLength
         {
-            get
-            {
-                return m_ResourceManager.GenerateReadWriteVersionListLength;
-            }
-            set
-            {
-                m_ResourceManager.GenerateReadWriteVersionListLength = m_GenerateReadWriteVersionListLength = value;
-            }
+            get => _resourceManager.GenerateReadWriteVersionListLength;
+            set => _resourceManager.GenerateReadWriteVersionListLength = generateReadWriteVersionListLength = value;
         }
 
         /// <summary>
         /// 获取正在应用的资源包路径。
         /// </summary>
-        public string ApplyingResourcePackPath
-        {
-            get
-            {
-                return m_ResourceManager.ApplyingResourcePackPath;
-            }
-        }
+        public string ApplyingResourcePackPath => _resourceManager.ApplyingResourcePackPath;
 
         /// <summary>
         /// 获取等待应用资源数量。
         /// </summary>
-        public int ApplyWaitingCount
-        {
-            get
-            {
-                return m_ResourceManager.ApplyWaitingCount;
-            }
-        }
+        public int ApplyWaitingCount => _resourceManager.ApplyWaitingCount;
 
         /// <summary>
         /// 获取或设置资源更新重试次数。
         /// </summary>
         public int UpdateRetryCount
         {
-            get
-            {
-                return m_ResourceManager.UpdateRetryCount;
-            }
-            set
-            {
-                m_ResourceManager.UpdateRetryCount = m_UpdateRetryCount = value;
-            }
+            get => _resourceManager.UpdateRetryCount;
+            set => _resourceManager.UpdateRetryCount = updateRetryCount = value;
         }
 
         /// <summary>
         /// 获取正在更新的资源组。
         /// </summary>
-        public IResourceGroup UpdatingResourceGroup
-        {
-            get
-            {
-                return m_ResourceManager.UpdatingResourceGroup;
-            }
-        }
+        public IResourceGroup UpdatingResourceGroup => _resourceManager.UpdatingResourceGroup;
 
         /// <summary>
         /// 获取等待更新资源数量。
         /// </summary>
-        public int UpdateWaitingCount
-        {
-            get
-            {
-                return m_ResourceManager.UpdateWaitingCount;
-            }
-        }
+        public int UpdateWaitingCount => _resourceManager.UpdateWaitingCount;
 
         /// <summary>
         /// 获取使用时下载的等待更新资源数量。
         /// </summary>
-        public int UpdateWaitingWhilePlayingCount
-        {
-            get
-            {
-                return m_ResourceManager.UpdateWaitingWhilePlayingCount;
-            }
-        }
+        public int UpdateWaitingWhilePlayingCount => _resourceManager.UpdateWaitingWhilePlayingCount;
 
         /// <summary>
         /// 获取候选更新资源数量。
         /// </summary>
-        public int UpdateCandidateCount
-        {
-            get
-            {
-                return m_ResourceManager.UpdateCandidateCount;
-            }
-        }
+        public int UpdateCandidateCount => _resourceManager.UpdateCandidateCount;
 
         /// <summary>
         /// 获取加载资源代理总数量。
         /// </summary>
-        public int LoadTotalAgentCount
-        {
-            get
-            {
-                return m_ResourceManager.LoadTotalAgentCount;
-            }
-        }
+        public int LoadTotalAgentCount => _resourceManager.LoadTotalAgentCount;
 
         /// <summary>
         /// 获取可用加载资源代理数量。
         /// </summary>
-        public int LoadFreeAgentCount
-        {
-            get
-            {
-                return m_ResourceManager.LoadFreeAgentCount;
-            }
-        }
+        public int LoadFreeAgentCount => _resourceManager.LoadFreeAgentCount;
 
         /// <summary>
         /// 获取工作中加载资源代理数量。
         /// </summary>
-        public int LoadWorkingAgentCount
-        {
-            get
-            {
-                return m_ResourceManager.LoadWorkingAgentCount;
-            }
-        }
+        public int LoadWorkingAgentCount => _resourceManager.LoadWorkingAgentCount;
 
         /// <summary>
         /// 获取等待加载资源任务数量。
         /// </summary>
-        public int LoadWaitingTaskCount
-        {
-            get
-            {
-                return m_ResourceManager.LoadWaitingTaskCount;
-            }
-        }
+        public int LoadWaitingTaskCount => _resourceManager.LoadWaitingTaskCount;
 
         /// <summary>
         /// 获取或设置资源对象池自动释放可释放对象的间隔秒数。
         /// </summary>
         public float AssetAutoReleaseInterval
         {
-            get
-            {
-                return m_ResourceManager.AssetAutoReleaseInterval;
-            }
-            set
-            {
-                m_ResourceManager.AssetAutoReleaseInterval = m_AssetAutoReleaseInterval = value;
-            }
+            get => _resourceManager.AssetAutoReleaseInterval;
+            set => _resourceManager.AssetAutoReleaseInterval = assetAutoReleaseInterval = value;
         }
 
         /// <summary>
@@ -480,14 +289,8 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public int AssetCapacity
         {
-            get
-            {
-                return m_ResourceManager.AssetCapacity;
-            }
-            set
-            {
-                m_ResourceManager.AssetCapacity = m_AssetCapacity = value;
-            }
+            get => _resourceManager.AssetCapacity;
+            set => _resourceManager.AssetCapacity = assetCapacity = value;
         }
 
         /// <summary>
@@ -495,14 +298,8 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public float AssetExpireTime
         {
-            get
-            {
-                return m_ResourceManager.AssetExpireTime;
-            }
-            set
-            {
-                m_ResourceManager.AssetExpireTime = m_AssetExpireTime = value;
-            }
+            get => _resourceManager.AssetExpireTime;
+            set => _resourceManager.AssetExpireTime = assetExpireTime = value;
         }
 
         /// <summary>
@@ -510,14 +307,8 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public int AssetPriority
         {
-            get
-            {
-                return m_ResourceManager.AssetPriority;
-            }
-            set
-            {
-                m_ResourceManager.AssetPriority = m_AssetPriority = value;
-            }
+            get => _resourceManager.AssetPriority;
+            set => _resourceManager.AssetPriority = assetPriority = value;
         }
 
         /// <summary>
@@ -525,14 +316,8 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public float ResourceAutoReleaseInterval
         {
-            get
-            {
-                return m_ResourceManager.ResourceAutoReleaseInterval;
-            }
-            set
-            {
-                m_ResourceManager.ResourceAutoReleaseInterval = m_ResourceAutoReleaseInterval = value;
-            }
+            get => _resourceManager.ResourceAutoReleaseInterval;
+            set => _resourceManager.ResourceAutoReleaseInterval = resourceAutoReleaseInterval = value;
         }
 
         /// <summary>
@@ -540,14 +325,8 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public int ResourceCapacity
         {
-            get
-            {
-                return m_ResourceManager.ResourceCapacity;
-            }
-            set
-            {
-                m_ResourceManager.ResourceCapacity = m_ResourceCapacity = value;
-            }
+            get => _resourceManager.ResourceCapacity;
+            set => _resourceManager.ResourceCapacity = resourceCapacity = value;
         }
 
         /// <summary>
@@ -555,14 +334,8 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public float ResourceExpireTime
         {
-            get
-            {
-                return m_ResourceManager.ResourceExpireTime;
-            }
-            set
-            {
-                m_ResourceManager.ResourceExpireTime = m_ResourceExpireTime = value;
-            }
+            get => _resourceManager.ResourceExpireTime;
+            set => _resourceManager.ResourceExpireTime = resourceExpireTime = value;
         }
 
         /// <summary>
@@ -570,14 +343,8 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public int ResourcePriority
         {
-            get
-            {
-                return m_ResourceManager.ResourcePriority;
-            }
-            set
-            {
-                m_ResourceManager.ResourcePriority = m_ResourcePriority = value;
-            }
+            get => _resourceManager.ResourcePriority;
+            set => _resourceManager.ResourcePriority = resourcePriority = value;
         }
 
         /// <summary>
@@ -597,94 +364,94 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            m_EventComponent = GameEntry.GetComponent<EventComponent>();
-            if (m_EventComponent == null)
+            _eventComponent = GameEntry.GetComponent<EventComponent>();
+            if (_eventComponent == null)
             {
                 Log.Fatal("Event component is invalid.");
                 return;
             }
 
-            m_EditorResourceMode = baseComponent.EditorResourceMode;
-            m_ResourceManager = m_EditorResourceMode ? baseComponent.EditorResourceHelper : GameFrameworkEntry.GetModule<IResourceManager>();
-            if (m_ResourceManager == null)
+            _editorResourceMode = baseComponent.EditorResourceMode;
+            _resourceManager = _editorResourceMode ? baseComponent.EditorResourceHelper : GameFrameworkEntry.GetModule<IResourceManager>();
+            if (_resourceManager == null)
             {
                 Log.Fatal("Resource manager is invalid.");
                 return;
             }
 
-            m_ResourceManager.ResourceVerifyStart += OnResourceVerifyStart;
-            m_ResourceManager.ResourceVerifySuccess += OnResourceVerifySuccess;
-            m_ResourceManager.ResourceVerifyFailure += OnResourceVerifyFailure;
-            m_ResourceManager.ResourceApplyStart += OnResourceApplyStart;
-            m_ResourceManager.ResourceApplySuccess += OnResourceApplySuccess;
-            m_ResourceManager.ResourceApplyFailure += OnResourceApplyFailure;
-            m_ResourceManager.ResourceUpdateStart += OnResourceUpdateStart;
-            m_ResourceManager.ResourceUpdateChanged += OnResourceUpdateChanged;
-            m_ResourceManager.ResourceUpdateSuccess += OnResourceUpdateSuccess;
-            m_ResourceManager.ResourceUpdateFailure += OnResourceUpdateFailure;
-            m_ResourceManager.ResourceUpdateAllComplete += OnResourceUpdateAllComplete;
+            _resourceManager.ResourceVerifyStart += OnResourceVerifyStart;
+            _resourceManager.ResourceVerifySuccess += OnResourceVerifySuccess;
+            _resourceManager.ResourceVerifyFailure += OnResourceVerifyFailure;
+            _resourceManager.ResourceApplyStart += OnResourceApplyStart;
+            _resourceManager.ResourceApplySuccess += OnResourceApplySuccess;
+            _resourceManager.ResourceApplyFailure += OnResourceApplyFailure;
+            _resourceManager.ResourceUpdateStart += OnResourceUpdateStart;
+            _resourceManager.ResourceUpdateChanged += OnResourceUpdateChanged;
+            _resourceManager.ResourceUpdateSuccess += OnResourceUpdateSuccess;
+            _resourceManager.ResourceUpdateFailure += OnResourceUpdateFailure;
+            _resourceManager.ResourceUpdateAllComplete += OnResourceUpdateAllComplete;
 
-            m_ResourceManager.SetReadOnlyPath(Application.streamingAssetsPath);
-            if (m_ReadWritePathType == ReadWritePathType.TemporaryCache)
+            _resourceManager.SetReadOnlyPath(Application.streamingAssetsPath);
+            if (readWritePathType == ReadWritePathType.TemporaryCache)
             {
-                m_ResourceManager.SetReadWritePath(Application.temporaryCachePath);
+                _resourceManager.SetReadWritePath(Application.temporaryCachePath);
             }
             else
             {
-                if (m_ReadWritePathType == ReadWritePathType.Unspecified)
+                if (readWritePathType == ReadWritePathType.Unspecified)
                 {
-                    m_ReadWritePathType = ReadWritePathType.PersistentData;
+                    readWritePathType = ReadWritePathType.PersistentData;
                 }
 
-                m_ResourceManager.SetReadWritePath(Application.persistentDataPath);
+                _resourceManager.SetReadWritePath(Application.persistentDataPath);
             }
 
-            if (m_EditorResourceMode)
+            if (_editorResourceMode)
             {
                 return;
             }
 
-            SetResourceMode(m_ResourceMode);
-            m_ResourceManager.SetObjectPoolManager(GameFrameworkEntry.GetModule<IObjectPoolManager>());
-            m_ResourceManager.SetFileSystemManager(GameFrameworkEntry.GetModule<IFileSystemManager>());
-            m_ResourceManager.SetDownloadManager(GameFrameworkEntry.GetModule<IDownloadManager>());
-            m_ResourceManager.AssetAutoReleaseInterval = m_AssetAutoReleaseInterval;
-            m_ResourceManager.AssetCapacity = m_AssetCapacity;
-            m_ResourceManager.AssetExpireTime = m_AssetExpireTime;
-            m_ResourceManager.AssetPriority = m_AssetPriority;
-            m_ResourceManager.ResourceAutoReleaseInterval = m_ResourceAutoReleaseInterval;
-            m_ResourceManager.ResourceCapacity = m_ResourceCapacity;
-            m_ResourceManager.ResourceExpireTime = m_ResourceExpireTime;
-            m_ResourceManager.ResourcePriority = m_ResourcePriority;
-            if (m_ResourceMode == ResourceMode.Updatable || m_ResourceMode == ResourceMode.UpdatableWhilePlaying)
+            SetResourceMode(resourceMode);
+            _resourceManager.SetObjectPoolManager(GameFrameworkEntry.GetModule<IObjectPoolManager>());
+            _resourceManager.SetFileSystemManager(GameFrameworkEntry.GetModule<IFileSystemManager>());
+            _resourceManager.SetDownloadManager(GameFrameworkEntry.GetModule<IDownloadManager>());
+            _resourceManager.AssetAutoReleaseInterval = assetAutoReleaseInterval;
+            _resourceManager.AssetCapacity = assetCapacity;
+            _resourceManager.AssetExpireTime = assetExpireTime;
+            _resourceManager.AssetPriority = assetPriority;
+            _resourceManager.ResourceAutoReleaseInterval = resourceAutoReleaseInterval;
+            _resourceManager.ResourceCapacity = resourceCapacity;
+            _resourceManager.ResourceExpireTime = resourceExpireTime;
+            _resourceManager.ResourcePriority = resourcePriority;
+            if (resourceMode == ResourceMode.Updatable || resourceMode == ResourceMode.UpdatableWhilePlaying)
             {
-                m_ResourceManager.UpdatePrefixUri = m_UpdatePrefixUri;
-                m_ResourceManager.GenerateReadWriteVersionListLength = m_GenerateReadWriteVersionListLength;
-                m_ResourceManager.UpdateRetryCount = m_UpdateRetryCount;
+                _resourceManager.UpdatePrefixUri = updatePrefixUri;
+                _resourceManager.GenerateReadWriteVersionListLength = generateReadWriteVersionListLength;
+                _resourceManager.UpdateRetryCount = updateRetryCount;
             }
 
-            m_ResourceHelper = Helper.CreateHelper(m_ResourceHelperTypeName, m_CustomResourceHelper);
-            if (m_ResourceHelper == null)
+            _resourceHelper = Helper.CreateHelper(resourceHelperTypeName, customResourceHelper);
+            if (_resourceHelper == null)
             {
                 Log.Error("Can not create resource helper.");
                 return;
             }
 
-            m_ResourceHelper.name = "Resource Helper";
-            Transform transform = m_ResourceHelper.transform;
+            _resourceHelper.name = "Resource Helper";
+            Transform transform = _resourceHelper.transform;
             transform.SetParent(this.transform);
             transform.localScale = Vector3.one;
 
-            m_ResourceManager.SetResourceHelper(m_ResourceHelper);
+            _resourceManager.SetResourceHelper(_resourceHelper);
 
-            if (m_InstanceRoot == null)
+            if (instanceRoot == null)
             {
-                m_InstanceRoot = new GameObject("Load Resource Agent Instances").transform;
-                m_InstanceRoot.SetParent(gameObject.transform);
-                m_InstanceRoot.localScale = Vector3.one;
+                instanceRoot = new GameObject("Load Resource Agent Instances").transform;
+                instanceRoot.SetParent(gameObject.transform);
+                instanceRoot.localScale = Vector3.one;
             }
 
-            for (int i = 0; i < m_LoadResourceAgentHelperCount; i++)
+            for (int i = 0; i < loadResourceAgentHelperCount; i++)
             {
                 AddLoadResourceAgentHelper(i);
             }
@@ -692,23 +459,23 @@ namespace UnityGameFramework.Runtime
 
         private void Update()
         {
-            m_LastUnloadUnusedAssetsOperationElapseSeconds += Time.unscaledDeltaTime;
-            if (m_AsyncOperation == null && (m_ForceUnloadUnusedAssets || m_LastUnloadUnusedAssetsOperationElapseSeconds >= m_MaxUnloadUnusedAssetsInterval || m_PreorderUnloadUnusedAssets && m_LastUnloadUnusedAssetsOperationElapseSeconds >= m_MinUnloadUnusedAssetsInterval))
+            _lastUnloadUnusedAssetsOperationElapseSeconds += Time.unscaledDeltaTime;
+            if (_asyncOperation == null && (_forceUnloadUnusedAssets || _lastUnloadUnusedAssetsOperationElapseSeconds >= maxUnloadUnusedAssetsInterval || _preorderUnloadUnusedAssets && _lastUnloadUnusedAssetsOperationElapseSeconds >= minUnloadUnusedAssetsInterval))
             {
                 Log.Info("Unload unused assets...");
-                m_ForceUnloadUnusedAssets = false;
-                m_PreorderUnloadUnusedAssets = false;
-                m_LastUnloadUnusedAssetsOperationElapseSeconds = 0f;
-                m_AsyncOperation = Resources.UnloadUnusedAssets();
+                _forceUnloadUnusedAssets = false;
+                _preorderUnloadUnusedAssets = false;
+                _lastUnloadUnusedAssetsOperationElapseSeconds = 0f;
+                _asyncOperation = Resources.UnloadUnusedAssets();
             }
 
-            if (m_AsyncOperation != null && m_AsyncOperation.isDone)
+            if (_asyncOperation != null && _asyncOperation.isDone)
             {
-                m_AsyncOperation = null;
-                if (m_PerformGCCollect)
+                _asyncOperation = null;
+                if (_performGCCollect)
                 {
                     Log.Info("GC.Collect...");
-                    m_PerformGCCollect = false;
+                    _performGCCollect = false;
                     GC.Collect();
                 }
             }
@@ -720,38 +487,38 @@ namespace UnityGameFramework.Runtime
         /// <param name="resourceMode">资源模式。</param>
         public void SetResourceMode(ResourceMode resourceMode)
         {
-            m_ResourceManager.SetResourceMode(resourceMode);
+            _resourceManager.SetResourceMode(resourceMode);
             switch (resourceMode)
             {
                 case ResourceMode.Package:
-                    m_ResourceManager.PackageVersionListSerializer.RegisterDeserializeCallback(0, BuiltinVersionListSerializer.PackageVersionListDeserializeCallback_V0);
-                    m_ResourceManager.PackageVersionListSerializer.RegisterDeserializeCallback(1, BuiltinVersionListSerializer.PackageVersionListDeserializeCallback_V1);
-                    m_ResourceManager.PackageVersionListSerializer.RegisterDeserializeCallback(2, BuiltinVersionListSerializer.PackageVersionListDeserializeCallback_V2);
+                    _resourceManager.PackageVersionListSerializer.RegisterDeserializeCallback(0, BuiltinVersionListSerializer.PackageVersionListDeserializeCallback_V0);
+                    _resourceManager.PackageVersionListSerializer.RegisterDeserializeCallback(1, BuiltinVersionListSerializer.PackageVersionListDeserializeCallback_V1);
+                    _resourceManager.PackageVersionListSerializer.RegisterDeserializeCallback(2, BuiltinVersionListSerializer.PackageVersionListDeserializeCallback_V2);
                     break;
 
                 case ResourceMode.Updatable:
                 case ResourceMode.UpdatableWhilePlaying:
-                    m_ResourceManager.UpdatableVersionListSerializer.RegisterDeserializeCallback(0, BuiltinVersionListSerializer.UpdatableVersionListDeserializeCallback_V0);
-                    m_ResourceManager.UpdatableVersionListSerializer.RegisterDeserializeCallback(1, BuiltinVersionListSerializer.UpdatableVersionListDeserializeCallback_V1);
-                    m_ResourceManager.UpdatableVersionListSerializer.RegisterDeserializeCallback(2, BuiltinVersionListSerializer.UpdatableVersionListDeserializeCallback_V2);
+                    _resourceManager.UpdatableVersionListSerializer.RegisterDeserializeCallback(0, BuiltinVersionListSerializer.UpdatableVersionListDeserializeCallback_V0);
+                    _resourceManager.UpdatableVersionListSerializer.RegisterDeserializeCallback(1, BuiltinVersionListSerializer.UpdatableVersionListDeserializeCallback_V1);
+                    _resourceManager.UpdatableVersionListSerializer.RegisterDeserializeCallback(2, BuiltinVersionListSerializer.UpdatableVersionListDeserializeCallback_V2);
 
-                    m_ResourceManager.UpdatableVersionListSerializer.RegisterTryGetValueCallback(0, BuiltinVersionListSerializer.UpdatableVersionListTryGetValueCallback_V0);
-                    m_ResourceManager.UpdatableVersionListSerializer.RegisterTryGetValueCallback(1, BuiltinVersionListSerializer.UpdatableVersionListTryGetValueCallback_V1_V2);
-                    m_ResourceManager.UpdatableVersionListSerializer.RegisterTryGetValueCallback(2, BuiltinVersionListSerializer.UpdatableVersionListTryGetValueCallback_V1_V2);
+                    _resourceManager.UpdatableVersionListSerializer.RegisterTryGetValueCallback(0, BuiltinVersionListSerializer.UpdatableVersionListTryGetValueCallback_V0);
+                    _resourceManager.UpdatableVersionListSerializer.RegisterTryGetValueCallback(1, BuiltinVersionListSerializer.UpdatableVersionListTryGetValueCallback_V1_V2);
+                    _resourceManager.UpdatableVersionListSerializer.RegisterTryGetValueCallback(2, BuiltinVersionListSerializer.UpdatableVersionListTryGetValueCallback_V1_V2);
 
-                    m_ResourceManager.ReadOnlyVersionListSerializer.RegisterDeserializeCallback(0, BuiltinVersionListSerializer.LocalVersionListDeserializeCallback_V0);
-                    m_ResourceManager.ReadOnlyVersionListSerializer.RegisterDeserializeCallback(1, BuiltinVersionListSerializer.LocalVersionListDeserializeCallback_V1);
-                    m_ResourceManager.ReadOnlyVersionListSerializer.RegisterDeserializeCallback(2, BuiltinVersionListSerializer.LocalVersionListDeserializeCallback_V2);
+                    _resourceManager.ReadOnlyVersionListSerializer.RegisterDeserializeCallback(0, BuiltinVersionListSerializer.LocalVersionListDeserializeCallback_V0);
+                    _resourceManager.ReadOnlyVersionListSerializer.RegisterDeserializeCallback(1, BuiltinVersionListSerializer.LocalVersionListDeserializeCallback_V1);
+                    _resourceManager.ReadOnlyVersionListSerializer.RegisterDeserializeCallback(2, BuiltinVersionListSerializer.LocalVersionListDeserializeCallback_V2);
 
-                    m_ResourceManager.ReadWriteVersionListSerializer.RegisterSerializeCallback(0, BuiltinVersionListSerializer.LocalVersionListSerializeCallback_V0);
-                    m_ResourceManager.ReadWriteVersionListSerializer.RegisterSerializeCallback(1, BuiltinVersionListSerializer.LocalVersionListSerializeCallback_V1);
-                    m_ResourceManager.ReadWriteVersionListSerializer.RegisterSerializeCallback(2, BuiltinVersionListSerializer.LocalVersionListSerializeCallback_V2);
+                    _resourceManager.ReadWriteVersionListSerializer.RegisterSerializeCallback(0, BuiltinVersionListSerializer.LocalVersionListSerializeCallback_V0);
+                    _resourceManager.ReadWriteVersionListSerializer.RegisterSerializeCallback(1, BuiltinVersionListSerializer.LocalVersionListSerializeCallback_V1);
+                    _resourceManager.ReadWriteVersionListSerializer.RegisterSerializeCallback(2, BuiltinVersionListSerializer.LocalVersionListSerializeCallback_V2);
 
-                    m_ResourceManager.ReadWriteVersionListSerializer.RegisterDeserializeCallback(0, BuiltinVersionListSerializer.LocalVersionListDeserializeCallback_V0);
-                    m_ResourceManager.ReadWriteVersionListSerializer.RegisterDeserializeCallback(1, BuiltinVersionListSerializer.LocalVersionListDeserializeCallback_V1);
-                    m_ResourceManager.ReadWriteVersionListSerializer.RegisterDeserializeCallback(2, BuiltinVersionListSerializer.LocalVersionListDeserializeCallback_V2);
+                    _resourceManager.ReadWriteVersionListSerializer.RegisterDeserializeCallback(0, BuiltinVersionListSerializer.LocalVersionListDeserializeCallback_V0);
+                    _resourceManager.ReadWriteVersionListSerializer.RegisterDeserializeCallback(1, BuiltinVersionListSerializer.LocalVersionListDeserializeCallback_V1);
+                    _resourceManager.ReadWriteVersionListSerializer.RegisterDeserializeCallback(2, BuiltinVersionListSerializer.LocalVersionListDeserializeCallback_V2);
 
-                    m_ResourceManager.ResourcePackVersionListSerializer.RegisterDeserializeCallback(0, BuiltinVersionListSerializer.ResourcePackVersionListDeserializeCallback_V0);
+                    _resourceManager.ResourcePackVersionListSerializer.RegisterDeserializeCallback(0, BuiltinVersionListSerializer.ResourcePackVersionListDeserializeCallback_V0);
                     break;
             }
         }
@@ -762,7 +529,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="currentVariant">当前变体。</param>
         public void SetCurrentVariant(string currentVariant)
         {
-            m_ResourceManager.SetCurrentVariant(!string.IsNullOrEmpty(currentVariant) ? currentVariant : null);
+            _resourceManager.SetCurrentVariant(!string.IsNullOrEmpty(currentVariant) ? currentVariant : null);
         }
 
         /// <summary>
@@ -772,7 +539,7 @@ namespace UnityGameFramework.Runtime
         /// <remarks>如果不设置，将使用默认的解密资源回调函数。</remarks>
         public void SetDecryptResourceCallback(DecryptResourceCallback decryptResourceCallback)
         {
-            m_ResourceManager.SetDecryptResourceCallback(decryptResourceCallback);
+            _resourceManager.SetDecryptResourceCallback(decryptResourceCallback);
         }
 
         /// <summary>
@@ -781,10 +548,10 @@ namespace UnityGameFramework.Runtime
         /// <param name="performGCCollect">是否使用垃圾回收。</param>
         public void UnloadUnusedAssets(bool performGCCollect)
         {
-            m_PreorderUnloadUnusedAssets = true;
+            _preorderUnloadUnusedAssets = true;
             if (performGCCollect)
             {
-                m_PerformGCCollect = performGCCollect;
+                _performGCCollect = performGCCollect;
             }
         }
 
@@ -794,10 +561,10 @@ namespace UnityGameFramework.Runtime
         /// <param name="performGCCollect">是否使用垃圾回收。</param>
         public void ForceUnloadUnusedAssets(bool performGCCollect)
         {
-            m_ForceUnloadUnusedAssets = true;
+            _forceUnloadUnusedAssets = true;
             if (performGCCollect)
             {
-                m_PerformGCCollect = performGCCollect;
+                _performGCCollect = performGCCollect;
             }
         }
 
@@ -807,7 +574,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="initResourcesCompleteCallback">使用单机模式并初始化资源完成时的回调函数。</param>
         public void InitResources(InitResourcesCompleteCallback initResourcesCompleteCallback)
         {
-            m_ResourceManager.InitResources(initResourcesCompleteCallback);
+            _resourceManager.InitResources(initResourcesCompleteCallback);
         }
 
         /// <summary>
@@ -817,7 +584,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>检查版本资源列表结果。</returns>
         public CheckVersionListResult CheckVersionList(int latestInternalResourceVersion)
         {
-            return m_ResourceManager.CheckVersionList(latestInternalResourceVersion);
+            return _resourceManager.CheckVersionList(latestInternalResourceVersion);
         }
 
         /// <summary>
@@ -830,7 +597,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="updateVersionListCallbacks">版本资源列表更新回调函数集。</param>
         public void UpdateVersionList(int versionListLength, int versionListHashCode, int versionListCompressedLength, int versionListCompressedHashCode, UpdateVersionListCallbacks updateVersionListCallbacks)
         {
-            m_ResourceManager.UpdateVersionList(versionListLength, versionListHashCode, versionListCompressedLength, versionListCompressedHashCode, updateVersionListCallbacks);
+            _resourceManager.UpdateVersionList(versionListLength, versionListHashCode, versionListCompressedLength, versionListCompressedHashCode, updateVersionListCallbacks);
         }
 
         /// <summary>
@@ -839,7 +606,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="verifyResourcesCompleteCallback">使用可更新模式并校验资源完成时的回调函数。</param>
         public void VerifyResources(VerifyResourcesCompleteCallback verifyResourcesCompleteCallback)
         {
-            m_ResourceManager.VerifyResources(0, verifyResourcesCompleteCallback);
+            _resourceManager.VerifyResources(0, verifyResourcesCompleteCallback);
         }
 
         /// <summary>
@@ -849,7 +616,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="verifyResourcesCompleteCallback">使用可更新模式并校验资源完成时的回调函数。</param>
         public void VerifyResources(int verifyResourceLengthPerFrame, VerifyResourcesCompleteCallback verifyResourcesCompleteCallback)
         {
-            m_ResourceManager.VerifyResources(verifyResourceLengthPerFrame, verifyResourcesCompleteCallback);
+            _resourceManager.VerifyResources(verifyResourceLengthPerFrame, verifyResourcesCompleteCallback);
         }
 
         /// <summary>
@@ -858,7 +625,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="checkResourcesCompleteCallback">使用可更新模式并检查资源完成时的回调函数。</param>
         public void CheckResources(CheckResourcesCompleteCallback checkResourcesCompleteCallback)
         {
-            m_ResourceManager.CheckResources(false, checkResourcesCompleteCallback);
+            _resourceManager.CheckResources(false, checkResourcesCompleteCallback);
         }
 
         /// <summary>
@@ -868,7 +635,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="checkResourcesCompleteCallback">使用可更新模式并检查资源完成时的回调函数。</param>
         public void CheckResources(bool ignoreOtherVariant, CheckResourcesCompleteCallback checkResourcesCompleteCallback)
         {
-            m_ResourceManager.CheckResources(ignoreOtherVariant, checkResourcesCompleteCallback);
+            _resourceManager.CheckResources(ignoreOtherVariant, checkResourcesCompleteCallback);
         }
 
         /// <summary>
@@ -878,7 +645,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="applyResourcesCompleteCallback">使用可更新模式并应用资源包资源完成时的回调函数。</param>
         public void ApplyResources(string resourcePackPath, ApplyResourcesCompleteCallback applyResourcesCompleteCallback)
         {
-            m_ResourceManager.ApplyResources(resourcePackPath, applyResourcesCompleteCallback);
+            _resourceManager.ApplyResources(resourcePackPath, applyResourcesCompleteCallback);
         }
 
         /// <summary>
@@ -887,7 +654,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="updateResourcesCompleteCallback">使用可更新模式并更新默认资源组完成时的回调函数。</param>
         public void UpdateResources(UpdateResourcesCompleteCallback updateResourcesCompleteCallback)
         {
-            m_ResourceManager.UpdateResources(updateResourcesCompleteCallback);
+            _resourceManager.UpdateResources(updateResourcesCompleteCallback);
         }
 
         /// <summary>
@@ -897,7 +664,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="updateResourcesCompleteCallback">使用可更新模式并更新指定资源组完成时的回调函数。</param>
         public void UpdateResources(string resourceGroupName, UpdateResourcesCompleteCallback updateResourcesCompleteCallback)
         {
-            m_ResourceManager.UpdateResources(resourceGroupName, updateResourcesCompleteCallback);
+            _resourceManager.UpdateResources(resourceGroupName, updateResourcesCompleteCallback);
         }
 
         /// <summary>
@@ -905,7 +672,7 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public void StopUpdateResources()
         {
-            m_ResourceManager.StopUpdateResources();
+            _resourceManager.StopUpdateResources();
         }
 
         /// <summary>
@@ -915,7 +682,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否校验资源包成功。</returns>
         public bool VerifyResourcePack(string resourcePackPath)
         {
-            return m_ResourceManager.VerifyResourcePack(resourcePackPath);
+            return _resourceManager.VerifyResourcePack(resourcePackPath);
         }
 
         /// <summary>
@@ -924,7 +691,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>所有加载资源任务的信息。</returns>
         public TaskInfo[] GetAllLoadAssetInfos()
         {
-            return m_ResourceManager.GetAllLoadAssetInfos();
+            return _resourceManager.GetAllLoadAssetInfos();
         }
 
         /// <summary>
@@ -933,7 +700,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">所有加载资源任务的信息。</param>
         public void GetAllLoadAssetInfos(List<TaskInfo> results)
         {
-            m_ResourceManager.GetAllLoadAssetInfos(results);
+            _resourceManager.GetAllLoadAssetInfos(results);
         }
 
         /// <summary>
@@ -943,7 +710,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>检查资源是否存在的结果。</returns>
         public HasAssetResult HasAsset(string assetName)
         {
-            return m_ResourceManager.HasAsset(assetName);
+            return _resourceManager.HasAsset(assetName);
         }
 
         /// <summary>
@@ -1047,7 +814,7 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            m_ResourceManager.LoadAsset(assetName, assetType, priority, loadAssetCallbacks, userData);
+            _resourceManager.LoadAsset(assetName, assetType, priority, loadAssetCallbacks, userData);
         }
 
         /// <summary>
@@ -1056,7 +823,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="asset">要卸载的资源。</param>
         public void UnloadAsset(object asset)
         {
-            m_ResourceManager.UnloadAsset(asset);
+            _resourceManager.UnloadAsset(asset);
         }
 
         /// <summary>
@@ -1067,7 +834,7 @@ namespace UnityGameFramework.Runtime
         /// <remarks>此方法仅适用于二进制资源存储在磁盘（而非文件系统）中的情况。若二进制资源存储在文件系统中时，返回值将始终为空。</remarks>
         public string GetBinaryPath(string binaryAssetName)
         {
-            return m_ResourceManager.GetBinaryPath(binaryAssetName);
+            return _resourceManager.GetBinaryPath(binaryAssetName);
         }
 
         /// <summary>
@@ -1081,7 +848,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否获取二进制资源的实际路径成功。</returns>
         public bool GetBinaryPath(string binaryAssetName, out bool storageInReadOnly, out bool storageInFileSystem, out string relativePath, out string fileName)
         {
-            return m_ResourceManager.GetBinaryPath(binaryAssetName, out storageInReadOnly, out storageInFileSystem, out relativePath, out fileName);
+            return _resourceManager.GetBinaryPath(binaryAssetName, out storageInReadOnly, out storageInFileSystem, out relativePath, out fileName);
         }
 
         /// <summary>
@@ -1091,7 +858,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>二进制资源的长度。</returns>
         public int GetBinaryLength(string binaryAssetName)
         {
-            return m_ResourceManager.GetBinaryLength(binaryAssetName);
+            return _resourceManager.GetBinaryLength(binaryAssetName);
         }
 
         /// <summary>
@@ -1124,7 +891,7 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            m_ResourceManager.LoadBinary(binaryAssetName, loadBinaryCallbacks, userData);
+            _resourceManager.LoadBinary(binaryAssetName, loadBinaryCallbacks, userData);
         }
 
         /// <summary>
@@ -1146,7 +913,7 @@ namespace UnityGameFramework.Runtime
                 return null;
             }
 
-            return m_ResourceManager.LoadBinaryFromFileSystem(binaryAssetName);
+            return _resourceManager.LoadBinaryFromFileSystem(binaryAssetName);
         }
 
         /// <summary>
@@ -1212,7 +979,7 @@ namespace UnityGameFramework.Runtime
                 return 0;
             }
 
-            return m_ResourceManager.LoadBinaryFromFileSystem(binaryAssetName, buffer, startIndex, length);
+            return _resourceManager.LoadBinaryFromFileSystem(binaryAssetName, buffer, startIndex, length);
         }
 
         /// <summary>
@@ -1247,7 +1014,7 @@ namespace UnityGameFramework.Runtime
                 return null;
             }
 
-            return m_ResourceManager.LoadBinarySegmentFromFileSystem(binaryAssetName, offset, length);
+            return _resourceManager.LoadBinarySegmentFromFileSystem(binaryAssetName, offset, length);
         }
 
         /// <summary>
@@ -1352,7 +1119,7 @@ namespace UnityGameFramework.Runtime
                 return 0;
             }
 
-            return m_ResourceManager.LoadBinarySegmentFromFileSystem(binaryAssetName, offset, buffer, startIndex, length);
+            return _resourceManager.LoadBinarySegmentFromFileSystem(binaryAssetName, offset, buffer, startIndex, length);
         }
 
         /// <summary>
@@ -1362,7 +1129,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>资源组是否存在。</returns>
         public bool HasResourceGroup(string resourceGroupName)
         {
-            return m_ResourceManager.HasResourceGroup(resourceGroupName);
+            return _resourceManager.HasResourceGroup(resourceGroupName);
         }
 
         /// <summary>
@@ -1371,7 +1138,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>默认资源组。</returns>
         public IResourceGroup GetResourceGroup()
         {
-            return m_ResourceManager.GetResourceGroup();
+            return _resourceManager.GetResourceGroup();
         }
 
         /// <summary>
@@ -1381,7 +1148,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的资源组。</returns>
         public IResourceGroup GetResourceGroup(string resourceGroupName)
         {
-            return m_ResourceManager.GetResourceGroup(resourceGroupName);
+            return _resourceManager.GetResourceGroup(resourceGroupName);
         }
 
         /// <summary>
@@ -1390,7 +1157,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>所有资源组。</returns>
         public IResourceGroup[] GetAllResourceGroups()
         {
-            return m_ResourceManager.GetAllResourceGroups();
+            return _resourceManager.GetAllResourceGroups();
         }
 
         /// <summary>
@@ -1399,7 +1166,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">所有资源组。</param>
         public void GetAllResourceGroups(List<IResourceGroup> results)
         {
-            m_ResourceManager.GetAllResourceGroups(results);
+            _resourceManager.GetAllResourceGroups(results);
         }
 
         /// <summary>
@@ -1409,7 +1176,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的资源组集合。</returns>
         public IResourceGroupCollection GetResourceGroupCollection(params string[] resourceGroupNames)
         {
-            return m_ResourceManager.GetResourceGroupCollection(resourceGroupNames);
+            return _resourceManager.GetResourceGroupCollection(resourceGroupNames);
         }
 
         /// <summary>
@@ -1419,7 +1186,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的资源组集合。</returns>
         public IResourceGroupCollection GetResourceGroupCollection(List<string> resourceGroupNames)
         {
-            return m_ResourceManager.GetResourceGroupCollection(resourceGroupNames);
+            return _resourceManager.GetResourceGroupCollection(resourceGroupNames);
         }
 
         /// <summary>
@@ -1428,7 +1195,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="index">加载资源代理辅助器索引。</param>
         private void AddLoadResourceAgentHelper(int index)
         {
-            LoadResourceAgentHelperBase loadResourceAgentHelper = Helper.CreateHelper(m_LoadResourceAgentHelperTypeName, m_CustomLoadResourceAgentHelper, index);
+            LoadResourceAgentHelperBase loadResourceAgentHelper = Helper.CreateHelper(loadResourceAgentHelperTypeName, customLoadResourceAgentHelper, index);
             if (loadResourceAgentHelper == null)
             {
                 Log.Error("Can not create load resource agent helper.");
@@ -1437,65 +1204,65 @@ namespace UnityGameFramework.Runtime
 
             loadResourceAgentHelper.name = Utility.Text.Format("Load Resource Agent Helper - {0}", index);
             Transform transform = loadResourceAgentHelper.transform;
-            transform.SetParent(m_InstanceRoot);
+            transform.SetParent(instanceRoot);
             transform.localScale = Vector3.one;
 
-            m_ResourceManager.AddLoadResourceAgentHelper(loadResourceAgentHelper);
+            _resourceManager.AddLoadResourceAgentHelper(loadResourceAgentHelper);
         }
 
         private void OnResourceVerifyStart(object sender, GameFramework.Resource.ResourceVerifyStartEventArgs e)
         {
-            m_EventComponent.Fire(this, ResourceVerifyStartEventArgs.Create(e));
+            _eventComponent.Fire(this, ResourceVerifyStartEventArgs.Create(e));
         }
 
         private void OnResourceVerifySuccess(object sender, GameFramework.Resource.ResourceVerifySuccessEventArgs e)
         {
-            m_EventComponent.Fire(this, ResourceVerifySuccessEventArgs.Create(e));
+            _eventComponent.Fire(this, ResourceVerifySuccessEventArgs.Create(e));
         }
 
         private void OnResourceVerifyFailure(object sender, GameFramework.Resource.ResourceVerifyFailureEventArgs e)
         {
-            m_EventComponent.Fire(this, ResourceVerifyFailureEventArgs.Create(e));
+            _eventComponent.Fire(this, ResourceVerifyFailureEventArgs.Create(e));
         }
 
         private void OnResourceApplyStart(object sender, GameFramework.Resource.ResourceApplyStartEventArgs e)
         {
-            m_EventComponent.Fire(this, ResourceApplyStartEventArgs.Create(e));
+            _eventComponent.Fire(this, ResourceApplyStartEventArgs.Create(e));
         }
 
         private void OnResourceApplySuccess(object sender, GameFramework.Resource.ResourceApplySuccessEventArgs e)
         {
-            m_EventComponent.Fire(this, ResourceApplySuccessEventArgs.Create(e));
+            _eventComponent.Fire(this, ResourceApplySuccessEventArgs.Create(e));
         }
 
         private void OnResourceApplyFailure(object sender, GameFramework.Resource.ResourceApplyFailureEventArgs e)
         {
-            m_EventComponent.Fire(this, ResourceApplyFailureEventArgs.Create(e));
+            _eventComponent.Fire(this, ResourceApplyFailureEventArgs.Create(e));
         }
 
         private void OnResourceUpdateStart(object sender, GameFramework.Resource.ResourceUpdateStartEventArgs e)
         {
-            m_EventComponent.Fire(this, ResourceUpdateStartEventArgs.Create(e));
+            _eventComponent.Fire(this, ResourceUpdateStartEventArgs.Create(e));
         }
 
         private void OnResourceUpdateChanged(object sender, GameFramework.Resource.ResourceUpdateChangedEventArgs e)
         {
-            m_EventComponent.Fire(this, ResourceUpdateChangedEventArgs.Create(e));
+            _eventComponent.Fire(this, ResourceUpdateChangedEventArgs.Create(e));
         }
 
         private void OnResourceUpdateSuccess(object sender, GameFramework.Resource.ResourceUpdateSuccessEventArgs e)
         {
-            m_EventComponent.Fire(this, ResourceUpdateSuccessEventArgs.Create(e));
+            _eventComponent.Fire(this, ResourceUpdateSuccessEventArgs.Create(e));
         }
 
         private void OnResourceUpdateFailure(object sender, GameFramework.Resource.ResourceUpdateFailureEventArgs e)
         {
-            m_EventComponent.Fire(this, ResourceUpdateFailureEventArgs.Create(e));
+            _eventComponent.Fire(this, ResourceUpdateFailureEventArgs.Create(e));
         }
 
         private void OnResourceUpdateAllComplete(object sender, GameFramework.Resource.ResourceUpdateAllCompleteEventArgs e)
         {
-            m_EventComponent.Fire(this, ResourceUpdateAllCompleteEventArgs.Create(e));
+            _eventComponent.Fire(this, ResourceUpdateAllCompleteEventArgs.Create(e));
         }
     }
 }

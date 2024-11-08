@@ -14,30 +14,30 @@ namespace GameFramework
     {
         private sealed class ReferenceCollection
         {
-            private readonly Queue<IReference> m_References;
-            private readonly Type m_ReferenceType;
-            private int m_UsingReferenceCount;
-            private int m_AcquireReferenceCount;
-            private int m_ReleaseReferenceCount;
-            private int m_AddReferenceCount;
-            private int m_RemoveReferenceCount;
+            private readonly Queue<IReference> _References;
+            private readonly Type _ReferenceType;
+            private int _UsingReferenceCount;
+            private int _AcquireReferenceCount;
+            private int _ReleaseReferenceCount;
+            private int _AddReferenceCount;
+            private int _RemoveReferenceCount;
 
             public ReferenceCollection(Type referenceType)
             {
-                m_References = new Queue<IReference>();
-                m_ReferenceType = referenceType;
-                m_UsingReferenceCount = 0;
-                m_AcquireReferenceCount = 0;
-                m_ReleaseReferenceCount = 0;
-                m_AddReferenceCount = 0;
-                m_RemoveReferenceCount = 0;
+                _References = new Queue<IReference>();
+                _ReferenceType = referenceType;
+                _UsingReferenceCount = 0;
+                _AcquireReferenceCount = 0;
+                _ReleaseReferenceCount = 0;
+                _AddReferenceCount = 0;
+                _RemoveReferenceCount = 0;
             }
 
             public Type ReferenceType
             {
                 get
                 {
-                    return m_ReferenceType;
+                    return _ReferenceType;
                 }
             }
 
@@ -45,7 +45,7 @@ namespace GameFramework
             {
                 get
                 {
-                    return m_References.Count;
+                    return _References.Count;
                 }
             }
 
@@ -53,7 +53,7 @@ namespace GameFramework
             {
                 get
                 {
-                    return m_UsingReferenceCount;
+                    return _UsingReferenceCount;
                 }
             }
 
@@ -61,7 +61,7 @@ namespace GameFramework
             {
                 get
                 {
-                    return m_AcquireReferenceCount;
+                    return _AcquireReferenceCount;
                 }
             }
 
@@ -69,7 +69,7 @@ namespace GameFramework
             {
                 get
                 {
-                    return m_ReleaseReferenceCount;
+                    return _ReleaseReferenceCount;
                 }
             }
 
@@ -77,7 +77,7 @@ namespace GameFramework
             {
                 get
                 {
-                    return m_AddReferenceCount;
+                    return _AddReferenceCount;
                 }
             }
 
@@ -85,116 +85,116 @@ namespace GameFramework
             {
                 get
                 {
-                    return m_RemoveReferenceCount;
+                    return _RemoveReferenceCount;
                 }
             }
 
             public T Acquire<T>() where T : class, IReference, new()
             {
-                if (typeof(T) != m_ReferenceType)
+                if (typeof(T) != _ReferenceType)
                 {
                     throw new GameFrameworkException("Type is invalid.");
                 }
 
-                m_UsingReferenceCount++;
-                m_AcquireReferenceCount++;
-                lock (m_References)
+                _UsingReferenceCount++;
+                _AcquireReferenceCount++;
+                lock (_References)
                 {
-                    if (m_References.Count > 0)
+                    if (_References.Count > 0)
                     {
-                        return (T)m_References.Dequeue();
+                        return (T)_References.Dequeue();
                     }
                 }
 
-                m_AddReferenceCount++;
+                _AddReferenceCount++;
                 return new T();
             }
 
             public IReference Acquire()
             {
-                m_UsingReferenceCount++;
-                m_AcquireReferenceCount++;
-                lock (m_References)
+                _UsingReferenceCount++;
+                _AcquireReferenceCount++;
+                lock (_References)
                 {
-                    if (m_References.Count > 0)
+                    if (_References.Count > 0)
                     {
-                        return m_References.Dequeue();
+                        return _References.Dequeue();
                     }
                 }
 
-                m_AddReferenceCount++;
-                return (IReference)Activator.CreateInstance(m_ReferenceType);
+                _AddReferenceCount++;
+                return (IReference)Activator.CreateInstance(_ReferenceType);
             }
 
             public void Release(IReference reference)
             {
                 reference.Clear();
-                lock (m_References)
+                lock (_References)
                 {
-                    if (m_EnableStrictCheck && m_References.Contains(reference))
+                    if (_EnableStrictCheck && _References.Contains(reference))
                     {
                         throw new GameFrameworkException("The reference has been released.");
                     }
 
-                    m_References.Enqueue(reference);
+                    _References.Enqueue(reference);
                 }
 
-                m_ReleaseReferenceCount++;
-                m_UsingReferenceCount--;
+                _ReleaseReferenceCount++;
+                _UsingReferenceCount--;
             }
 
             public void Add<T>(int count) where T : class, IReference, new()
             {
-                if (typeof(T) != m_ReferenceType)
+                if (typeof(T) != _ReferenceType)
                 {
                     throw new GameFrameworkException("Type is invalid.");
                 }
 
-                lock (m_References)
+                lock (_References)
                 {
-                    m_AddReferenceCount += count;
+                    _AddReferenceCount += count;
                     while (count-- > 0)
                     {
-                        m_References.Enqueue(new T());
+                        _References.Enqueue(new T());
                     }
                 }
             }
 
             public void Add(int count)
             {
-                lock (m_References)
+                lock (_References)
                 {
-                    m_AddReferenceCount += count;
+                    _AddReferenceCount += count;
                     while (count-- > 0)
                     {
-                        m_References.Enqueue((IReference)Activator.CreateInstance(m_ReferenceType));
+                        _References.Enqueue((IReference)Activator.CreateInstance(_ReferenceType));
                     }
                 }
             }
 
             public void Remove(int count)
             {
-                lock (m_References)
+                lock (_References)
                 {
-                    if (count > m_References.Count)
+                    if (count > _References.Count)
                     {
-                        count = m_References.Count;
+                        count = _References.Count;
                     }
 
-                    m_RemoveReferenceCount += count;
+                    _RemoveReferenceCount += count;
                     while (count-- > 0)
                     {
-                        m_References.Dequeue();
+                        _References.Dequeue();
                     }
                 }
             }
 
             public void RemoveAll()
             {
-                lock (m_References)
+                lock (_References)
                 {
-                    m_RemoveReferenceCount += m_References.Count;
-                    m_References.Clear();
+                    _RemoveReferenceCount += _References.Count;
+                    _References.Clear();
                 }
             }
         }

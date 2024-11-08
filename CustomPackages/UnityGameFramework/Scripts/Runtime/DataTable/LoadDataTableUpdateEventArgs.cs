@@ -33,13 +33,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 获取加载数据表更新事件编号。
         /// </summary>
-        public override int Id
-        {
-            get
-            {
-                return EventId;
-            }
-        }
+        public override int Id => EventId;
 
         /// <summary>
         /// 获取数据表资源名称。

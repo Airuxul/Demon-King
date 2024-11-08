@@ -13,7 +13,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 {
     public sealed class SourceAsset
     {
-        private Texture m_CachedIcon;
+        private Texture _CachedIcon;
 
         public SourceAsset(string guid, string path, string name, SourceFolder folder)
         {
@@ -26,7 +26,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             Path = path;
             Name = name;
             Folder = folder;
-            m_CachedIcon = null;
+            _CachedIcon = null;
         }
 
         public string Guid
@@ -73,12 +73,12 @@ namespace UnityGameFramework.Editor.ResourceTools
         {
             get
             {
-                if (m_CachedIcon == null)
+                if (_CachedIcon == null)
                 {
-                    m_CachedIcon = AssetDatabase.GetCachedIcon(Path);
+                    _CachedIcon = AssetDatabase.GetCachedIcon(Path);
                 }
 
-                return m_CachedIcon;
+                return _CachedIcon;
             }
         }
     }

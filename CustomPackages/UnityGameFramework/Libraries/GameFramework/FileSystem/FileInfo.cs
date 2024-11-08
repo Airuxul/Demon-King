@@ -15,9 +15,9 @@ namespace GameFramework.FileSystem
     [StructLayout(LayoutKind.Auto)]
     public struct FileInfo
     {
-        private readonly string m_Name;
-        private readonly long m_Offset;
-        private readonly int m_Length;
+        private readonly string _Name;
+        private readonly long _Offset;
+        private readonly int _Length;
 
         /// <summary>
         /// 初始化文件信息的新实例。
@@ -42,9 +42,9 @@ namespace GameFramework.FileSystem
                 throw new GameFrameworkException("Length is invalid.");
             }
 
-            m_Name = name;
-            m_Offset = offset;
-            m_Length = length;
+            _Name = name;
+            _Offset = offset;
+            _Length = length;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace GameFramework.FileSystem
         {
             get
             {
-                return !string.IsNullOrEmpty(m_Name) && m_Offset >= 0L && m_Length >= 0;
+                return !string.IsNullOrEmpty(_Name) && _Offset >= 0L && _Length >= 0;
             }
         }
 
@@ -65,7 +65,7 @@ namespace GameFramework.FileSystem
         {
             get
             {
-                return m_Name;
+                return _Name;
             }
         }
 
@@ -76,7 +76,7 @@ namespace GameFramework.FileSystem
         {
             get
             {
-                return m_Offset;
+                return _Offset;
             }
         }
 
@@ -87,7 +87,7 @@ namespace GameFramework.FileSystem
         {
             get
             {
-                return m_Length;
+                return _Length;
             }
         }
     }

@@ -18,9 +18,9 @@ namespace GameFramework.Network
         /// </summary>
         private sealed class TcpNetworkChannel : NetworkChannelBase
         {
-            private readonly AsyncCallback m_ConnectCallback;
-            private readonly AsyncCallback m_SendCallback;
-            private readonly AsyncCallback m_ReceiveCallback;
+            private readonly AsyncCallback _ConnectCallback;
+            private readonly AsyncCallback _SendCallback;
+            private readonly AsyncCallback _ReceiveCallback;
 
             /// <summary>
             /// 初始化网络频道的新实例。
@@ -30,9 +30,9 @@ namespace GameFramework.Network
             public TcpNetworkChannel(string name, INetworkChannelHelper networkChannelHelper)
                 : base(name, networkChannelHelper)
             {
-                m_ConnectCallback = ConnectCallback;
-                m_SendCallback = SendCallback;
-                m_ReceiveCallback = ReceiveCallback;
+                _ConnectCallback = ConnectCallback;
+                _SendCallback = SendCallback;
+                _ReceiveCallback = ReceiveCallback;
             }
 
             /// <summary>
@@ -55,8 +55,8 @@ namespace GameFramework.Network
             public override void Connect(IPAddress ipAddress, int port, object userData)
             {
                 base.Connect(ipAddress, port, userData);
-                m_Socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                if (m_Socket == null)
+                _Socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                if (_Socket == null)
                 {
                     string errorMessage = "Initialize network channel failure.";
                     if (NetworkChannelError != null)
@@ -68,7 +68,7 @@ namespace GameFramework.Network
                     throw new GameFrameworkException(errorMessage);
                 }
 
-                m_NetworkChannelHelper.PrepareForConnecting();
+                _NetworkChannelHelper.PrepareForConnecting();
                 ConnectAsync(ipAddress, port, userData);
             }
 
@@ -87,7 +87,7 @@ namespace GameFramework.Network
             {
                 try
                 {
-                    m_Socket.BeginConnect(ipAddress, port, m_ConnectCallback, new ConnectState(m_Socket, userData));
+                    _Socket.BeginConnect(ipAddress, port, _ConnectCallback, new ConnectState(_Socket, userData));
                 }
                 catch (Exception exception)
                 {
@@ -115,7 +115,7 @@ namespace GameFramework.Network
                 }
                 catch (Exception exception)
                 {
-                    m_Active = false;
+                    _Active = false;
                     if (NetworkChannelError != null)
                     {
                         SocketException socketException = exception as SocketException;
@@ -126,19 +126,19 @@ namespace GameFramework.Network
                     throw;
                 }
 
-                m_SentPacketCount = 0;
-                m_ReceivedPacketCount = 0;
+                _SentPacketCount = 0;
+                _ReceivedPacketCount = 0;
 
-                lock (m_SendPacketPool)
+                lock (_SendPacketPool)
                 {
-                    m_SendPacketPool.Clear();
+                    _SendPacketPool.Clear();
                 }
 
-                m_ReceivePacketPool.Clear();
+                _ReceivePacketPool.Clear();
 
-                lock (m_HeartBeatState)
+                lock (_HeartBeatState)
                 {
-                    m_HeartBeatState.Reset(true);
+                    _HeartBeatState.Reset(true);
                 }
 
                 if (NetworkChannelConnected != null)
@@ -146,7 +146,7 @@ namespace GameFramework.Network
                     NetworkChannelConnected(this, socketUserData.UserData);
                 }
 
-                m_Active = true;
+                _Active = true;
                 ReceiveAsync();
             }
 
@@ -154,11 +154,11 @@ namespace GameFramework.Network
             {
                 try
                 {
-                    m_Socket.BeginSend(m_SendState.Stream.GetBuffer(), (int)m_SendState.Stream.Position, (int)(m_SendState.Stream.Length - m_SendState.Stream.Position), SocketFlags.None, m_SendCallback, m_Socket);
+                    _Socket.BeginSend(_SendState.Stream.GetBuffer(), (int)_SendState.Stream.Position, (int)(_SendState.Stream.Length - _SendState.Stream.Position), SocketFlags.None, _SendCallback, _Socket);
                 }
                 catch (Exception exception)
                 {
-                    m_Active = false;
+                    _Active = false;
                     if (NetworkChannelError != null)
                     {
                         SocketException socketException = exception as SocketException;
@@ -185,7 +185,7 @@ namespace GameFramework.Network
                 }
                 catch (Exception exception)
                 {
-                    m_Active = false;
+                    _Active = false;
                     if (NetworkChannelError != null)
                     {
                         SocketException socketException = exception as SocketException;
@@ -196,26 +196,26 @@ namespace GameFramework.Network
                     throw;
                 }
 
-                m_SendState.Stream.Position += bytesSent;
-                if (m_SendState.Stream.Position < m_SendState.Stream.Length)
+                _SendState.Stream.Position += bytesSent;
+                if (_SendState.Stream.Position < _SendState.Stream.Length)
                 {
                     SendAsync();
                     return;
                 }
 
-                m_SentPacketCount++;
-                m_SendState.Reset();
+                _SentPacketCount++;
+                _SendState.Reset();
             }
 
             private void ReceiveAsync()
             {
                 try
                 {
-                    m_Socket.BeginReceive(m_ReceiveState.Stream.GetBuffer(), (int)m_ReceiveState.Stream.Position, (int)(m_ReceiveState.Stream.Length - m_ReceiveState.Stream.Position), SocketFlags.None, m_ReceiveCallback, m_Socket);
+                    _Socket.BeginReceive(_ReceiveState.Stream.GetBuffer(), (int)_ReceiveState.Stream.Position, (int)(_ReceiveState.Stream.Length - _ReceiveState.Stream.Position), SocketFlags.None, _ReceiveCallback, _Socket);
                 }
                 catch (Exception exception)
                 {
-                    m_Active = false;
+                    _Active = false;
                     if (NetworkChannelError != null)
                     {
                         SocketException socketException = exception as SocketException;
@@ -242,7 +242,7 @@ namespace GameFramework.Network
                 }
                 catch (Exception exception)
                 {
-                    m_Active = false;
+                    _Active = false;
                     if (NetworkChannelError != null)
                     {
                         SocketException socketException = exception as SocketException;
@@ -259,20 +259,20 @@ namespace GameFramework.Network
                     return;
                 }
 
-                m_ReceiveState.Stream.Position += bytesReceived;
-                if (m_ReceiveState.Stream.Position < m_ReceiveState.Stream.Length)
+                _ReceiveState.Stream.Position += bytesReceived;
+                if (_ReceiveState.Stream.Position < _ReceiveState.Stream.Length)
                 {
                     ReceiveAsync();
                     return;
                 }
 
-                m_ReceiveState.Stream.Position = 0L;
+                _ReceiveState.Stream.Position = 0L;
 
                 bool processSuccess = false;
-                if (m_ReceiveState.PacketHeader != null)
+                if (_ReceiveState.PacketHeader != null)
                 {
                     processSuccess = ProcessPacket();
-                    m_ReceivedPacketCount++;
+                    _ReceivedPacketCount++;
                 }
                 else
                 {

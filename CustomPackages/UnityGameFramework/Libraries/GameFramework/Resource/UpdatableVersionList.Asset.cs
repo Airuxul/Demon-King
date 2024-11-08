@@ -19,8 +19,8 @@ namespace GameFramework.Resource
         {
             private static readonly int[] EmptyIntArray = new int[] { };
 
-            private readonly string m_Name;
-            private readonly int[] m_DependencyAssetIndexes;
+            private readonly string _Name;
+            private readonly int[] _DependencyAssetIndexes;
 
             /// <summary>
             /// 初始化资源的新实例。
@@ -34,8 +34,8 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException("Name is invalid.");
                 }
 
-                m_Name = name;
-                m_DependencyAssetIndexes = dependencyAssetIndexes ?? EmptyIntArray;
+                _Name = name;
+                _DependencyAssetIndexes = dependencyAssetIndexes ?? EmptyIntArray;
             }
 
             /// <summary>
@@ -45,7 +45,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return m_Name;
+                    return _Name;
                 }
             }
 
@@ -55,7 +55,7 @@ namespace GameFramework.Resource
             /// <returns>资源包含的依赖资源索引集合。</returns>
             public int[] GetDependencyAssetIndexes()
             {
-                return m_DependencyAssetIndexes;
+                return _DependencyAssetIndexes;
             }
         }
     }

@@ -16,22 +16,22 @@ namespace GameFramework.UI
             /// </summary>
             private sealed class UIFormInfo : IReference
             {
-                private IUIForm m_UIForm;
-                private bool m_Paused;
-                private bool m_Covered;
+                private IUIForm _UIForm;
+                private bool _Paused;
+                private bool _Covered;
 
                 public UIFormInfo()
                 {
-                    m_UIForm = null;
-                    m_Paused = false;
-                    m_Covered = false;
+                    _UIForm = null;
+                    _Paused = false;
+                    _Covered = false;
                 }
 
                 public IUIForm UIForm
                 {
                     get
                     {
-                        return m_UIForm;
+                        return _UIForm;
                     }
                 }
 
@@ -39,11 +39,11 @@ namespace GameFramework.UI
                 {
                     get
                     {
-                        return m_Paused;
+                        return _Paused;
                     }
                     set
                     {
-                        m_Paused = value;
+                        _Paused = value;
                     }
                 }
 
@@ -51,11 +51,11 @@ namespace GameFramework.UI
                 {
                     get
                     {
-                        return m_Covered;
+                        return _Covered;
                     }
                     set
                     {
-                        m_Covered = value;
+                        _Covered = value;
                     }
                 }
 
@@ -67,17 +67,17 @@ namespace GameFramework.UI
                     }
 
                     UIFormInfo uiFormInfo = ReferencePool.Acquire<UIFormInfo>();
-                    uiFormInfo.m_UIForm = uiForm;
-                    uiFormInfo.m_Paused = true;
-                    uiFormInfo.m_Covered = true;
+                    uiFormInfo._UIForm = uiForm;
+                    uiFormInfo._Paused = true;
+                    uiFormInfo._Covered = true;
                     return uiFormInfo;
                 }
 
                 public void Clear()
                 {
-                    m_UIForm = null;
-                    m_Paused = false;
-                    m_Covered = false;
+                    _UIForm = null;
+                    _Paused = false;
+                    _Covered = false;
                 }
             }
         }

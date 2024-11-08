@@ -13,11 +13,11 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(LocalizationComponent))]
     internal sealed class LocalizationComponentInspector : GameFrameworkInspector
     {
-        private SerializedProperty m_EnableLoadDictionaryUpdateEvent = null;
-        private SerializedProperty m_EnableLoadDictionaryDependencyAssetEvent = null;
-        private SerializedProperty m_CachedBytesSize = null;
+        private SerializedProperty _EnableLoadDictionaryUpdateEvent = null;
+        private SerializedProperty _EnableLoadDictionaryDependencyAssetEvent = null;
+        private SerializedProperty _CachedBytesSize = null;
 
-        private HelperInfo<LocalizationHelperBase> m_LocalizationHelperInfo = new HelperInfo<LocalizationHelperBase>("Localization");
+        private HelperInfo<LocalizationHelperBase> _LocalizationHelperInfo = new HelperInfo<LocalizationHelperBase>("Localization");
 
         public override void OnInspectorGUI()
         {
@@ -29,10 +29,10 @@ namespace UnityGameFramework.Editor
 
             EditorGUI.BeginDisabledGroup(EditorApplication.isPlayingOrWillChangePlaymode);
             {
-                EditorGUILayout.PropertyField(m_EnableLoadDictionaryUpdateEvent);
-                EditorGUILayout.PropertyField(m_EnableLoadDictionaryDependencyAssetEvent);
-                m_LocalizationHelperInfo.Draw();
-                EditorGUILayout.PropertyField(m_CachedBytesSize);
+                EditorGUILayout.PropertyField(_EnableLoadDictionaryUpdateEvent);
+                EditorGUILayout.PropertyField(_EnableLoadDictionaryDependencyAssetEvent);
+                _LocalizationHelperInfo.Draw();
+                EditorGUILayout.PropertyField(_CachedBytesSize);
             }
             EditorGUI.EndDisabledGroup();
 
@@ -58,18 +58,18 @@ namespace UnityGameFramework.Editor
 
         private void OnEnable()
         {
-            m_EnableLoadDictionaryUpdateEvent = serializedObject.FindProperty("m_EnableLoadDictionaryUpdateEvent");
-            m_EnableLoadDictionaryDependencyAssetEvent = serializedObject.FindProperty("m_EnableLoadDictionaryDependencyAssetEvent");
-            m_CachedBytesSize = serializedObject.FindProperty("m_CachedBytesSize");
+            _EnableLoadDictionaryUpdateEvent = serializedObject.FindProperty("_EnableLoadDictionaryUpdateEvent");
+            _EnableLoadDictionaryDependencyAssetEvent = serializedObject.FindProperty("_EnableLoadDictionaryDependencyAssetEvent");
+            _CachedBytesSize = serializedObject.FindProperty("_CachedBytesSize");
 
-            m_LocalizationHelperInfo.Init(serializedObject);
+            _LocalizationHelperInfo.Init(serializedObject);
 
             RefreshTypeNames();
         }
 
         private void RefreshTypeNames()
         {
-            m_LocalizationHelperInfo.Refresh();
+            _LocalizationHelperInfo.Refresh();
             serializedObject.ApplyModifiedProperties();
         }
     }

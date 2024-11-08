@@ -21,7 +21,7 @@ namespace UnityGameFramework.Runtime
     {
         private static readonly string BytesAssetExtension = ".bytes";
 
-        private ResourceComponent m_ResourceComponent = null;
+        private ResourceComponent _resourceComponent = null;
 
         /// <summary>
         /// 读取数据表。
@@ -155,13 +155,13 @@ namespace UnityGameFramework.Runtime
         /// <param name="dataTableAsset">要释放的数据表资源。</param>
         public override void ReleaseDataAsset(DataTableBase dataTable, object dataTableAsset)
         {
-            m_ResourceComponent.UnloadAsset(dataTableAsset);
+            _resourceComponent.UnloadAsset(dataTableAsset);
         }
 
         private void Start()
         {
-            m_ResourceComponent = GameEntry.GetComponent<ResourceComponent>();
-            if (m_ResourceComponent == null)
+            _resourceComponent = GameEntry.GetComponent<ResourceComponent>();
+            if (_resourceComponent == null)
             {
                 Log.Fatal("Resource component is invalid.");
                 return;

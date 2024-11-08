@@ -44,18 +44,18 @@ namespace UnityGameFramework.Runtime
                     byte loadType = binaryReader.ReadByte();
                     int length = binaryReader.ReadInt32();
                     int hashCode = binaryReader.ReadInt32();
-                    Utility.Converter.GetBytes(hashCode, s_CachedHashBytes);
+                    Utility.Converter.GetBytes(hashCode, SCachedHashBytes);
 
                     int assetNameCount = binaryReader.ReadInt32();
                     string[] assetNames = new string[assetNameCount];
                     for (int j = 0; j < assetNameCount; j++)
                     {
-                        assetNames[j] = binaryReader.ReadEncryptedString(s_CachedHashBytes);
+                        assetNames[j] = binaryReader.ReadEncryptedString(SCachedHashBytes);
                         int dependencyAssetNameCount = binaryReader.ReadInt32();
                         string[] dependencyAssetNames = dependencyAssetNameCount > 0 ? new string[dependencyAssetNameCount] : null;
                         for (int k = 0; k < dependencyAssetNameCount; k++)
                         {
-                            dependencyAssetNames[k] = binaryReader.ReadEncryptedString(s_CachedHashBytes);
+                            dependencyAssetNames[k] = binaryReader.ReadEncryptedString(SCachedHashBytes);
                         }
 
                         assetNameToDependencyAssetNames.Add(new KeyValuePair<string, string[]>(assetNames[j], dependencyAssetNames));
@@ -66,7 +66,7 @@ namespace UnityGameFramework.Runtime
                 }
 
                 assetNameToDependencyAssetNames.Sort(AssetNameToDependencyAssetNamesComparer);
-                Array.Clear(s_CachedHashBytes, 0, CachedHashBytesLength);
+                Array.Clear(SCachedHashBytes, 0, CachedHashBytesLength);
                 int index = 0;
                 foreach (KeyValuePair<string, string[]> i in assetNameToDependencyAssetNames)
                 {

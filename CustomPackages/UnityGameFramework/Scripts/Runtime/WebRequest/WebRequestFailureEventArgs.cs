@@ -34,13 +34,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 获取 Web 请求失败事件编号。
         /// </summary>
-        public override int Id
-        {
-            get
-            {
-                return EventId;
-            }
-        }
+        public override int Id => EventId;
 
         /// <summary>
         /// 获取 Web 请求任务的序列编号。

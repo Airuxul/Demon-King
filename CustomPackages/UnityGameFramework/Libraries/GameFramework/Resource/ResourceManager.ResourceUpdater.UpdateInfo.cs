@@ -16,16 +16,16 @@ namespace GameFramework.Resource
             /// </summary>
             private sealed class UpdateInfo
             {
-                private readonly ResourceName m_ResourceName;
-                private readonly string m_FileSystemName;
-                private readonly LoadType m_LoadType;
-                private readonly int m_Length;
-                private readonly int m_HashCode;
-                private readonly int m_CompressedLength;
-                private readonly int m_CompressedHashCode;
-                private readonly string m_ResourcePath;
-                private bool m_Downloading;
-                private int m_RetryCount;
+                private readonly ResourceName _ResourceName;
+                private readonly string _FileSystemName;
+                private readonly LoadType _LoadType;
+                private readonly int _Length;
+                private readonly int _HashCode;
+                private readonly int _CompressedLength;
+                private readonly int _CompressedHashCode;
+                private readonly string _ResourcePath;
+                private bool _Downloading;
+                private int _RetryCount;
 
                 /// <summary>
                 /// 初始化资源更新信息的新实例。
@@ -40,16 +40,16 @@ namespace GameFramework.Resource
                 /// <param name="resourcePath">资源路径。</param>
                 public UpdateInfo(ResourceName resourceName, string fileSystemName, LoadType loadType, int length, int hashCode, int compressedLength, int compressedHashCode, string resourcePath)
                 {
-                    m_ResourceName = resourceName;
-                    m_FileSystemName = fileSystemName;
-                    m_LoadType = loadType;
-                    m_Length = length;
-                    m_HashCode = hashCode;
-                    m_CompressedLength = compressedLength;
-                    m_CompressedHashCode = compressedHashCode;
-                    m_ResourcePath = resourcePath;
-                    m_Downloading = false;
-                    m_RetryCount = 0;
+                    _ResourceName = resourceName;
+                    _FileSystemName = fileSystemName;
+                    _LoadType = loadType;
+                    _Length = length;
+                    _HashCode = hashCode;
+                    _CompressedLength = compressedLength;
+                    _CompressedHashCode = compressedHashCode;
+                    _ResourcePath = resourcePath;
+                    _Downloading = false;
+                    _RetryCount = 0;
                 }
 
                 /// <summary>
@@ -59,7 +59,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return m_ResourceName;
+                        return _ResourceName;
                     }
                 }
 
@@ -70,7 +70,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return !string.IsNullOrEmpty(m_FileSystemName);
+                        return !string.IsNullOrEmpty(_FileSystemName);
                     }
                 }
 
@@ -81,7 +81,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return m_FileSystemName;
+                        return _FileSystemName;
                     }
                 }
 
@@ -92,7 +92,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return m_LoadType;
+                        return _LoadType;
                     }
                 }
 
@@ -103,7 +103,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return m_Length;
+                        return _Length;
                     }
                 }
 
@@ -114,7 +114,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return m_HashCode;
+                        return _HashCode;
                     }
                 }
 
@@ -125,7 +125,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return m_CompressedLength;
+                        return _CompressedLength;
                     }
                 }
 
@@ -136,7 +136,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return m_CompressedHashCode;
+                        return _CompressedHashCode;
                     }
                 }
 
@@ -147,7 +147,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return m_ResourcePath;
+                        return _ResourcePath;
                     }
                 }
 
@@ -158,11 +158,11 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return m_Downloading;
+                        return _Downloading;
                     }
                     set
                     {
-                        m_Downloading = value;
+                        _Downloading = value;
                     }
                 }
 
@@ -173,11 +173,11 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return m_RetryCount;
+                        return _RetryCount;
                     }
                     set
                     {
-                        m_RetryCount = value;
+                        _RetryCount = value;
                     }
                 }
             }

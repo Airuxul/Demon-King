@@ -15,13 +15,13 @@ namespace UnityGameFramework.Editor.ResourceTools
     /// </summary>
     public sealed class Resource
     {
-        private readonly List<Asset> m_Assets;
-        private readonly List<string> m_ResourceGroups;
+        private readonly List<Asset> _Assets;
+        private readonly List<string> _ResourceGroups;
 
         private Resource(string name, string variant, string fileSystem, LoadType loadType, bool packed, string[] resourceGroups)
         {
-            m_Assets = new List<Asset>();
-            m_ResourceGroups = new List<string>();
+            _Assets = new List<Asset>();
+            _ResourceGroups = new List<string>();
 
             Name = name;
             Variant = variant;
@@ -95,12 +95,12 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         public Asset[] GetAssets()
         {
-            return m_Assets.ToArray();
+            return _Assets.ToArray();
         }
 
         public Asset GetFirstAsset()
         {
-            return m_Assets.Count > 0 ? m_Assets[0] : null;
+            return _Assets.Count > 0 ? _Assets[0] : null;
         }
 
         public void Rename(string name, string variant)
@@ -118,15 +118,15 @@ namespace UnityGameFramework.Editor.ResourceTools
 
             AssetType = isScene ? AssetType.Scene : AssetType.Asset;
             asset.Resource = this;
-            m_Assets.Add(asset);
-            m_Assets.Sort(AssetComparer);
+            _Assets.Add(asset);
+            _Assets.Sort(AssetComparer);
         }
 
         public void UnassignAsset(Asset asset)
         {
             asset.Resource = null;
-            m_Assets.Remove(asset);
-            if (m_Assets.Count <= 0)
+            _Assets.Remove(asset);
+            if (_Assets.Count <= 0)
             {
                 AssetType = AssetType.Unknown;
             }
@@ -134,7 +134,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         public string[] GetResourceGroups()
         {
-            return m_ResourceGroups.ToArray();
+            return _ResourceGroups.ToArray();
         }
 
         public bool HasResourceGroup(string resourceGroup)
@@ -144,7 +144,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 return false;
             }
 
-            return m_ResourceGroups.Contains(resourceGroup);
+            return _ResourceGroups.Contains(resourceGroup);
         }
 
         public void AddResourceGroup(string resourceGroup)
@@ -154,13 +154,13 @@ namespace UnityGameFramework.Editor.ResourceTools
                 return;
             }
 
-            if (m_ResourceGroups.Contains(resourceGroup))
+            if (_ResourceGroups.Contains(resourceGroup))
             {
                 return;
             }
 
-            m_ResourceGroups.Add(resourceGroup);
-            m_ResourceGroups.Sort();
+            _ResourceGroups.Add(resourceGroup);
+            _ResourceGroups.Sort();
         }
 
         public bool RemoveResourceGroup(string resourceGroup)
@@ -170,18 +170,18 @@ namespace UnityGameFramework.Editor.ResourceTools
                 return false;
             }
 
-            return m_ResourceGroups.Remove(resourceGroup);
+            return _ResourceGroups.Remove(resourceGroup);
         }
 
         public void Clear()
         {
-            foreach (Asset asset in m_Assets)
+            foreach (Asset asset in _Assets)
             {
                 asset.Resource = null;
             }
 
-            m_Assets.Clear();
-            m_ResourceGroups.Clear();
+            _Assets.Clear();
+            _ResourceGroups.Clear();
         }
 
         private int AssetComparer(Asset a, Asset b)

@@ -12,10 +12,10 @@ namespace GameFramework.Resource
     /// </summary>
     public sealed class LoadAssetCallbacks
     {
-        private readonly LoadAssetSuccessCallback m_LoadAssetSuccessCallback;
-        private readonly LoadAssetFailureCallback m_LoadAssetFailureCallback;
-        private readonly LoadAssetUpdateCallback m_LoadAssetUpdateCallback;
-        private readonly LoadAssetDependencyAssetCallback m_LoadAssetDependencyAssetCallback;
+        private readonly LoadAssetSuccessCallback _LoadAssetSuccessCallback;
+        private readonly LoadAssetFailureCallback _LoadAssetFailureCallback;
+        private readonly LoadAssetUpdateCallback _LoadAssetUpdateCallback;
+        private readonly LoadAssetDependencyAssetCallback _LoadAssetDependencyAssetCallback;
 
         /// <summary>
         /// 初始化加载资源回调函数集的新实例。
@@ -92,10 +92,10 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException("Load asset success callback is invalid.");
             }
 
-            m_LoadAssetSuccessCallback = loadAssetSuccessCallback;
-            m_LoadAssetFailureCallback = loadAssetFailureCallback;
-            m_LoadAssetUpdateCallback = loadAssetUpdateCallback;
-            m_LoadAssetDependencyAssetCallback = loadAssetDependencyAssetCallback;
+            _LoadAssetSuccessCallback = loadAssetSuccessCallback;
+            _LoadAssetFailureCallback = loadAssetFailureCallback;
+            _LoadAssetUpdateCallback = loadAssetUpdateCallback;
+            _LoadAssetDependencyAssetCallback = loadAssetDependencyAssetCallback;
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_LoadAssetSuccessCallback;
+                return _LoadAssetSuccessCallback;
             }
         }
 
@@ -116,7 +116,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_LoadAssetFailureCallback;
+                return _LoadAssetFailureCallback;
             }
         }
 
@@ -127,7 +127,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_LoadAssetUpdateCallback;
+                return _LoadAssetUpdateCallback;
             }
         }
 
@@ -138,7 +138,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_LoadAssetDependencyAssetCallback;
+                return _LoadAssetDependencyAssetCallback;
             }
         }
     }

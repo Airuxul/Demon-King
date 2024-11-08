@@ -16,25 +16,25 @@ namespace GameFramework.Network
     /// </summary>
     internal sealed partial class NetworkManager : GameFrameworkModule, INetworkManager
     {
-        private readonly Dictionary<string, NetworkChannelBase> m_NetworkChannels;
+        private readonly Dictionary<string, NetworkChannelBase> _NetworkChannels;
 
-        private EventHandler<NetworkConnectedEventArgs> m_NetworkConnectedEventHandler;
-        private EventHandler<NetworkClosedEventArgs> m_NetworkClosedEventHandler;
-        private EventHandler<NetworkMissHeartBeatEventArgs> m_NetworkMissHeartBeatEventHandler;
-        private EventHandler<NetworkErrorEventArgs> m_NetworkErrorEventHandler;
-        private EventHandler<NetworkCustomErrorEventArgs> m_NetworkCustomErrorEventHandler;
+        private EventHandler<NetworkConnectedEventArgs> _NetworkConnectedEventHandler;
+        private EventHandler<NetworkClosedEventArgs> _NetworkClosedEventHandler;
+        private EventHandler<NetworkMissHeartBeatEventArgs> _NetworkMissHeartBeatEventHandler;
+        private EventHandler<NetworkErrorEventArgs> _NetworkErrorEventHandler;
+        private EventHandler<NetworkCustomErrorEventArgs> _NetworkCustomErrorEventHandler;
 
         /// <summary>
         /// 初始化网络管理器的新实例。
         /// </summary>
         public NetworkManager()
         {
-            m_NetworkChannels = new Dictionary<string, NetworkChannelBase>(StringComparer.Ordinal);
-            m_NetworkConnectedEventHandler = null;
-            m_NetworkClosedEventHandler = null;
-            m_NetworkMissHeartBeatEventHandler = null;
-            m_NetworkErrorEventHandler = null;
-            m_NetworkCustomErrorEventHandler = null;
+            _NetworkChannels = new Dictionary<string, NetworkChannelBase>(StringComparer.Ordinal);
+            _NetworkConnectedEventHandler = null;
+            _NetworkClosedEventHandler = null;
+            _NetworkMissHeartBeatEventHandler = null;
+            _NetworkErrorEventHandler = null;
+            _NetworkCustomErrorEventHandler = null;
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace GameFramework.Network
         {
             get
             {
-                return m_NetworkChannels.Count;
+                return _NetworkChannels.Count;
             }
         }
 
@@ -55,11 +55,11 @@ namespace GameFramework.Network
         {
             add
             {
-                m_NetworkConnectedEventHandler += value;
+                _NetworkConnectedEventHandler += value;
             }
             remove
             {
-                m_NetworkConnectedEventHandler -= value;
+                _NetworkConnectedEventHandler -= value;
             }
         }
 
@@ -70,11 +70,11 @@ namespace GameFramework.Network
         {
             add
             {
-                m_NetworkClosedEventHandler += value;
+                _NetworkClosedEventHandler += value;
             }
             remove
             {
-                m_NetworkClosedEventHandler -= value;
+                _NetworkClosedEventHandler -= value;
             }
         }
 
@@ -85,11 +85,11 @@ namespace GameFramework.Network
         {
             add
             {
-                m_NetworkMissHeartBeatEventHandler += value;
+                _NetworkMissHeartBeatEventHandler += value;
             }
             remove
             {
-                m_NetworkMissHeartBeatEventHandler -= value;
+                _NetworkMissHeartBeatEventHandler -= value;
             }
         }
 
@@ -100,11 +100,11 @@ namespace GameFramework.Network
         {
             add
             {
-                m_NetworkErrorEventHandler += value;
+                _NetworkErrorEventHandler += value;
             }
             remove
             {
-                m_NetworkErrorEventHandler -= value;
+                _NetworkErrorEventHandler -= value;
             }
         }
 
@@ -115,11 +115,11 @@ namespace GameFramework.Network
         {
             add
             {
-                m_NetworkCustomErrorEventHandler += value;
+                _NetworkCustomErrorEventHandler += value;
             }
             remove
             {
-                m_NetworkCustomErrorEventHandler -= value;
+                _NetworkCustomErrorEventHandler -= value;
             }
         }
 
@@ -130,7 +130,7 @@ namespace GameFramework.Network
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
         internal override void Update(float elapseSeconds, float realElapseSeconds)
         {
-            foreach (KeyValuePair<string, NetworkChannelBase> networkChannel in m_NetworkChannels)
+            foreach (KeyValuePair<string, NetworkChannelBase> networkChannel in _NetworkChannels)
             {
                 networkChannel.Value.Update(elapseSeconds, realElapseSeconds);
             }
@@ -141,7 +141,7 @@ namespace GameFramework.Network
         /// </summary>
         internal override void Shutdown()
         {
-            foreach (KeyValuePair<string, NetworkChannelBase> networkChannel in m_NetworkChannels)
+            foreach (KeyValuePair<string, NetworkChannelBase> networkChannel in _NetworkChannels)
             {
                 NetworkChannelBase networkChannelBase = networkChannel.Value;
                 networkChannelBase.NetworkChannelConnected -= OnNetworkChannelConnected;
@@ -152,7 +152,7 @@ namespace GameFramework.Network
                 networkChannelBase.Shutdown();
             }
 
-            m_NetworkChannels.Clear();
+            _NetworkChannels.Clear();
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace GameFramework.Network
         /// <returns>是否存在网络频道。</returns>
         public bool HasNetworkChannel(string name)
         {
-            return m_NetworkChannels.ContainsKey(name ?? string.Empty);
+            return _NetworkChannels.ContainsKey(name ?? string.Empty);
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace GameFramework.Network
         public INetworkChannel GetNetworkChannel(string name)
         {
             NetworkChannelBase networkChannel = null;
-            if (m_NetworkChannels.TryGetValue(name ?? string.Empty, out networkChannel))
+            if (_NetworkChannels.TryGetValue(name ?? string.Empty, out networkChannel))
             {
                 return networkChannel;
             }
@@ -188,8 +188,8 @@ namespace GameFramework.Network
         public INetworkChannel[] GetAllNetworkChannels()
         {
             int index = 0;
-            INetworkChannel[] results = new INetworkChannel[m_NetworkChannels.Count];
-            foreach (KeyValuePair<string, NetworkChannelBase> networkChannel in m_NetworkChannels)
+            INetworkChannel[] results = new INetworkChannel[_NetworkChannels.Count];
+            foreach (KeyValuePair<string, NetworkChannelBase> networkChannel in _NetworkChannels)
             {
                 results[index++] = networkChannel.Value;
             }
@@ -209,7 +209,7 @@ namespace GameFramework.Network
             }
 
             results.Clear();
-            foreach (KeyValuePair<string, NetworkChannelBase> networkChannel in m_NetworkChannels)
+            foreach (KeyValuePair<string, NetworkChannelBase> networkChannel in _NetworkChannels)
             {
                 results.Add(networkChannel.Value);
             }
@@ -259,7 +259,7 @@ namespace GameFramework.Network
             networkChannel.NetworkChannelMissHeartBeat += OnNetworkChannelMissHeartBeat;
             networkChannel.NetworkChannelError += OnNetworkChannelError;
             networkChannel.NetworkChannelCustomError += OnNetworkChannelCustomError;
-            m_NetworkChannels.Add(name, networkChannel);
+            _NetworkChannels.Add(name, networkChannel);
             return networkChannel;
         }
 
@@ -271,7 +271,7 @@ namespace GameFramework.Network
         public bool DestroyNetworkChannel(string name)
         {
             NetworkChannelBase networkChannel = null;
-            if (m_NetworkChannels.TryGetValue(name ?? string.Empty, out networkChannel))
+            if (_NetworkChannels.TryGetValue(name ?? string.Empty, out networkChannel))
             {
                 networkChannel.NetworkChannelConnected -= OnNetworkChannelConnected;
                 networkChannel.NetworkChannelClosed -= OnNetworkChannelClosed;
@@ -279,7 +279,7 @@ namespace GameFramework.Network
                 networkChannel.NetworkChannelError -= OnNetworkChannelError;
                 networkChannel.NetworkChannelCustomError -= OnNetworkChannelCustomError;
                 networkChannel.Shutdown();
-                return m_NetworkChannels.Remove(name);
+                return _NetworkChannels.Remove(name);
             }
 
             return false;
@@ -287,12 +287,12 @@ namespace GameFramework.Network
 
         private void OnNetworkChannelConnected(NetworkChannelBase networkChannel, object userData)
         {
-            if (m_NetworkConnectedEventHandler != null)
+            if (_NetworkConnectedEventHandler != null)
             {
-                lock (m_NetworkConnectedEventHandler)
+                lock (_NetworkConnectedEventHandler)
                 {
                     NetworkConnectedEventArgs networkConnectedEventArgs = NetworkConnectedEventArgs.Create(networkChannel, userData);
-                    m_NetworkConnectedEventHandler(this, networkConnectedEventArgs);
+                    _NetworkConnectedEventHandler(this, networkConnectedEventArgs);
                     ReferencePool.Release(networkConnectedEventArgs);
                 }
             }
@@ -300,12 +300,12 @@ namespace GameFramework.Network
 
         private void OnNetworkChannelClosed(NetworkChannelBase networkChannel)
         {
-            if (m_NetworkClosedEventHandler != null)
+            if (_NetworkClosedEventHandler != null)
             {
-                lock (m_NetworkClosedEventHandler)
+                lock (_NetworkClosedEventHandler)
                 {
                     NetworkClosedEventArgs networkClosedEventArgs = NetworkClosedEventArgs.Create(networkChannel);
-                    m_NetworkClosedEventHandler(this, networkClosedEventArgs);
+                    _NetworkClosedEventHandler(this, networkClosedEventArgs);
                     ReferencePool.Release(networkClosedEventArgs);
                 }
             }
@@ -313,12 +313,12 @@ namespace GameFramework.Network
 
         private void OnNetworkChannelMissHeartBeat(NetworkChannelBase networkChannel, int missHeartBeatCount)
         {
-            if (m_NetworkMissHeartBeatEventHandler != null)
+            if (_NetworkMissHeartBeatEventHandler != null)
             {
-                lock (m_NetworkMissHeartBeatEventHandler)
+                lock (_NetworkMissHeartBeatEventHandler)
                 {
                     NetworkMissHeartBeatEventArgs networkMissHeartBeatEventArgs = NetworkMissHeartBeatEventArgs.Create(networkChannel, missHeartBeatCount);
-                    m_NetworkMissHeartBeatEventHandler(this, networkMissHeartBeatEventArgs);
+                    _NetworkMissHeartBeatEventHandler(this, networkMissHeartBeatEventArgs);
                     ReferencePool.Release(networkMissHeartBeatEventArgs);
                 }
             }
@@ -326,12 +326,12 @@ namespace GameFramework.Network
 
         private void OnNetworkChannelError(NetworkChannelBase networkChannel, NetworkErrorCode errorCode, SocketError socketErrorCode, string errorMessage)
         {
-            if (m_NetworkErrorEventHandler != null)
+            if (_NetworkErrorEventHandler != null)
             {
-                lock (m_NetworkErrorEventHandler)
+                lock (_NetworkErrorEventHandler)
                 {
                     NetworkErrorEventArgs networkErrorEventArgs = NetworkErrorEventArgs.Create(networkChannel, errorCode, socketErrorCode, errorMessage);
-                    m_NetworkErrorEventHandler(this, networkErrorEventArgs);
+                    _NetworkErrorEventHandler(this, networkErrorEventArgs);
                     ReferencePool.Release(networkErrorEventArgs);
                 }
             }
@@ -339,12 +339,12 @@ namespace GameFramework.Network
 
         private void OnNetworkChannelCustomError(NetworkChannelBase networkChannel, object customErrorData)
         {
-            if (m_NetworkCustomErrorEventHandler != null)
+            if (_NetworkCustomErrorEventHandler != null)
             {
-                lock (m_NetworkCustomErrorEventHandler)
+                lock (_NetworkCustomErrorEventHandler)
                 {
                     NetworkCustomErrorEventArgs networkCustomErrorEventArgs = NetworkCustomErrorEventArgs.Create(networkChannel, customErrorData);
-                    m_NetworkCustomErrorEventHandler(this, networkCustomErrorEventArgs);
+                    _NetworkCustomErrorEventHandler(this, networkCustomErrorEventArgs);
                     ReferencePool.Release(networkCustomErrorEventArgs);
                 }
             }

@@ -108,7 +108,7 @@ namespace UnityGameFramework.Editor
                 return null;
             }
 
-            FieldInfo activeTextFieldInfo = consoleWindowType.GetField("m_ActiveText", BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo activeTextFieldInfo = consoleWindowType.GetField("_ActiveText", BindingFlags.Instance | BindingFlags.NonPublic);
             if (activeTextFieldInfo == null)
             {
                 return null;

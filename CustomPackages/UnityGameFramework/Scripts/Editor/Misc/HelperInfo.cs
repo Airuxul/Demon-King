@@ -17,43 +17,43 @@ namespace UnityGameFramework.Editor
     {
         private const string CustomOptionName = "<Custom>";
 
-        private readonly string m_Name;
+        private readonly string _Name;
 
-        private SerializedProperty m_HelperTypeName;
-        private SerializedProperty m_CustomHelper;
-        private string[] m_HelperTypeNames;
-        private int m_HelperTypeNameIndex;
+        private SerializedProperty _HelperTypeName;
+        private SerializedProperty _CustomHelper;
+        private string[] _HelperTypeNames;
+        private int _HelperTypeNameIndex;
 
         public HelperInfo(string name)
         {
-            m_Name = name;
+            _Name = name;
 
-            m_HelperTypeName = null;
-            m_CustomHelper = null;
-            m_HelperTypeNames = null;
-            m_HelperTypeNameIndex = 0;
+            _HelperTypeName = null;
+            _CustomHelper = null;
+            _HelperTypeNames = null;
+            _HelperTypeNameIndex = 0;
         }
 
         public void Init(SerializedObject serializedObject)
         {
-            m_HelperTypeName = serializedObject.FindProperty(Utility.Text.Format("m_{0}HelperTypeName", m_Name));
-            m_CustomHelper = serializedObject.FindProperty(Utility.Text.Format("m_Custom{0}Helper", m_Name));
+            _HelperTypeName = serializedObject.FindProperty(Utility.Text.Format("_{0}HelperTypeName", _Name));
+            _CustomHelper = serializedObject.FindProperty(Utility.Text.Format("_Custom{0}Helper", _Name));
         }
 
         public void Draw()
         {
-            string displayName = FieldNameForDisplay(m_Name);
-            int selectedIndex = EditorGUILayout.Popup(Utility.Text.Format("{0} Helper", displayName), m_HelperTypeNameIndex, m_HelperTypeNames);
-            if (selectedIndex != m_HelperTypeNameIndex)
+            string displayName = FieldNameForDisplay(_Name);
+            int selectedIndex = EditorGUILayout.Popup(Utility.Text.Format("{0} Helper", displayName), _HelperTypeNameIndex, _HelperTypeNames);
+            if (selectedIndex != _HelperTypeNameIndex)
             {
-                m_HelperTypeNameIndex = selectedIndex;
-                m_HelperTypeName.stringValue = selectedIndex <= 0 ? null : m_HelperTypeNames[selectedIndex];
+                _HelperTypeNameIndex = selectedIndex;
+                _HelperTypeName.stringValue = selectedIndex <= 0 ? null : _HelperTypeNames[selectedIndex];
             }
 
-            if (m_HelperTypeNameIndex <= 0)
+            if (_HelperTypeNameIndex <= 0)
             {
-                EditorGUILayout.PropertyField(m_CustomHelper);
-                if (m_CustomHelper.objectReferenceValue == null)
+                EditorGUILayout.PropertyField(_CustomHelper);
+                if (_CustomHelper.objectReferenceValue == null)
                 {
                     EditorGUILayout.HelpBox(Utility.Text.Format("You must set Custom {0} Helper.", displayName), MessageType.Error);
                 }
@@ -68,16 +68,16 @@ namespace UnityGameFramework.Editor
             };
 
             helperTypeNameList.AddRange(Type.GetRuntimeTypeNames(typeof(T)));
-            m_HelperTypeNames = helperTypeNameList.ToArray();
+            _HelperTypeNames = helperTypeNameList.ToArray();
 
-            m_HelperTypeNameIndex = 0;
-            if (!string.IsNullOrEmpty(m_HelperTypeName.stringValue))
+            _HelperTypeNameIndex = 0;
+            if (!string.IsNullOrEmpty(_HelperTypeName.stringValue))
             {
-                m_HelperTypeNameIndex = helperTypeNameList.IndexOf(m_HelperTypeName.stringValue);
-                if (m_HelperTypeNameIndex <= 0)
+                _HelperTypeNameIndex = helperTypeNameList.IndexOf(_HelperTypeName.stringValue);
+                if (_HelperTypeNameIndex <= 0)
                 {
-                    m_HelperTypeNameIndex = 0;
-                    m_HelperTypeName.stringValue = null;
+                    _HelperTypeNameIndex = 0;
+                    _HelperTypeName.stringValue = null;
                 }
             }
         }
@@ -89,7 +89,7 @@ namespace UnityGameFramework.Editor
                 return string.Empty;
             }
 
-            string str = Regex.Replace(fieldName, @"^m_", string.Empty);
+            string str = Regex.Replace(fieldName, @"^_", string.Empty);
             str = Regex.Replace(str, @"((?<=[a-z])[A-Z]|[A-Z](?=[a-z]))", @" $1").TrimStart();
             return str;
         }

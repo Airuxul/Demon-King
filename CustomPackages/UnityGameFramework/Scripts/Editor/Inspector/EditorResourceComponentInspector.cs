@@ -13,10 +13,10 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(EditorResourceComponent))]
     internal sealed class EditorResourceComponentInspector : GameFrameworkInspector
     {
-        private SerializedProperty m_EnableCachedAssets = null;
-        private SerializedProperty m_LoadAssetCountPerFrame = null;
-        private SerializedProperty m_MinLoadAssetRandomDelaySeconds = null;
-        private SerializedProperty m_MaxLoadAssetRandomDelaySeconds = null;
+        private SerializedProperty _EnableCachedAssets = null;
+        private SerializedProperty _LoadAssetCountPerFrame = null;
+        private SerializedProperty _MinLoadAssetRandomDelaySeconds = null;
+        private SerializedProperty _MaxLoadAssetRandomDelaySeconds = null;
 
         public override void OnInspectorGUI()
         {
@@ -31,10 +31,10 @@ namespace UnityGameFramework.Editor
                 EditorGUILayout.LabelField("Load Waiting Asset Count", t.LoadWaitingAssetCount.ToString());
             }
 
-            EditorGUILayout.PropertyField(m_EnableCachedAssets);
-            EditorGUILayout.PropertyField(m_LoadAssetCountPerFrame);
-            EditorGUILayout.PropertyField(m_MinLoadAssetRandomDelaySeconds);
-            EditorGUILayout.PropertyField(m_MaxLoadAssetRandomDelaySeconds);
+            EditorGUILayout.PropertyField(_EnableCachedAssets);
+            EditorGUILayout.PropertyField(_LoadAssetCountPerFrame);
+            EditorGUILayout.PropertyField(_MinLoadAssetRandomDelaySeconds);
+            EditorGUILayout.PropertyField(_MaxLoadAssetRandomDelaySeconds);
 
             serializedObject.ApplyModifiedProperties();
 
@@ -43,10 +43,10 @@ namespace UnityGameFramework.Editor
 
         private void OnEnable()
         {
-            m_EnableCachedAssets = serializedObject.FindProperty("m_EnableCachedAssets");
-            m_LoadAssetCountPerFrame = serializedObject.FindProperty("m_LoadAssetCountPerFrame");
-            m_MinLoadAssetRandomDelaySeconds = serializedObject.FindProperty("m_MinLoadAssetRandomDelaySeconds");
-            m_MaxLoadAssetRandomDelaySeconds = serializedObject.FindProperty("m_MaxLoadAssetRandomDelaySeconds");
+            _EnableCachedAssets = serializedObject.FindProperty("_EnableCachedAssets");
+            _LoadAssetCountPerFrame = serializedObject.FindProperty("_LoadAssetCountPerFrame");
+            _MinLoadAssetRandomDelaySeconds = serializedObject.FindProperty("_MinLoadAssetRandomDelaySeconds");
+            _MaxLoadAssetRandomDelaySeconds = serializedObject.FindProperty("_MaxLoadAssetRandomDelaySeconds");
         }
     }
 }

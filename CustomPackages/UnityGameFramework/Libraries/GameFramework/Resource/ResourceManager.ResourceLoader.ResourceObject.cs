@@ -19,15 +19,15 @@ namespace GameFramework.Resource
             /// </summary>
             private sealed class ResourceObject : ObjectBase
             {
-                private List<object> m_DependencyResources;
-                private IResourceHelper m_ResourceHelper;
-                private ResourceLoader m_ResourceLoader;
+                private List<object> _DependencyResources;
+                private IResourceHelper _ResourceHelper;
+                private ResourceLoader _ResourceLoader;
 
                 public ResourceObject()
                 {
-                    m_DependencyResources = new List<object>();
-                    m_ResourceHelper = null;
-                    m_ResourceLoader = null;
+                    _DependencyResources = new List<object>();
+                    _ResourceHelper = null;
+                    _ResourceLoader = null;
                 }
 
                 public override bool CustomCanReleaseFlag
@@ -35,7 +35,7 @@ namespace GameFramework.Resource
                     get
                     {
                         int targetReferenceCount = 0;
-                        m_ResourceLoader.m_ResourceDependencyCount.TryGetValue(Target, out targetReferenceCount);
+                        _ResourceLoader._ResourceDependencyCount.TryGetValue(Target, out targetReferenceCount);
                         return base.CustomCanReleaseFlag && targetReferenceCount <= 0;
                     }
                 }
@@ -54,17 +54,17 @@ namespace GameFramework.Resource
 
                     ResourceObject resourceObject = ReferencePool.Acquire<ResourceObject>();
                     resourceObject.Initialize(name, target);
-                    resourceObject.m_ResourceHelper = resourceHelper;
-                    resourceObject.m_ResourceLoader = resourceLoader;
+                    resourceObject._ResourceHelper = resourceHelper;
+                    resourceObject._ResourceLoader = resourceLoader;
                     return resourceObject;
                 }
 
                 public override void Clear()
                 {
                     base.Clear();
-                    m_DependencyResources.Clear();
-                    m_ResourceHelper = null;
-                    m_ResourceLoader = null;
+                    _DependencyResources.Clear();
+                    _ResourceHelper = null;
+                    _ResourceLoader = null;
                 }
 
                 public void AddDependencyResource(object dependencyResource)
@@ -74,21 +74,21 @@ namespace GameFramework.Resource
                         return;
                     }
 
-                    if (m_DependencyResources.Contains(dependencyResource))
+                    if (_DependencyResources.Contains(dependencyResource))
                     {
                         return;
                     }
 
-                    m_DependencyResources.Add(dependencyResource);
+                    _DependencyResources.Add(dependencyResource);
 
                     int referenceCount = 0;
-                    if (m_ResourceLoader.m_ResourceDependencyCount.TryGetValue(dependencyResource, out referenceCount))
+                    if (_ResourceLoader._ResourceDependencyCount.TryGetValue(dependencyResource, out referenceCount))
                     {
-                        m_ResourceLoader.m_ResourceDependencyCount[dependencyResource] = referenceCount + 1;
+                        _ResourceLoader._ResourceDependencyCount[dependencyResource] = referenceCount + 1;
                     }
                     else
                     {
-                        m_ResourceLoader.m_ResourceDependencyCount.Add(dependencyResource, 1);
+                        _ResourceLoader._ResourceDependencyCount.Add(dependencyResource, 1);
                     }
                 }
 
@@ -97,17 +97,17 @@ namespace GameFramework.Resource
                     if (!isShutdown)
                     {
                         int targetReferenceCount = 0;
-                        if (m_ResourceLoader.m_ResourceDependencyCount.TryGetValue(Target, out targetReferenceCount) && targetReferenceCount > 0)
+                        if (_ResourceLoader._ResourceDependencyCount.TryGetValue(Target, out targetReferenceCount) && targetReferenceCount > 0)
                         {
                             throw new GameFrameworkException(Utility.Text.Format("Resource target '{0}' reference count is '{1}' larger than 0.", Name, targetReferenceCount));
                         }
 
-                        foreach (object dependencyResource in m_DependencyResources)
+                        foreach (object dependencyResource in _DependencyResources)
                         {
                             int referenceCount = 0;
-                            if (m_ResourceLoader.m_ResourceDependencyCount.TryGetValue(dependencyResource, out referenceCount))
+                            if (_ResourceLoader._ResourceDependencyCount.TryGetValue(dependencyResource, out referenceCount))
                             {
-                                m_ResourceLoader.m_ResourceDependencyCount[dependencyResource] = referenceCount - 1;
+                                _ResourceLoader._ResourceDependencyCount[dependencyResource] = referenceCount - 1;
                             }
                             else
                             {
@@ -116,8 +116,8 @@ namespace GameFramework.Resource
                         }
                     }
 
-                    m_ResourceLoader.m_ResourceDependencyCount.Remove(Target);
-                    m_ResourceHelper.Release(Target);
+                    _ResourceLoader._ResourceDependencyCount.Remove(Target);
+                    _ResourceHelper.Release(Target);
                 }
             }
         }

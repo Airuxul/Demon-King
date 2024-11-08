@@ -12,7 +12,7 @@ namespace GameFramework.WebRequest
     /// </summary>
     public sealed class WebRequestSuccessEventArgs : GameFrameworkEventArgs
     {
-        private byte[] m_WebResponseBytes;
+        private byte[] _WebResponseBytes;
 
         /// <summary>
         /// 初始化 Web 请求成功事件的新实例。
@@ -21,7 +21,7 @@ namespace GameFramework.WebRequest
         {
             SerialId = 0;
             WebRequestUri = null;
-            m_WebResponseBytes = null;
+            _WebResponseBytes = null;
             UserData = null;
         }
 
@@ -65,7 +65,7 @@ namespace GameFramework.WebRequest
             WebRequestSuccessEventArgs webRequestSuccessEventArgs = ReferencePool.Acquire<WebRequestSuccessEventArgs>();
             webRequestSuccessEventArgs.SerialId = serialId;
             webRequestSuccessEventArgs.WebRequestUri = webRequestUri;
-            webRequestSuccessEventArgs.m_WebResponseBytes = webResponseBytes;
+            webRequestSuccessEventArgs._WebResponseBytes = webResponseBytes;
             webRequestSuccessEventArgs.UserData = userData;
             return webRequestSuccessEventArgs;
         }
@@ -77,7 +77,7 @@ namespace GameFramework.WebRequest
         {
             SerialId = 0;
             WebRequestUri = null;
-            m_WebResponseBytes = null;
+            _WebResponseBytes = null;
             UserData = null;
         }
 
@@ -87,7 +87,7 @@ namespace GameFramework.WebRequest
         /// <returns>Web 响应的数据流。</returns>
         public byte[] GetWebResponseBytes()
         {
-            return m_WebResponseBytes;
+            return _WebResponseBytes;
         }
     }
 }

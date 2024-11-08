@@ -11,22 +11,22 @@ namespace UnityGameFramework.Editor.ResourceTools
 {
     public sealed class DependencyData
     {
-        private List<Resource> m_DependencyResources;
-        private List<Asset> m_DependencyAssets;
-        private List<string> m_ScatteredDependencyAssetNames;
+        private List<Resource> _DependencyResources;
+        private List<Asset> _DependencyAssets;
+        private List<string> _ScatteredDependencyAssetNames;
 
         public DependencyData()
         {
-            m_DependencyResources = new List<Resource>();
-            m_DependencyAssets = new List<Asset>();
-            m_ScatteredDependencyAssetNames = new List<string>();
+            _DependencyResources = new List<Resource>();
+            _DependencyAssets = new List<Asset>();
+            _ScatteredDependencyAssetNames = new List<string>();
         }
 
         public int DependencyResourceCount
         {
             get
             {
-                return m_DependencyResources.Count;
+                return _DependencyResources.Count;
             }
         }
 
@@ -34,7 +34,7 @@ namespace UnityGameFramework.Editor.ResourceTools
         {
             get
             {
-                return m_DependencyAssets.Count;
+                return _DependencyAssets.Count;
             }
         }
 
@@ -42,45 +42,45 @@ namespace UnityGameFramework.Editor.ResourceTools
         {
             get
             {
-                return m_ScatteredDependencyAssetNames.Count;
+                return _ScatteredDependencyAssetNames.Count;
             }
         }
 
         public void AddDependencyAsset(Asset asset)
         {
-            if (!m_DependencyResources.Contains(asset.Resource))
+            if (!_DependencyResources.Contains(asset.Resource))
             {
-                m_DependencyResources.Add(asset.Resource);
+                _DependencyResources.Add(asset.Resource);
             }
 
-            m_DependencyAssets.Add(asset);
+            _DependencyAssets.Add(asset);
         }
 
         public void AddScatteredDependencyAsset(string dependencyAssetName)
         {
-            m_ScatteredDependencyAssetNames.Add(dependencyAssetName);
+            _ScatteredDependencyAssetNames.Add(dependencyAssetName);
         }
 
         public Resource[] GetDependencyResources()
         {
-            return m_DependencyResources.ToArray();
+            return _DependencyResources.ToArray();
         }
 
         public Asset[] GetDependencyAssets()
         {
-            return m_DependencyAssets.ToArray();
+            return _DependencyAssets.ToArray();
         }
 
         public string[] GetScatteredDependencyAssetNames()
         {
-            return m_ScatteredDependencyAssetNames.ToArray();
+            return _ScatteredDependencyAssetNames.ToArray();
         }
 
         public void RefreshData()
         {
-            m_DependencyResources.Sort(DependencyResourcesComparer);
-            m_DependencyAssets.Sort(DependencyAssetsComparer);
-            m_ScatteredDependencyAssetNames.Sort();
+            _DependencyResources.Sort(DependencyResourcesComparer);
+            _DependencyAssets.Sort(DependencyAssetsComparer);
+            _ScatteredDependencyAssetNames.Sort();
         }
 
         private int DependencyResourcesComparer(Resource a, Resource b)

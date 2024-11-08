@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
         private const int StringBuilderCapacity = 1024;
 
         [ThreadStatic]
-        private static StringBuilder s_CachedStringBuilder = null;
+        private static StringBuilder _sCachedStringBuilder = null;
 
         /// <summary>
         /// 获取格式化字符串。
@@ -36,9 +36,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -58,9 +58,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -82,9 +82,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2, arg3);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2, arg3);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -108,9 +108,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -136,9 +136,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -166,9 +166,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -198,9 +198,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -232,9 +232,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -268,9 +268,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -306,9 +306,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -346,9 +346,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -388,9 +388,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -432,9 +432,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -478,9 +478,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -526,9 +526,9 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
+            return _sCachedStringBuilder.ToString();
         }
 
         /// <summary>
@@ -576,16 +576,16 @@ namespace UnityGameFramework.Runtime
             }
 
             CheckCachedStringBuilder();
-            s_CachedStringBuilder.Length = 0;
-            s_CachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
-            return s_CachedStringBuilder.ToString();
+            _sCachedStringBuilder.Length = 0;
+            _sCachedStringBuilder.AppendFormat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
+            return _sCachedStringBuilder.ToString();
         }
 
         private static void CheckCachedStringBuilder()
         {
-            if (s_CachedStringBuilder == null)
+            if (_sCachedStringBuilder == null)
             {
-                s_CachedStringBuilder = new StringBuilder(StringBuilderCapacity);
+                _sCachedStringBuilder = new StringBuilder(StringBuilderCapacity);
             }
         }
     }

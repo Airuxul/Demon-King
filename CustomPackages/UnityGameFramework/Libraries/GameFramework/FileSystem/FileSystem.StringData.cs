@@ -20,27 +20,27 @@ namespace GameFramework.FileSystem
         {
             private static readonly byte[] s_CachedBytes = new byte[byte.MaxValue + 1];
 
-            private readonly byte m_Length;
+            private readonly byte _Length;
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = byte.MaxValue)]
-            private readonly byte[] m_Bytes;
+            private readonly byte[] _Bytes;
 
             public StringData(byte length, byte[] bytes)
             {
-                m_Length = length;
-                m_Bytes = bytes;
+                _Length = length;
+                _Bytes = bytes;
             }
 
             public string GetString(byte[] encryptBytes)
             {
-                if (m_Length <= 0)
+                if (_Length <= 0)
                 {
                     return null;
                 }
 
-                Array.Copy(m_Bytes, 0, s_CachedBytes, 0, m_Length);
-                Utility.Encryption.GetSelfXorBytes(s_CachedBytes, 0, m_Length, encryptBytes);
-                return Utility.Converter.GetString(s_CachedBytes, 0, m_Length);
+                Array.Copy(_Bytes, 0, s_CachedBytes, 0, _Length);
+                Utility.Encryption.GetSelfXorBytes(s_CachedBytes, 0, _Length, encryptBytes);
+                return Utility.Converter.GetString(s_CachedBytes, 0, _Length);
             }
 
             public StringData SetString(string value, byte[] encryptBytes)
@@ -57,13 +57,13 @@ namespace GameFramework.FileSystem
                 }
 
                 Utility.Encryption.GetSelfXorBytes(s_CachedBytes, encryptBytes);
-                Array.Copy(s_CachedBytes, 0, m_Bytes, 0, length);
-                return new StringData((byte)length, m_Bytes);
+                Array.Copy(s_CachedBytes, 0, _Bytes, 0, length);
+                return new StringData((byte)length, _Bytes);
             }
 
             public StringData Clear()
             {
-                return new StringData(0, m_Bytes);
+                return new StringData(0, _Bytes);
             }
         }
     }

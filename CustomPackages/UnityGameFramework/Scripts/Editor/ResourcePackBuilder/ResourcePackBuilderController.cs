@@ -25,29 +25,29 @@ namespace UnityGameFramework.Editor.ResourceTools
         private static readonly string[] EmptyStringArray = new string[0];
         private static readonly UpdatableVersionList.Resource[] EmptyResourceArray = new UpdatableVersionList.Resource[0];
 
-        private readonly string m_ConfigurationPath;
-        private readonly List<string> m_CompressionHelperTypeNames;
-        private readonly UpdatableVersionListSerializer m_UpdatableVersionListSerializer;
-        private readonly ResourcePackVersionListSerializer m_ResourcePackVersionListSerializer;
+        private readonly string _ConfigurationPath;
+        private readonly List<string> _CompressionHelperTypeNames;
+        private readonly UpdatableVersionListSerializer _UpdatableVersionListSerializer;
+        private readonly ResourcePackVersionListSerializer _ResourcePackVersionListSerializer;
 
         public ResourcePackBuilderController()
         {
-            m_ConfigurationPath = Type.GetConfigurationPath<ResourceBuilderConfigPathAttribute>() ?? Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "GameFramework/Configs/ResourceBuilder.xml"));
+            _ConfigurationPath = Type.GetConfigurationPath<ResourceBuilderConfigPathAttribute>() ?? Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "GameFramework/Configs/ResourceBuilder.xml"));
 
-            m_UpdatableVersionListSerializer = new UpdatableVersionListSerializer();
-            m_UpdatableVersionListSerializer.RegisterDeserializeCallback(0, BuiltinVersionListSerializer.UpdatableVersionListDeserializeCallback_V0);
-            m_UpdatableVersionListSerializer.RegisterDeserializeCallback(1, BuiltinVersionListSerializer.UpdatableVersionListDeserializeCallback_V1);
-            m_UpdatableVersionListSerializer.RegisterDeserializeCallback(2, BuiltinVersionListSerializer.UpdatableVersionListDeserializeCallback_V2);
+            _UpdatableVersionListSerializer = new UpdatableVersionListSerializer();
+            _UpdatableVersionListSerializer.RegisterDeserializeCallback(0, BuiltinVersionListSerializer.UpdatableVersionListDeserializeCallback_V0);
+            _UpdatableVersionListSerializer.RegisterDeserializeCallback(1, BuiltinVersionListSerializer.UpdatableVersionListDeserializeCallback_V1);
+            _UpdatableVersionListSerializer.RegisterDeserializeCallback(2, BuiltinVersionListSerializer.UpdatableVersionListDeserializeCallback_V2);
 
-            m_ResourcePackVersionListSerializer = new ResourcePackVersionListSerializer();
-            m_ResourcePackVersionListSerializer.RegisterSerializeCallback(0, BuiltinVersionListSerializer.ResourcePackVersionListSerializeCallback_V0);
+            _ResourcePackVersionListSerializer = new ResourcePackVersionListSerializer();
+            _ResourcePackVersionListSerializer.RegisterSerializeCallback(0, BuiltinVersionListSerializer.ResourcePackVersionListSerializeCallback_V0);
 
-            m_CompressionHelperTypeNames = new List<string>
+            _CompressionHelperTypeNames = new List<string>
             {
                 NoneOptionName
             };
 
-            m_CompressionHelperTypeNames.AddRange(Type.GetRuntimeOrEditorTypeNames(typeof(Utility.Compression.ICompressionHelper)));
+            _CompressionHelperTypeNames.AddRange(Type.GetRuntimeOrEditorTypeNames(typeof(Utility.Compression.ICompressionHelper)));
 
             Platform = Platform.Windows;
             CompressionHelperTypeName = string.Empty;
@@ -208,7 +208,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         public bool Load()
         {
-            if (!File.Exists(m_ConfigurationPath))
+            if (!File.Exists(_ConfigurationPath))
             {
                 return false;
             }
@@ -216,7 +216,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             try
             {
                 XmlDocument xmlDocument = new XmlDocument();
-                xmlDocument.Load(m_ConfigurationPath);
+                xmlDocument.Load(_ConfigurationPath);
                 XmlNode xmlRoot = xmlDocument.SelectSingleNode("UnityGameFramework");
                 XmlNode xmlEditor = xmlRoot.SelectSingleNode("ResourceBuilder");
                 XmlNode xmlSettings = xmlEditor.SelectSingleNode("Settings");
@@ -250,7 +250,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         public string[] GetCompressionHelperTypeNames()
         {
-            return m_CompressionHelperTypeNames.ToArray();
+            return _CompressionHelperTypeNames.ToArray();
         }
 
         public string[] GetVersionNames()
@@ -318,7 +318,7 @@ namespace UnityGameFramework.Editor.ResourceTools
         public bool RefreshCompressionHelper()
         {
             bool retVal = false;
-            if (!string.IsNullOrEmpty(CompressionHelperTypeName) && m_CompressionHelperTypeNames.Contains(CompressionHelperTypeName))
+            if (!string.IsNullOrEmpty(CompressionHelperTypeName) && _CompressionHelperTypeNames.Contains(CompressionHelperTypeName))
             {
                 System.Type compressionHelperType = Utility.Assembly.GetType(CompressionHelperTypeName);
                 if (compressionHelperType != null)
@@ -410,7 +410,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                     sourceVersionListBytes = Utility.Compression.Decompress(sourceVersionListBytes);
                     using (Stream stream = new MemoryStream(sourceVersionListBytes))
                     {
-                        sourceUpdatableVersionList = m_UpdatableVersionListSerializer.Deserialize(stream);
+                        sourceUpdatableVersionList = _UpdatableVersionListSerializer.Deserialize(stream);
                     }
                 }
 
@@ -421,7 +421,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 targetVersionListBytes = Utility.Compression.Decompress(targetVersionListBytes);
                 using (Stream stream = new MemoryStream(targetVersionListBytes))
                 {
-                    targetUpdatableVersionList = m_UpdatableVersionListSerializer.Deserialize(stream);
+                    targetUpdatableVersionList = _UpdatableVersionListSerializer.Deserialize(stream);
                 }
 
                 List<ResourcePackVersionList.Resource> resources = new List<ResourcePackVersionList.Resource>();
@@ -456,7 +456,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 ResourcePackVersionList.Resource[] resourceArray = resources.ToArray();
                 using (FileStream fileStream = new FileStream(defaultResourcePackName, FileMode.Create, FileAccess.Write))
                 {
-                    if (!m_ResourcePackVersionListSerializer.Serialize(fileStream, new ResourcePackVersionList(0, 0L, 0, resourceArray)))
+                    if (!_ResourcePackVersionListSerializer.Serialize(fileStream, new ResourcePackVersionList(0, 0L, 0, resourceArray)))
                     {
                         return false;
                     }
@@ -501,7 +501,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                     hashCode = Utility.Verifier.GetCrc32(fileStream);
 
                     fileStream.Position = 0L;
-                    if (!m_ResourcePackVersionListSerializer.Serialize(fileStream, new ResourcePackVersionList(position, offset, hashCode, resourceArray)))
+                    if (!_ResourcePackVersionListSerializer.Serialize(fileStream, new ResourcePackVersionList(position, offset, hashCode, resourceArray)))
                     {
                         return false;
                     }

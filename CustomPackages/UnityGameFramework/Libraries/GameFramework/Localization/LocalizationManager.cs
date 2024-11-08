@@ -16,20 +16,20 @@ namespace GameFramework.Localization
     /// </summary>
     internal sealed partial class LocalizationManager : GameFrameworkModule, ILocalizationManager
     {
-        private readonly Dictionary<string, string> m_Dictionary;
-        private readonly DataProvider<ILocalizationManager> m_DataProvider;
-        private ILocalizationHelper m_LocalizationHelper;
-        private Language m_Language;
+        private readonly Dictionary<string, string> _Dictionary;
+        private readonly DataProvider<ILocalizationManager> _DataProvider;
+        private ILocalizationHelper _LocalizationHelper;
+        private Language _Language;
 
         /// <summary>
         /// 初始化本地化管理器的新实例。
         /// </summary>
         public LocalizationManager()
         {
-            m_Dictionary = new Dictionary<string, string>(StringComparer.Ordinal);
-            m_DataProvider = new DataProvider<ILocalizationManager>(this);
-            m_LocalizationHelper = null;
-            m_Language = Language.Unspecified;
+            _Dictionary = new Dictionary<string, string>(StringComparer.Ordinal);
+            _DataProvider = new DataProvider<ILocalizationManager>(this);
+            _LocalizationHelper = null;
+            _Language = Language.Unspecified;
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace GameFramework.Localization
         {
             get
             {
-                return m_Language;
+                return _Language;
             }
             set
             {
@@ -48,7 +48,7 @@ namespace GameFramework.Localization
                     throw new GameFrameworkException("Language is invalid.");
                 }
 
-                m_Language = value;
+                _Language = value;
             }
         }
 
@@ -59,12 +59,12 @@ namespace GameFramework.Localization
         {
             get
             {
-                if (m_LocalizationHelper == null)
+                if (_LocalizationHelper == null)
                 {
                     throw new GameFrameworkException("You must set localization helper first.");
                 }
 
-                return m_LocalizationHelper.SystemLanguage;
+                return _LocalizationHelper.SystemLanguage;
             }
         }
 
@@ -75,7 +75,7 @@ namespace GameFramework.Localization
         {
             get
             {
-                return m_Dictionary.Count;
+                return _Dictionary.Count;
             }
         }
 
@@ -97,11 +97,11 @@ namespace GameFramework.Localization
         {
             add
             {
-                m_DataProvider.ReadDataSuccess += value;
+                _DataProvider.ReadDataSuccess += value;
             }
             remove
             {
-                m_DataProvider.ReadDataSuccess -= value;
+                _DataProvider.ReadDataSuccess -= value;
             }
         }
 
@@ -112,11 +112,11 @@ namespace GameFramework.Localization
         {
             add
             {
-                m_DataProvider.ReadDataFailure += value;
+                _DataProvider.ReadDataFailure += value;
             }
             remove
             {
-                m_DataProvider.ReadDataFailure -= value;
+                _DataProvider.ReadDataFailure -= value;
             }
         }
 
@@ -127,11 +127,11 @@ namespace GameFramework.Localization
         {
             add
             {
-                m_DataProvider.ReadDataUpdate += value;
+                _DataProvider.ReadDataUpdate += value;
             }
             remove
             {
-                m_DataProvider.ReadDataUpdate -= value;
+                _DataProvider.ReadDataUpdate -= value;
             }
         }
 
@@ -142,11 +142,11 @@ namespace GameFramework.Localization
         {
             add
             {
-                m_DataProvider.ReadDataDependencyAsset += value;
+                _DataProvider.ReadDataDependencyAsset += value;
             }
             remove
             {
-                m_DataProvider.ReadDataDependencyAsset -= value;
+                _DataProvider.ReadDataDependencyAsset -= value;
             }
         }
 
@@ -172,7 +172,7 @@ namespace GameFramework.Localization
         /// <param name="resourceManager">资源管理器。</param>
         public void SetResourceManager(IResourceManager resourceManager)
         {
-            m_DataProvider.SetResourceManager(resourceManager);
+            _DataProvider.SetResourceManager(resourceManager);
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace GameFramework.Localization
         /// <param name="dataProviderHelper">本地化数据提供者辅助器。</param>
         public void SetDataProviderHelper(IDataProviderHelper<ILocalizationManager> dataProviderHelper)
         {
-            m_DataProvider.SetDataProviderHelper(dataProviderHelper);
+            _DataProvider.SetDataProviderHelper(dataProviderHelper);
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace GameFramework.Localization
                 throw new GameFrameworkException("Localization helper is invalid.");
             }
 
-            m_LocalizationHelper = localizationHelper;
+            _LocalizationHelper = localizationHelper;
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace GameFramework.Localization
         /// <param name="dictionaryAssetName">字典资源名称。</param>
         public void ReadData(string dictionaryAssetName)
         {
-            m_DataProvider.ReadData(dictionaryAssetName);
+            _DataProvider.ReadData(dictionaryAssetName);
         }
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace GameFramework.Localization
         /// <param name="priority">加载字典资源的优先级。</param>
         public void ReadData(string dictionaryAssetName, int priority)
         {
-            m_DataProvider.ReadData(dictionaryAssetName, priority);
+            _DataProvider.ReadData(dictionaryAssetName, priority);
         }
 
         /// <summary>
@@ -241,7 +241,7 @@ namespace GameFramework.Localization
         /// <param name="userData">用户自定义数据。</param>
         public void ReadData(string dictionaryAssetName, object userData)
         {
-            m_DataProvider.ReadData(dictionaryAssetName, userData);
+            _DataProvider.ReadData(dictionaryAssetName, userData);
         }
 
         /// <summary>
@@ -252,7 +252,7 @@ namespace GameFramework.Localization
         /// <param name="userData">用户自定义数据。</param>
         public void ReadData(string dictionaryAssetName, int priority, object userData)
         {
-            m_DataProvider.ReadData(dictionaryAssetName, priority, userData);
+            _DataProvider.ReadData(dictionaryAssetName, priority, userData);
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace GameFramework.Localization
         /// <returns>是否解析字典成功。</returns>
         public bool ParseData(string dictionaryString)
         {
-            return m_DataProvider.ParseData(dictionaryString);
+            return _DataProvider.ParseData(dictionaryString);
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace GameFramework.Localization
         /// <returns>是否解析字典成功。</returns>
         public bool ParseData(string dictionaryString, object userData)
         {
-            return m_DataProvider.ParseData(dictionaryString, userData);
+            return _DataProvider.ParseData(dictionaryString, userData);
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace GameFramework.Localization
         /// <returns>是否解析字典成功。</returns>
         public bool ParseData(byte[] dictionaryBytes)
         {
-            return m_DataProvider.ParseData(dictionaryBytes);
+            return _DataProvider.ParseData(dictionaryBytes);
         }
 
         /// <summary>
@@ -294,7 +294,7 @@ namespace GameFramework.Localization
         /// <returns>是否解析字典成功。</returns>
         public bool ParseData(byte[] dictionaryBytes, object userData)
         {
-            return m_DataProvider.ParseData(dictionaryBytes, userData);
+            return _DataProvider.ParseData(dictionaryBytes, userData);
         }
 
         /// <summary>
@@ -306,7 +306,7 @@ namespace GameFramework.Localization
         /// <returns>是否解析字典成功。</returns>
         public bool ParseData(byte[] dictionaryBytes, int startIndex, int length)
         {
-            return m_DataProvider.ParseData(dictionaryBytes, startIndex, length);
+            return _DataProvider.ParseData(dictionaryBytes, startIndex, length);
         }
 
         /// <summary>
@@ -319,7 +319,7 @@ namespace GameFramework.Localization
         /// <returns>是否解析字典成功。</returns>
         public bool ParseData(byte[] dictionaryBytes, int startIndex, int length, object userData)
         {
-            return m_DataProvider.ParseData(dictionaryBytes, startIndex, length, userData);
+            return _DataProvider.ParseData(dictionaryBytes, startIndex, length, userData);
         }
 
         /// <summary>
@@ -993,7 +993,7 @@ namespace GameFramework.Localization
                 throw new GameFrameworkException("Key is invalid.");
             }
 
-            return m_Dictionary.ContainsKey(key);
+            return _Dictionary.ContainsKey(key);
         }
 
         /// <summary>
@@ -1009,7 +1009,7 @@ namespace GameFramework.Localization
             }
 
             string value = null;
-            if (m_Dictionary.TryGetValue(key, out value))
+            if (_Dictionary.TryGetValue(key, out value))
             {
                 return value;
             }
@@ -1030,12 +1030,12 @@ namespace GameFramework.Localization
                 throw new GameFrameworkException("Key is invalid.");
             }
 
-            if (m_Dictionary.ContainsKey(key))
+            if (_Dictionary.ContainsKey(key))
             {
                 return false;
             }
 
-            m_Dictionary.Add(key, value ?? string.Empty);
+            _Dictionary.Add(key, value ?? string.Empty);
             return true;
         }
 
@@ -1051,7 +1051,7 @@ namespace GameFramework.Localization
                 throw new GameFrameworkException("Key is invalid.");
             }
 
-            return m_Dictionary.Remove(key);
+            return _Dictionary.Remove(key);
         }
 
         /// <summary>
@@ -1059,7 +1059,7 @@ namespace GameFramework.Localization
         /// </summary>
         public void RemoveAllRawStrings()
         {
-            m_Dictionary.Clear();
+            _Dictionary.Clear();
         }
     }
 }

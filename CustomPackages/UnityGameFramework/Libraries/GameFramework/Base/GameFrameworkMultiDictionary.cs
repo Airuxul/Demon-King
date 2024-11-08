@@ -18,16 +18,16 @@ namespace GameFramework
     /// <typeparam name="TValue">指定多值字典的值类型。</typeparam>
     public sealed class GameFrameworkMultiDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, GameFrameworkLinkedListRange<TValue>>>, IEnumerable
     {
-        private readonly GameFrameworkLinkedList<TValue> m_LinkedList;
-        private readonly Dictionary<TKey, GameFrameworkLinkedListRange<TValue>> m_Dictionary;
+        private readonly GameFrameworkLinkedList<TValue> _LinkedList;
+        private readonly Dictionary<TKey, GameFrameworkLinkedListRange<TValue>> _Dictionary;
 
         /// <summary>
         /// 初始化游戏框架多值字典类的新实例。
         /// </summary>
         public GameFrameworkMultiDictionary()
         {
-            m_LinkedList = new GameFrameworkLinkedList<TValue>();
-            m_Dictionary = new Dictionary<TKey, GameFrameworkLinkedListRange<TValue>>();
+            _LinkedList = new GameFrameworkLinkedList<TValue>();
+            _Dictionary = new Dictionary<TKey, GameFrameworkLinkedListRange<TValue>>();
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace GameFramework
         {
             get
             {
-                return m_Dictionary.Count;
+                return _Dictionary.Count;
             }
         }
 
@@ -51,7 +51,7 @@ namespace GameFramework
             get
             {
                 GameFrameworkLinkedListRange<TValue> range = default(GameFrameworkLinkedListRange<TValue>);
-                m_Dictionary.TryGetValue(key, out range);
+                _Dictionary.TryGetValue(key, out range);
                 return range;
             }
         }
@@ -61,8 +61,8 @@ namespace GameFramework
         /// </summary>
         public void Clear()
         {
-            m_Dictionary.Clear();
-            m_LinkedList.Clear();
+            _Dictionary.Clear();
+            _LinkedList.Clear();
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace GameFramework
         /// <returns>多值字典中是否包含指定主键。</returns>
         public bool Contains(TKey key)
         {
-            return m_Dictionary.ContainsKey(key);
+            return _Dictionary.ContainsKey(key);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace GameFramework
         public bool Contains(TKey key, TValue value)
         {
             GameFrameworkLinkedListRange<TValue> range = default(GameFrameworkLinkedListRange<TValue>);
-            if (m_Dictionary.TryGetValue(key, out range))
+            if (_Dictionary.TryGetValue(key, out range))
             {
                 return range.Contains(value);
             }
@@ -100,7 +100,7 @@ namespace GameFramework
         /// <returns>是否获取成功。</returns>
         public bool TryGetValue(TKey key, out GameFrameworkLinkedListRange<TValue> range)
         {
-            return m_Dictionary.TryGetValue(key, out range);
+            return _Dictionary.TryGetValue(key, out range);
         }
 
         /// <summary>
@@ -111,15 +111,15 @@ namespace GameFramework
         public void Add(TKey key, TValue value)
         {
             GameFrameworkLinkedListRange<TValue> range = default(GameFrameworkLinkedListRange<TValue>);
-            if (m_Dictionary.TryGetValue(key, out range))
+            if (_Dictionary.TryGetValue(key, out range))
             {
-                m_LinkedList.AddBefore(range.Terminal, value);
+                _LinkedList.AddBefore(range.Terminal, value);
             }
             else
             {
-                LinkedListNode<TValue> first = m_LinkedList.AddLast(value);
-                LinkedListNode<TValue> terminal = m_LinkedList.AddLast(default(TValue));
-                m_Dictionary.Add(key, new GameFrameworkLinkedListRange<TValue>(first, terminal));
+                LinkedListNode<TValue> first = _LinkedList.AddLast(value);
+                LinkedListNode<TValue> terminal = _LinkedList.AddLast(default(TValue));
+                _Dictionary.Add(key, new GameFrameworkLinkedListRange<TValue>(first, terminal));
             }
         }
 
@@ -132,7 +132,7 @@ namespace GameFramework
         public bool Remove(TKey key, TValue value)
         {
             GameFrameworkLinkedListRange<TValue> range = default(GameFrameworkLinkedListRange<TValue>);
-            if (m_Dictionary.TryGetValue(key, out range))
+            if (_Dictionary.TryGetValue(key, out range))
             {
                 for (LinkedListNode<TValue> current = range.First; current != null && current != range.Terminal; current = current.Next)
                 {
@@ -143,16 +143,16 @@ namespace GameFramework
                             LinkedListNode<TValue> next = current.Next;
                             if (next == range.Terminal)
                             {
-                                m_LinkedList.Remove(next);
-                                m_Dictionary.Remove(key);
+                                _LinkedList.Remove(next);
+                                _Dictionary.Remove(key);
                             }
                             else
                             {
-                                m_Dictionary[key] = new GameFrameworkLinkedListRange<TValue>(next, range.Terminal);
+                                _Dictionary[key] = new GameFrameworkLinkedListRange<TValue>(next, range.Terminal);
                             }
                         }
 
-                        m_LinkedList.Remove(current);
+                        _LinkedList.Remove(current);
                         return true;
                     }
                 }
@@ -169,15 +169,15 @@ namespace GameFramework
         public bool RemoveAll(TKey key)
         {
             GameFrameworkLinkedListRange<TValue> range = default(GameFrameworkLinkedListRange<TValue>);
-            if (m_Dictionary.TryGetValue(key, out range))
+            if (_Dictionary.TryGetValue(key, out range))
             {
-                m_Dictionary.Remove(key);
+                _Dictionary.Remove(key);
 
                 LinkedListNode<TValue> current = range.First;
                 while (current != null)
                 {
                     LinkedListNode<TValue> next = current != range.Terminal ? current.Next : null;
-                    m_LinkedList.Remove(current);
+                    _LinkedList.Remove(current);
                     current = next;
                 }
 
@@ -193,7 +193,7 @@ namespace GameFramework
         /// <returns>循环访问集合的枚举数。</returns>
         public Enumerator GetEnumerator()
         {
-            return new Enumerator(m_Dictionary);
+            return new Enumerator(_Dictionary);
         }
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace GameFramework
         [StructLayout(LayoutKind.Auto)]
         public struct Enumerator : IEnumerator<KeyValuePair<TKey, GameFrameworkLinkedListRange<TValue>>>, IEnumerator
         {
-            private Dictionary<TKey, GameFrameworkLinkedListRange<TValue>>.Enumerator m_Enumerator;
+            private Dictionary<TKey, GameFrameworkLinkedListRange<TValue>>.Enumerator _Enumerator;
 
             internal Enumerator(Dictionary<TKey, GameFrameworkLinkedListRange<TValue>> dictionary)
             {
@@ -229,7 +229,7 @@ namespace GameFramework
                     throw new GameFrameworkException("Dictionary is invalid.");
                 }
 
-                m_Enumerator = dictionary.GetEnumerator();
+                _Enumerator = dictionary.GetEnumerator();
             }
 
             /// <summary>
@@ -239,7 +239,7 @@ namespace GameFramework
             {
                 get
                 {
-                    return m_Enumerator.Current;
+                    return _Enumerator.Current;
                 }
             }
 
@@ -250,7 +250,7 @@ namespace GameFramework
             {
                 get
                 {
-                    return m_Enumerator.Current;
+                    return _Enumerator.Current;
                 }
             }
 
@@ -259,7 +259,7 @@ namespace GameFramework
             /// </summary>
             public void Dispose()
             {
-                m_Enumerator.Dispose();
+                _Enumerator.Dispose();
             }
 
             /// <summary>
@@ -268,7 +268,7 @@ namespace GameFramework
             /// <returns>返回下一个结点。</returns>
             public bool MoveNext()
             {
-                return m_Enumerator.MoveNext();
+                return _Enumerator.MoveNext();
             }
 
             /// <summary>
@@ -276,7 +276,7 @@ namespace GameFramework
             /// </summary>
             void IEnumerator.Reset()
             {
-                ((IEnumerator<KeyValuePair<TKey, GameFrameworkLinkedListRange<TValue>>>)m_Enumerator).Reset();
+                ((IEnumerator<KeyValuePair<TKey, GameFrameworkLinkedListRange<TValue>>>)_Enumerator).Reset();
             }
         }
     }

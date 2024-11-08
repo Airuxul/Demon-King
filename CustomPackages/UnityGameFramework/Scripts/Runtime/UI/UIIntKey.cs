@@ -6,6 +6,7 @@
 //------------------------------------------------------------
 
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -14,22 +15,16 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public sealed class UIIntKey : MonoBehaviour
     {
-        [SerializeField]
-        private int m_Key = 0;
+        [FormerlySerializedAs("_Key")] [SerializeField]
+        private int key = 0;
 
         /// <summary>
         /// 获取或设置主键。
         /// </summary>
         public int Key
         {
-            get
-            {
-                return m_Key;
-            }
-            set
-            {
-                m_Key = value;
-            }
+            get => key;
+            set => key = value;
         }
     }
 }

@@ -33,13 +33,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 获取加载全局配置失败事件编号。
         /// </summary>
-        public override int Id
-        {
-            get
-            {
-                return EventId;
-            }
-        }
+        public override int Id => EventId;
 
         /// <summary>
         /// 获取全局配置资源名称。

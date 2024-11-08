@@ -12,8 +12,8 @@ namespace GameFramework.Resource
     /// </summary>
     public sealed class LoadBinaryCallbacks
     {
-        private readonly LoadBinarySuccessCallback m_LoadBinarySuccessCallback;
-        private readonly LoadBinaryFailureCallback m_LoadBinaryFailureCallback;
+        private readonly LoadBinarySuccessCallback _LoadBinarySuccessCallback;
+        private readonly LoadBinaryFailureCallback _LoadBinaryFailureCallback;
 
         /// <summary>
         /// 初始化加载二进制资源回调函数集的新实例。
@@ -36,8 +36,8 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException("Load binary success callback is invalid.");
             }
 
-            m_LoadBinarySuccessCallback = loadBinarySuccessCallback;
-            m_LoadBinaryFailureCallback = loadBinaryFailureCallback;
+            _LoadBinarySuccessCallback = loadBinarySuccessCallback;
+            _LoadBinaryFailureCallback = loadBinaryFailureCallback;
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_LoadBinarySuccessCallback;
+                return _LoadBinarySuccessCallback;
             }
         }
 
@@ -58,7 +58,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_LoadBinaryFailureCallback;
+                return _LoadBinaryFailureCallback;
             }
         }
     }

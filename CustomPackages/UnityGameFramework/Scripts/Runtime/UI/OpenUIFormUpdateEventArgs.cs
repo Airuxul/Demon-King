@@ -36,13 +36,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 获取打开界面更新事件编号。
         /// </summary>
-        public override int Id
-        {
-            get
-            {
-                return EventId;
-            }
-        }
+        public override int Id => EventId;
 
         /// <summary>
         /// 获取界面序列编号。

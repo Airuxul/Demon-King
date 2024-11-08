@@ -15,16 +15,16 @@ namespace GameFramework.Fsm
     /// </summary>
     internal sealed class FsmManager : GameFrameworkModule, IFsmManager
     {
-        private readonly Dictionary<TypeNamePair, FsmBase> m_Fsms;
-        private readonly List<FsmBase> m_TempFsms;
+        private readonly Dictionary<TypeNamePair, FsmBase> _Fsms;
+        private readonly List<FsmBase> _TempFsms;
 
         /// <summary>
         /// 初始化有限状态机管理器的新实例。
         /// </summary>
         public FsmManager()
         {
-            m_Fsms = new Dictionary<TypeNamePair, FsmBase>();
-            m_TempFsms = new List<FsmBase>();
+            _Fsms = new Dictionary<TypeNamePair, FsmBase>();
+            _TempFsms = new List<FsmBase>();
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace GameFramework.Fsm
         {
             get
             {
-                return m_Fsms.Count;
+                return _Fsms.Count;
             }
         }
 
@@ -57,18 +57,18 @@ namespace GameFramework.Fsm
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
         internal override void Update(float elapseSeconds, float realElapseSeconds)
         {
-            m_TempFsms.Clear();
-            if (m_Fsms.Count <= 0)
+            _TempFsms.Clear();
+            if (_Fsms.Count <= 0)
             {
                 return;
             }
 
-            foreach (KeyValuePair<TypeNamePair, FsmBase> fsm in m_Fsms)
+            foreach (KeyValuePair<TypeNamePair, FsmBase> fsm in _Fsms)
             {
-                m_TempFsms.Add(fsm.Value);
+                _TempFsms.Add(fsm.Value);
             }
 
-            foreach (FsmBase fsm in m_TempFsms)
+            foreach (FsmBase fsm in _TempFsms)
             {
                 if (fsm.IsDestroyed)
                 {
@@ -84,13 +84,13 @@ namespace GameFramework.Fsm
         /// </summary>
         internal override void Shutdown()
         {
-            foreach (KeyValuePair<TypeNamePair, FsmBase> fsm in m_Fsms)
+            foreach (KeyValuePair<TypeNamePair, FsmBase> fsm in _Fsms)
             {
                 fsm.Value.Shutdown();
             }
 
-            m_Fsms.Clear();
-            m_TempFsms.Clear();
+            _Fsms.Clear();
+            _TempFsms.Clear();
         }
 
         /// <summary>
@@ -204,8 +204,8 @@ namespace GameFramework.Fsm
         public FsmBase[] GetAllFsms()
         {
             int index = 0;
-            FsmBase[] results = new FsmBase[m_Fsms.Count];
-            foreach (KeyValuePair<TypeNamePair, FsmBase> fsm in m_Fsms)
+            FsmBase[] results = new FsmBase[_Fsms.Count];
+            foreach (KeyValuePair<TypeNamePair, FsmBase> fsm in _Fsms)
             {
                 results[index++] = fsm.Value;
             }
@@ -225,7 +225,7 @@ namespace GameFramework.Fsm
             }
 
             results.Clear();
-            foreach (KeyValuePair<TypeNamePair, FsmBase> fsm in m_Fsms)
+            foreach (KeyValuePair<TypeNamePair, FsmBase> fsm in _Fsms)
             {
                 results.Add(fsm.Value);
             }
@@ -260,7 +260,7 @@ namespace GameFramework.Fsm
             }
 
             Fsm<T> fsm = Fsm<T>.Create(name, owner, states);
-            m_Fsms.Add(typeNamePair, fsm);
+            _Fsms.Add(typeNamePair, fsm);
             return fsm;
         }
 
@@ -293,7 +293,7 @@ namespace GameFramework.Fsm
             }
 
             Fsm<T> fsm = Fsm<T>.Create(name, owner, states);
-            m_Fsms.Add(typeNamePair, fsm);
+            _Fsms.Add(typeNamePair, fsm);
             return fsm;
         }
 
@@ -382,13 +382,13 @@ namespace GameFramework.Fsm
 
         private bool InternalHasFsm(TypeNamePair typeNamePair)
         {
-            return m_Fsms.ContainsKey(typeNamePair);
+            return _Fsms.ContainsKey(typeNamePair);
         }
 
         private FsmBase InternalGetFsm(TypeNamePair typeNamePair)
         {
             FsmBase fsm = null;
-            if (m_Fsms.TryGetValue(typeNamePair, out fsm))
+            if (_Fsms.TryGetValue(typeNamePair, out fsm))
             {
                 return fsm;
             }
@@ -399,10 +399,10 @@ namespace GameFramework.Fsm
         private bool InternalDestroyFsm(TypeNamePair typeNamePair)
         {
             FsmBase fsm = null;
-            if (m_Fsms.TryGetValue(typeNamePair, out fsm))
+            if (_Fsms.TryGetValue(typeNamePair, out fsm))
             {
                 fsm.Shutdown();
-                return m_Fsms.Remove(typeNamePair);
+                return _Fsms.Remove(typeNamePair);
             }
 
             return false;

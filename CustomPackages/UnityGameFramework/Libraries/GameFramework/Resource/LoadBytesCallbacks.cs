@@ -12,8 +12,8 @@ namespace GameFramework.Resource
     /// </summary>
     public sealed class LoadBytesCallbacks
     {
-        private readonly LoadBytesSuccessCallback m_LoadBytesSuccessCallback;
-        private readonly LoadBytesFailureCallback m_LoadBytesFailureCallback;
+        private readonly LoadBytesSuccessCallback _LoadBytesSuccessCallback;
+        private readonly LoadBytesFailureCallback _LoadBytesFailureCallback;
 
         /// <summary>
         /// 初始化加载数据流回调函数集的新实例。
@@ -36,8 +36,8 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException("Load bytes success callback is invalid.");
             }
 
-            m_LoadBytesSuccessCallback = loadBytesSuccessCallback;
-            m_LoadBytesFailureCallback = loadBytesFailureCallback;
+            _LoadBytesSuccessCallback = loadBytesSuccessCallback;
+            _LoadBytesFailureCallback = loadBytesFailureCallback;
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_LoadBytesSuccessCallback;
+                return _LoadBytesSuccessCallback;
             }
         }
 
@@ -58,7 +58,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return m_LoadBytesFailureCallback;
+                return _LoadBytesFailureCallback;
             }
         }
     }

@@ -12,14 +12,14 @@ namespace GameFramework.Resource
     /// </summary>
     public sealed class LoadResourceAgentHelperReadBytesCompleteEventArgs : GameFrameworkEventArgs
     {
-        private byte[] m_Bytes;
+        private byte[] _Bytes;
 
         /// <summary>
         /// 初始化加载资源代理辅助器异步读取资源二进制流完成事件的新实例。
         /// </summary>
         public LoadResourceAgentHelperReadBytesCompleteEventArgs()
         {
-            m_Bytes = null;
+            _Bytes = null;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace GameFramework.Resource
         public static LoadResourceAgentHelperReadBytesCompleteEventArgs Create(byte[] bytes)
         {
             LoadResourceAgentHelperReadBytesCompleteEventArgs loadResourceAgentHelperReadBytesCompleteEventArgs = ReferencePool.Acquire<LoadResourceAgentHelperReadBytesCompleteEventArgs>();
-            loadResourceAgentHelperReadBytesCompleteEventArgs.m_Bytes = bytes;
+            loadResourceAgentHelperReadBytesCompleteEventArgs._Bytes = bytes;
             return loadResourceAgentHelperReadBytesCompleteEventArgs;
         }
 
@@ -39,7 +39,7 @@ namespace GameFramework.Resource
         /// </summary>
         public override void Clear()
         {
-            m_Bytes = null;
+            _Bytes = null;
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace GameFramework.Resource
         /// <returns>资源的二进制流。</returns>
         public byte[] GetBytes()
         {
-            return m_Bytes;
+            return _Bytes;
         }
     }
 }

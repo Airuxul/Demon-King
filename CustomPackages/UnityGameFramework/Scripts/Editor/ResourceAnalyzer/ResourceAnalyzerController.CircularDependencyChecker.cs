@@ -14,17 +14,17 @@ namespace UnityGameFramework.Editor.ResourceTools
     {
         private sealed class CircularDependencyChecker
         {
-            private readonly Stamp[] m_Stamps;
+            private readonly Stamp[] _Stamps;
 
             public CircularDependencyChecker(Stamp[] stamps)
             {
-                m_Stamps = stamps;
+                _Stamps = stamps;
             }
 
             public string[][] Check()
             {
                 HashSet<string> hosts = new HashSet<string>();
-                foreach (Stamp stamp in m_Stamps)
+                foreach (Stamp stamp in _Stamps)
                 {
                     hosts.Add(stamp.HostAssetName);
                 }
@@ -48,7 +48,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 visited.Add(host);
                 route.AddLast(host);
 
-                foreach (Stamp stamp in m_Stamps)
+                foreach (Stamp stamp in _Stamps)
                 {
                     if (host != stamp.HostAssetName)
                     {

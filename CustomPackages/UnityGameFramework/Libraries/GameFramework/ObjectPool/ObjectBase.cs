@@ -14,22 +14,22 @@ namespace GameFramework.ObjectPool
     /// </summary>
     public abstract class ObjectBase : IReference
     {
-        private string m_Name;
-        private object m_Target;
-        private bool m_Locked;
-        private int m_Priority;
-        private DateTime m_LastUseTime;
+        private string _Name;
+        private object _Target;
+        private bool _Locked;
+        private int _Priority;
+        private DateTime _LastUseTime;
 
         /// <summary>
         /// 初始化对象基类的新实例。
         /// </summary>
         public ObjectBase()
         {
-            m_Name = null;
-            m_Target = null;
-            m_Locked = false;
-            m_Priority = 0;
-            m_LastUseTime = default(DateTime);
+            _Name = null;
+            _Target = null;
+            _Locked = false;
+            _Priority = 0;
+            _LastUseTime = default(DateTime);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace GameFramework.ObjectPool
         {
             get
             {
-                return m_Name;
+                return _Name;
             }
         }
 
@@ -50,7 +50,7 @@ namespace GameFramework.ObjectPool
         {
             get
             {
-                return m_Target;
+                return _Target;
             }
         }
 
@@ -61,11 +61,11 @@ namespace GameFramework.ObjectPool
         {
             get
             {
-                return m_Locked;
+                return _Locked;
             }
             set
             {
-                m_Locked = value;
+                _Locked = value;
             }
         }
 
@@ -76,11 +76,11 @@ namespace GameFramework.ObjectPool
         {
             get
             {
-                return m_Priority;
+                return _Priority;
             }
             set
             {
-                m_Priority = value;
+                _Priority = value;
             }
         }
 
@@ -102,11 +102,11 @@ namespace GameFramework.ObjectPool
         {
             get
             {
-                return m_LastUseTime;
+                return _LastUseTime;
             }
             internal set
             {
-                m_LastUseTime = value;
+                _LastUseTime = value;
             }
         }
 
@@ -165,11 +165,11 @@ namespace GameFramework.ObjectPool
                 throw new GameFrameworkException(Utility.Text.Format("Target '{0}' is invalid.", name));
             }
 
-            m_Name = name ?? string.Empty;
-            m_Target = target;
-            m_Locked = locked;
-            m_Priority = priority;
-            m_LastUseTime = DateTime.UtcNow;
+            _Name = name ?? string.Empty;
+            _Target = target;
+            _Locked = locked;
+            _Priority = priority;
+            _LastUseTime = DateTime.UtcNow;
         }
 
         /// <summary>
@@ -177,11 +177,11 @@ namespace GameFramework.ObjectPool
         /// </summary>
         public virtual void Clear()
         {
-            m_Name = null;
-            m_Target = null;
-            m_Locked = false;
-            m_Priority = 0;
-            m_LastUseTime = default(DateTime);
+            _Name = null;
+            _Target = null;
+            _Locked = false;
+            _Priority = 0;
+            _LastUseTime = default(DateTime);
         }
 
         /// <summary>

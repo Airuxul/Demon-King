@@ -14,24 +14,24 @@ namespace GameFramework.Resource
         [StructLayout(LayoutKind.Auto)]
         private struct ReadWriteResourceInfo
         {
-            private readonly string m_FileSystemName;
-            private readonly LoadType m_LoadType;
-            private readonly int m_Length;
-            private readonly int m_HashCode;
+            private readonly string _FileSystemName;
+            private readonly LoadType _LoadType;
+            private readonly int _Length;
+            private readonly int _HashCode;
 
             public ReadWriteResourceInfo(string fileSystemName, LoadType loadType, int length, int hashCode)
             {
-                m_FileSystemName = fileSystemName;
-                m_LoadType = loadType;
-                m_Length = length;
-                m_HashCode = hashCode;
+                _FileSystemName = fileSystemName;
+                _LoadType = loadType;
+                _Length = length;
+                _HashCode = hashCode;
             }
 
             public bool UseFileSystem
             {
                 get
                 {
-                    return !string.IsNullOrEmpty(m_FileSystemName);
+                    return !string.IsNullOrEmpty(_FileSystemName);
                 }
             }
 
@@ -39,7 +39,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return m_FileSystemName;
+                    return _FileSystemName;
                 }
             }
 
@@ -47,7 +47,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return m_LoadType;
+                    return _LoadType;
                 }
             }
 
@@ -55,7 +55,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return m_Length;
+                    return _Length;
                 }
             }
 
@@ -63,7 +63,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return m_HashCode;
+                    return _HashCode;
                 }
             }
         }

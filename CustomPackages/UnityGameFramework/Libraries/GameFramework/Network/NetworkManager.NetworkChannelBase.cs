@@ -21,21 +21,21 @@ namespace GameFramework.Network
         {
             private const float DefaultHeartBeatInterval = 30f;
 
-            private readonly string m_Name;
-            protected readonly Queue<Packet> m_SendPacketPool;
-            protected readonly EventPool<Packet> m_ReceivePacketPool;
-            protected readonly INetworkChannelHelper m_NetworkChannelHelper;
-            protected AddressFamily m_AddressFamily;
-            protected bool m_ResetHeartBeatElapseSecondsWhenReceivePacket;
-            protected float m_HeartBeatInterval;
-            protected Socket m_Socket;
-            protected readonly SendState m_SendState;
-            protected readonly ReceiveState m_ReceiveState;
-            protected readonly HeartBeatState m_HeartBeatState;
-            protected int m_SentPacketCount;
-            protected int m_ReceivedPacketCount;
-            protected bool m_Active;
-            private bool m_Disposed;
+            private readonly string _Name;
+            protected readonly Queue<Packet> _SendPacketPool;
+            protected readonly EventPool<Packet> _ReceivePacketPool;
+            protected readonly INetworkChannelHelper _NetworkChannelHelper;
+            protected AddressFamily _AddressFamily;
+            protected bool _ResetHeartBeatElapseSecondsWhenReceivePacket;
+            protected float _HeartBeatInterval;
+            protected Socket _Socket;
+            protected readonly SendState _SendState;
+            protected readonly ReceiveState _ReceiveState;
+            protected readonly HeartBeatState _HeartBeatState;
+            protected int _SentPacketCount;
+            protected int _ReceivedPacketCount;
+            protected bool _Active;
+            private bool _Disposed;
 
             public GameFrameworkAction<NetworkChannelBase, object> NetworkChannelConnected;
             public GameFrameworkAction<NetworkChannelBase> NetworkChannelClosed;
@@ -50,21 +50,21 @@ namespace GameFramework.Network
             /// <param name="networkChannelHelper">网络频道辅助器。</param>
             public NetworkChannelBase(string name, INetworkChannelHelper networkChannelHelper)
             {
-                m_Name = name ?? string.Empty;
-                m_SendPacketPool = new Queue<Packet>();
-                m_ReceivePacketPool = new EventPool<Packet>(EventPoolMode.Default);
-                m_NetworkChannelHelper = networkChannelHelper;
-                m_AddressFamily = AddressFamily.Unknown;
-                m_ResetHeartBeatElapseSecondsWhenReceivePacket = false;
-                m_HeartBeatInterval = DefaultHeartBeatInterval;
-                m_Socket = null;
-                m_SendState = new SendState();
-                m_ReceiveState = new ReceiveState();
-                m_HeartBeatState = new HeartBeatState();
-                m_SentPacketCount = 0;
-                m_ReceivedPacketCount = 0;
-                m_Active = false;
-                m_Disposed = false;
+                _Name = name ?? string.Empty;
+                _SendPacketPool = new Queue<Packet>();
+                _ReceivePacketPool = new EventPool<Packet>(EventPoolMode.Default);
+                _NetworkChannelHelper = networkChannelHelper;
+                _AddressFamily = AddressFamily.Unknown;
+                _ResetHeartBeatElapseSecondsWhenReceivePacket = false;
+                _HeartBeatInterval = DefaultHeartBeatInterval;
+                _Socket = null;
+                _SendState = new SendState();
+                _ReceiveState = new ReceiveState();
+                _HeartBeatState = new HeartBeatState();
+                _SentPacketCount = 0;
+                _ReceivedPacketCount = 0;
+                _Active = false;
+                _Disposed = false;
 
                 NetworkChannelConnected = null;
                 NetworkChannelClosed = null;
@@ -82,7 +82,7 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    return m_Name;
+                    return _Name;
                 }
             }
 
@@ -93,7 +93,7 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    return m_Socket;
+                    return _Socket;
                 }
             }
 
@@ -104,9 +104,9 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    if (m_Socket != null)
+                    if (_Socket != null)
                     {
-                        return m_Socket.Connected;
+                        return _Socket.Connected;
                     }
 
                     return false;
@@ -128,7 +128,7 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    return m_AddressFamily;
+                    return _AddressFamily;
                 }
             }
 
@@ -139,7 +139,7 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    return m_SendPacketPool.Count;
+                    return _SendPacketPool.Count;
                 }
             }
 
@@ -150,7 +150,7 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    return m_SentPacketCount;
+                    return _SentPacketCount;
                 }
             }
 
@@ -161,7 +161,7 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    return m_ReceivePacketPool.EventCount;
+                    return _ReceivePacketPool.EventCount;
                 }
             }
 
@@ -172,7 +172,7 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    return m_ReceivedPacketCount;
+                    return _ReceivedPacketCount;
                 }
             }
 
@@ -183,11 +183,11 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    return m_ResetHeartBeatElapseSecondsWhenReceivePacket;
+                    return _ResetHeartBeatElapseSecondsWhenReceivePacket;
                 }
                 set
                 {
-                    m_ResetHeartBeatElapseSecondsWhenReceivePacket = value;
+                    _ResetHeartBeatElapseSecondsWhenReceivePacket = value;
                 }
             }
 
@@ -198,7 +198,7 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    return m_HeartBeatState.MissHeartBeatCount;
+                    return _HeartBeatState.MissHeartBeatCount;
                 }
             }
 
@@ -209,11 +209,11 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    return m_HeartBeatInterval;
+                    return _HeartBeatInterval;
                 }
                 set
                 {
-                    m_HeartBeatInterval = value;
+                    _HeartBeatInterval = value;
                 }
             }
 
@@ -224,7 +224,7 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    return m_HeartBeatState.HeartBeatElapseSeconds;
+                    return _HeartBeatState.HeartBeatElapseSeconds;
                 }
             }
 
@@ -235,42 +235,42 @@ namespace GameFramework.Network
             /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
             public virtual void Update(float elapseSeconds, float realElapseSeconds)
             {
-                if (m_Socket == null || !m_Active)
+                if (_Socket == null || !_Active)
                 {
                     return;
                 }
 
                 ProcessSend();
                 ProcessReceive();
-                if (m_Socket == null || !m_Active)
+                if (_Socket == null || !_Active)
                 {
                     return;
                 }
 
-                m_ReceivePacketPool.Update(elapseSeconds, realElapseSeconds);
+                _ReceivePacketPool.Update(elapseSeconds, realElapseSeconds);
 
-                if (m_HeartBeatInterval > 0f)
+                if (_HeartBeatInterval > 0f)
                 {
                     bool sendHeartBeat = false;
                     int missHeartBeatCount = 0;
-                    lock (m_HeartBeatState)
+                    lock (_HeartBeatState)
                     {
-                        if (m_Socket == null || !m_Active)
+                        if (_Socket == null || !_Active)
                         {
                             return;
                         }
 
-                        m_HeartBeatState.HeartBeatElapseSeconds += realElapseSeconds;
-                        if (m_HeartBeatState.HeartBeatElapseSeconds >= m_HeartBeatInterval)
+                        _HeartBeatState.HeartBeatElapseSeconds += realElapseSeconds;
+                        if (_HeartBeatState.HeartBeatElapseSeconds >= _HeartBeatInterval)
                         {
                             sendHeartBeat = true;
-                            missHeartBeatCount = m_HeartBeatState.MissHeartBeatCount;
-                            m_HeartBeatState.HeartBeatElapseSeconds = 0f;
-                            m_HeartBeatState.MissHeartBeatCount++;
+                            missHeartBeatCount = _HeartBeatState.MissHeartBeatCount;
+                            _HeartBeatState.HeartBeatElapseSeconds = 0f;
+                            _HeartBeatState.MissHeartBeatCount++;
                         }
                     }
 
-                    if (sendHeartBeat && m_NetworkChannelHelper.SendHeartBeat())
+                    if (sendHeartBeat && _NetworkChannelHelper.SendHeartBeat())
                     {
                         if (missHeartBeatCount > 0 && NetworkChannelMissHeartBeat != null)
                         {
@@ -286,8 +286,8 @@ namespace GameFramework.Network
             public virtual void Shutdown()
             {
                 Close();
-                m_ReceivePacketPool.Shutdown();
-                m_NetworkChannelHelper.Shutdown();
+                _ReceivePacketPool.Shutdown();
+                _NetworkChannelHelper.Shutdown();
             }
 
             /// <summary>
@@ -301,7 +301,7 @@ namespace GameFramework.Network
                     throw new GameFrameworkException("Packet handler is invalid.");
                 }
 
-                m_ReceivePacketPool.Subscribe(handler.Id, handler.Handle);
+                _ReceivePacketPool.Subscribe(handler.Id, handler.Handle);
             }
 
             /// <summary>
@@ -310,7 +310,7 @@ namespace GameFramework.Network
             /// <param name="handler">要设置的默认事件处理函数。</param>
             public void SetDefaultHandler(EventHandler<Packet> handler)
             {
-                m_ReceivePacketPool.SetDefaultHandler(handler);
+                _ReceivePacketPool.SetDefaultHandler(handler);
             }
 
             /// <summary>
@@ -331,20 +331,20 @@ namespace GameFramework.Network
             /// <param name="userData">用户自定义数据。</param>
             public virtual void Connect(IPAddress ipAddress, int port, object userData)
             {
-                if (m_Socket != null)
+                if (_Socket != null)
                 {
                     Close();
-                    m_Socket = null;
+                    _Socket = null;
                 }
 
                 switch (ipAddress.AddressFamily)
                 {
                     case System.Net.Sockets.AddressFamily.InterNetwork:
-                        m_AddressFamily = AddressFamily.IPv4;
+                        _AddressFamily = AddressFamily.IPv4;
                         break;
 
                     case System.Net.Sockets.AddressFamily.InterNetworkV6:
-                        m_AddressFamily = AddressFamily.IPv6;
+                        _AddressFamily = AddressFamily.IPv6;
                         break;
 
                     default:
@@ -358,8 +358,8 @@ namespace GameFramework.Network
                         throw new GameFrameworkException(errorMessage);
                 }
 
-                m_SendState.Reset();
-                m_ReceiveState.PrepareForPacketHeader(m_NetworkChannelHelper.PacketHeaderLength);
+                _SendState.Reset();
+                _ReceiveState.PrepareForPacketHeader(_NetworkChannelHelper.PacketHeaderLength);
             }
 
             /// <summary>
@@ -369,24 +369,24 @@ namespace GameFramework.Network
             {
                 lock (this)
                 {
-                    if (m_Socket == null)
+                    if (_Socket == null)
                     {
                         return;
                     }
 
-                    m_Active = false;
+                    _Active = false;
 
                     try
                     {
-                        m_Socket.Shutdown(SocketShutdown.Both);
+                        _Socket.Shutdown(SocketShutdown.Both);
                     }
                     catch
                     {
                     }
                     finally
                     {
-                        m_Socket.Close();
-                        m_Socket = null;
+                        _Socket.Close();
+                        _Socket = null;
 
                         if (NetworkChannelClosed != null)
                         {
@@ -394,19 +394,19 @@ namespace GameFramework.Network
                         }
                     }
 
-                    m_SentPacketCount = 0;
-                    m_ReceivedPacketCount = 0;
+                    _SentPacketCount = 0;
+                    _ReceivedPacketCount = 0;
 
-                    lock (m_SendPacketPool)
+                    lock (_SendPacketPool)
                     {
-                        m_SendPacketPool.Clear();
+                        _SendPacketPool.Clear();
                     }
 
-                    m_ReceivePacketPool.Clear();
+                    _ReceivePacketPool.Clear();
 
-                    lock (m_HeartBeatState)
+                    lock (_HeartBeatState)
                     {
-                        m_HeartBeatState.Reset(true);
+                        _HeartBeatState.Reset(true);
                     }
                 }
             }
@@ -418,7 +418,7 @@ namespace GameFramework.Network
             /// <param name="packet">要发送的消息包。</param>
             public void Send<T>(T packet) where T : Packet
             {
-                if (m_Socket == null)
+                if (_Socket == null)
                 {
                     string errorMessage = "You must connect first.";
                     if (NetworkChannelError != null)
@@ -430,7 +430,7 @@ namespace GameFramework.Network
                     throw new GameFrameworkException(errorMessage);
                 }
 
-                if (!m_Active)
+                if (!_Active)
                 {
                     string errorMessage = "Socket is not active.";
                     if (NetworkChannelError != null)
@@ -454,9 +454,9 @@ namespace GameFramework.Network
                     throw new GameFrameworkException(errorMessage);
                 }
 
-                lock (m_SendPacketPool)
+                lock (_SendPacketPool)
                 {
-                    m_SendPacketPool.Enqueue(packet);
+                    _SendPacketPool.Enqueue(packet);
                 }
             }
 
@@ -475,7 +475,7 @@ namespace GameFramework.Network
             /// <param name="disposing">释放资源标记。</param>
             private void Dispose(bool disposing)
             {
-                if (m_Disposed)
+                if (_Disposed)
                 {
                     return;
                 }
@@ -483,36 +483,36 @@ namespace GameFramework.Network
                 if (disposing)
                 {
                     Close();
-                    m_SendState.Dispose();
-                    m_ReceiveState.Dispose();
+                    _SendState.Dispose();
+                    _ReceiveState.Dispose();
                 }
 
-                m_Disposed = true;
+                _Disposed = true;
             }
 
             protected virtual bool ProcessSend()
             {
-                if (m_SendState.Stream.Length > 0 || m_SendPacketPool.Count <= 0)
+                if (_SendState.Stream.Length > 0 || _SendPacketPool.Count <= 0)
                 {
                     return false;
                 }
 
-                while (m_SendPacketPool.Count > 0)
+                while (_SendPacketPool.Count > 0)
                 {
                     Packet packet = null;
-                    lock (m_SendPacketPool)
+                    lock (_SendPacketPool)
                     {
-                        packet = m_SendPacketPool.Dequeue();
+                        packet = _SendPacketPool.Dequeue();
                     }
 
                     bool serializeResult = false;
                     try
                     {
-                        serializeResult = m_NetworkChannelHelper.Serialize(packet, m_SendState.Stream);
+                        serializeResult = _NetworkChannelHelper.Serialize(packet, _SendState.Stream);
                     }
                     catch (Exception exception)
                     {
-                        m_Active = false;
+                        _Active = false;
                         if (NetworkChannelError != null)
                         {
                             SocketException socketException = exception as SocketException;
@@ -536,7 +536,7 @@ namespace GameFramework.Network
                     }
                 }
 
-                m_SendState.Stream.Position = 0L;
+                _SendState.Stream.Position = 0L;
                 return true;
             }
 
@@ -549,7 +549,7 @@ namespace GameFramework.Network
                 try
                 {
                     object customErrorData = null;
-                    IPacketHeader packetHeader = m_NetworkChannelHelper.DeserializePacketHeader(m_ReceiveState.Stream, out customErrorData);
+                    IPacketHeader packetHeader = _NetworkChannelHelper.DeserializePacketHeader(_ReceiveState.Stream, out customErrorData);
 
                     if (customErrorData != null && NetworkChannelCustomError != null)
                     {
@@ -568,17 +568,17 @@ namespace GameFramework.Network
                         throw new GameFrameworkException(errorMessage);
                     }
 
-                    m_ReceiveState.PrepareForPacket(packetHeader);
+                    _ReceiveState.PrepareForPacket(packetHeader);
                     if (packetHeader.PacketLength <= 0)
                     {
                         bool processSuccess = ProcessPacket();
-                        m_ReceivedPacketCount++;
+                        _ReceivedPacketCount++;
                         return processSuccess;
                     }
                 }
                 catch (Exception exception)
                 {
-                    m_Active = false;
+                    _Active = false;
                     if (NetworkChannelError != null)
                     {
                         SocketException socketException = exception as SocketException;
@@ -594,15 +594,15 @@ namespace GameFramework.Network
 
             protected virtual bool ProcessPacket()
             {
-                lock (m_HeartBeatState)
+                lock (_HeartBeatState)
                 {
-                    m_HeartBeatState.Reset(m_ResetHeartBeatElapseSecondsWhenReceivePacket);
+                    _HeartBeatState.Reset(_ResetHeartBeatElapseSecondsWhenReceivePacket);
                 }
 
                 try
                 {
                     object customErrorData = null;
-                    Packet packet = m_NetworkChannelHelper.DeserializePacket(m_ReceiveState.PacketHeader, m_ReceiveState.Stream, out customErrorData);
+                    Packet packet = _NetworkChannelHelper.DeserializePacket(_ReceiveState.PacketHeader, _ReceiveState.Stream, out customErrorData);
 
                     if (customErrorData != null && NetworkChannelCustomError != null)
                     {
@@ -611,14 +611,14 @@ namespace GameFramework.Network
 
                     if (packet != null)
                     {
-                        m_ReceivePacketPool.Fire(this, packet);
+                        _ReceivePacketPool.Fire(this, packet);
                     }
 
-                    m_ReceiveState.PrepareForPacketHeader(m_NetworkChannelHelper.PacketHeaderLength);
+                    _ReceiveState.PrepareForPacketHeader(_NetworkChannelHelper.PacketHeaderLength);
                 }
                 catch (Exception exception)
                 {
-                    m_Active = false;
+                    _Active = false;
                     if (NetworkChannelError != null)
                     {
                         SocketException socketException = exception as SocketException;
