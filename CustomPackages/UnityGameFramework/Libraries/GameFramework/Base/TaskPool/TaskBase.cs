@@ -17,23 +17,23 @@ namespace GameFramework
         /// </summary>
         public const int DefaultPriority = 0;
 
-        private int _SerialId;
-        private string _Tag;
-        private int _Priority;
-        private object _UserData;
+        private int m_SerialId;
+        private string m_Tag;
+        private int m_Priority;
+        private object m_UserData;
 
-        private bool _Done;
+        private bool m_Done;
 
         /// <summary>
         /// 初始化任务基类的新实例。
         /// </summary>
         public TaskBase()
         {
-            _SerialId = 0;
-            _Tag = null;
-            _Priority = DefaultPriority;
-            _Done = false;
-            _UserData = null;
+            m_SerialId = 0;
+            m_Tag = null;
+            m_Priority = DefaultPriority;
+            m_Done = false;
+            m_UserData = null;
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace GameFramework
         {
             get
             {
-                return _SerialId;
+                return m_SerialId;
             }
         }
 
@@ -54,7 +54,7 @@ namespace GameFramework
         {
             get
             {
-                return _Tag;
+                return m_Tag;
             }
         }
 
@@ -65,7 +65,7 @@ namespace GameFramework
         {
             get
             {
-                return _Priority;
+                return m_Priority;
             }
         }
 
@@ -76,7 +76,7 @@ namespace GameFramework
         {
             get
             {
-                return _UserData;
+                return m_UserData;
             }
         }
 
@@ -87,11 +87,11 @@ namespace GameFramework
         {
             get
             {
-                return _Done;
+                return m_Done;
             }
             set
             {
-                _Done = value;
+                m_Done = value;
             }
         }
 
@@ -115,11 +115,11 @@ namespace GameFramework
         /// <param name="userData">任务的用户自定义数据。</param>
         internal void Initialize(int serialId, string tag, int priority, object userData)
         {
-            _SerialId = serialId;
-            _Tag = tag;
-            _Priority = priority;
-            _UserData = userData;
-            _Done = false;
+            m_SerialId = serialId;
+            m_Tag = tag;
+            m_Priority = priority;
+            m_UserData = userData;
+            m_Done = false;
         }
 
         /// <summary>
@@ -127,11 +127,11 @@ namespace GameFramework
         /// </summary>
         public virtual void Clear()
         {
-            _SerialId = 0;
-            _Tag = null;
-            _Priority = DefaultPriority;
-            _UserData = null;
-            _Done = false;
+            m_SerialId = 0;
+            m_Tag = null;
+            m_Priority = DefaultPriority;
+            m_UserData = null;
+            m_Done = false;
         }
     }
 }

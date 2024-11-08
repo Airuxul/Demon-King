@@ -25,13 +25,13 @@ namespace GameFramework.Resource
                 private static readonly HashSet<string> s_LoadingAssetNames = new HashSet<string>(StringComparer.Ordinal);
                 private static readonly HashSet<string> s_LoadingResourceNames = new HashSet<string>(StringComparer.Ordinal);
 
-                private readonly ILoadResourceAgentHelper _Helper;
-                private readonly IResourceHelper _ResourceHelper;
-                private readonly ResourceLoader _ResourceLoader;
-                private readonly string _ReadOnlyPath;
-                private readonly string _ReadWritePath;
-                private readonly DecryptResourceCallback _DecryptResourceCallback;
-                private LoadResourceTaskBase _Task;
+                private readonly ILoadResourceAgentHelper m_Helper;
+                private readonly IResourceHelper m_ResourceHelper;
+                private readonly ResourceLoader m_ResourceLoader;
+                private readonly string m_ReadOnlyPath;
+                private readonly string m_ReadWritePath;
+                private readonly DecryptResourceCallback m_DecryptResourceCallback;
+                private LoadResourceTaskBase m_Task;
 
                 /// <summary>
                 /// 初始化加载资源代理的新实例。
@@ -64,20 +64,20 @@ namespace GameFramework.Resource
                         throw new GameFrameworkException("Decrypt resource callback is invalid.");
                     }
 
-                    _Helper = loadResourceAgentHelper;
-                    _ResourceHelper = resourceHelper;
-                    _ResourceLoader = resourceLoader;
-                    _ReadOnlyPath = readOnlyPath;
-                    _ReadWritePath = readWritePath;
-                    _DecryptResourceCallback = decryptResourceCallback;
-                    _Task = null;
+                    m_Helper = loadResourceAgentHelper;
+                    m_ResourceHelper = resourceHelper;
+                    m_ResourceLoader = resourceLoader;
+                    m_ReadOnlyPath = readOnlyPath;
+                    m_ReadWritePath = readWritePath;
+                    m_DecryptResourceCallback = decryptResourceCallback;
+                    m_Task = null;
                 }
 
                 public ILoadResourceAgentHelper Helper
                 {
                     get
                     {
-                        return _Helper;
+                        return m_Helper;
                     }
                 }
 
@@ -88,7 +88,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _Task;
+                        return m_Task;
                     }
                 }
 
@@ -97,12 +97,12 @@ namespace GameFramework.Resource
                 /// </summary>
                 public void Initialize()
                 {
-                    _Helper.LoadResourceAgentHelperUpdate += OnLoadResourceAgentHelperUpdate;
-                    _Helper.LoadResourceAgentHelperReadFileComplete += OnLoadResourceAgentHelperReadFileComplete;
-                    _Helper.LoadResourceAgentHelperReadBytesComplete += OnLoadResourceAgentHelperReadBytesComplete;
-                    _Helper.LoadResourceAgentHelperParseBytesComplete += OnLoadResourceAgentHelperParseBytesComplete;
-                    _Helper.LoadResourceAgentHelperLoadComplete += OnLoadResourceAgentHelperLoadComplete;
-                    _Helper.LoadResourceAgentHelperError += OnLoadResourceAgentHelperError;
+                    m_Helper.LoadResourceAgentHelperUpdate += OnLoadResourceAgentHelperUpdate;
+                    m_Helper.LoadResourceAgentHelperReadFileComplete += OnLoadResourceAgentHelperReadFileComplete;
+                    m_Helper.LoadResourceAgentHelperReadBytesComplete += OnLoadResourceAgentHelperReadBytesComplete;
+                    m_Helper.LoadResourceAgentHelperParseBytesComplete += OnLoadResourceAgentHelperParseBytesComplete;
+                    m_Helper.LoadResourceAgentHelperLoadComplete += OnLoadResourceAgentHelperLoadComplete;
+                    m_Helper.LoadResourceAgentHelperError += OnLoadResourceAgentHelperError;
                 }
 
                 /// <summary>
@@ -120,12 +120,12 @@ namespace GameFramework.Resource
                 public void Shutdown()
                 {
                     Reset();
-                    _Helper.LoadResourceAgentHelperUpdate -= OnLoadResourceAgentHelperUpdate;
-                    _Helper.LoadResourceAgentHelperReadFileComplete -= OnLoadResourceAgentHelperReadFileComplete;
-                    _Helper.LoadResourceAgentHelperReadBytesComplete -= OnLoadResourceAgentHelperReadBytesComplete;
-                    _Helper.LoadResourceAgentHelperParseBytesComplete -= OnLoadResourceAgentHelperParseBytesComplete;
-                    _Helper.LoadResourceAgentHelperLoadComplete -= OnLoadResourceAgentHelperLoadComplete;
-                    _Helper.LoadResourceAgentHelperError -= OnLoadResourceAgentHelperError;
+                    m_Helper.LoadResourceAgentHelperUpdate -= OnLoadResourceAgentHelperUpdate;
+                    m_Helper.LoadResourceAgentHelperReadFileComplete -= OnLoadResourceAgentHelperReadFileComplete;
+                    m_Helper.LoadResourceAgentHelperReadBytesComplete -= OnLoadResourceAgentHelperReadBytesComplete;
+                    m_Helper.LoadResourceAgentHelperParseBytesComplete -= OnLoadResourceAgentHelperParseBytesComplete;
+                    m_Helper.LoadResourceAgentHelperLoadComplete -= OnLoadResourceAgentHelperLoadComplete;
+                    m_Helper.LoadResourceAgentHelperError -= OnLoadResourceAgentHelperError;
                 }
 
                 public static void Clear()
@@ -147,25 +147,25 @@ namespace GameFramework.Resource
                         throw new GameFrameworkException("Task is invalid.");
                     }
 
-                    _Task = task;
-                    _Task.StartTime = DateTime.UtcNow;
-                    ResourceInfo resourceInfo = _Task.ResourceInfo;
+                    m_Task = task;
+                    m_Task.StartTime = DateTime.UtcNow;
+                    ResourceInfo resourceInfo = m_Task.ResourceInfo;
 
                     if (!resourceInfo.Ready)
                     {
-                        _Task.StartTime = default(DateTime);
+                        m_Task.StartTime = default(DateTime);
                         return StartTaskStatus.HasToWait;
                     }
 
-                    if (IsAssetLoading(_Task.AssetName))
+                    if (IsAssetLoading(m_Task.AssetName))
                     {
-                        _Task.StartTime = default(DateTime);
+                        m_Task.StartTime = default(DateTime);
                         return StartTaskStatus.HasToWait;
                     }
 
-                    if (!_Task.IsScene)
+                    if (!m_Task.IsScene)
                     {
-                        AssetObject assetObject = _ResourceLoader._AssetPool.Spawn(_Task.AssetName);
+                        AssetObject assetObject = m_ResourceLoader.m_AssetPool.Spawn(m_Task.AssetName);
                         if (assetObject != null)
                         {
                             OnAssetObjectReady(assetObject);
@@ -173,11 +173,11 @@ namespace GameFramework.Resource
                         }
                     }
 
-                    foreach (string dependencyAssetName in _Task.GetDependencyAssetNames())
+                    foreach (string dependencyAssetName in m_Task.GetDependencyAssetNames())
                     {
-                        if (!_ResourceLoader._AssetPool.CanSpawn(dependencyAssetName))
+                        if (!m_ResourceLoader.m_AssetPool.CanSpawn(dependencyAssetName))
                         {
-                            _Task.StartTime = default(DateTime);
+                            m_Task.StartTime = default(DateTime);
                             return StartTaskStatus.HasToWait;
                         }
                     }
@@ -185,13 +185,13 @@ namespace GameFramework.Resource
                     string resourceName = resourceInfo.ResourceName.Name;
                     if (IsResourceLoading(resourceName))
                     {
-                        _Task.StartTime = default(DateTime);
+                        m_Task.StartTime = default(DateTime);
                         return StartTaskStatus.HasToWait;
                     }
 
-                    s_LoadingAssetNames.Add(_Task.AssetName);
+                    s_LoadingAssetNames.Add(m_Task.AssetName);
 
-                    ResourceObject resourceObject = _ResourceLoader._ResourcePool.Spawn(resourceName);
+                    ResourceObject resourceObject = m_ResourceLoader.m_ResourcePool.Spawn(resourceName);
                     if (resourceObject != null)
                     {
                         OnResourceObjectReady(resourceObject);
@@ -203,7 +203,7 @@ namespace GameFramework.Resource
                     string fullPath = null;
                     if (!s_CachedResourceNames.TryGetValue(resourceName, out fullPath))
                     {
-                        fullPath = Utility.Path.GetRegularPath(Path.Combine(resourceInfo.StorageInReadOnly ? _ReadOnlyPath : _ReadWritePath, resourceInfo.UseFileSystem ? resourceInfo.FileSystemName : resourceInfo.ResourceName.FullName));
+                        fullPath = Utility.Path.GetRegularPath(Path.Combine(resourceInfo.StorageInReadOnly ? m_ReadOnlyPath : m_ReadWritePath, resourceInfo.UseFileSystem ? resourceInfo.FileSystemName : resourceInfo.ResourceName.FullName));
                         s_CachedResourceNames.Add(resourceName, fullPath);
                     }
 
@@ -211,24 +211,24 @@ namespace GameFramework.Resource
                     {
                         if (resourceInfo.UseFileSystem)
                         {
-                            IFileSystem fileSystem = _ResourceLoader._ResourceManager.GetFileSystem(resourceInfo.FileSystemName, resourceInfo.StorageInReadOnly);
-                            _Helper.ReadFile(fileSystem, resourceInfo.ResourceName.FullName);
+                            IFileSystem fileSystem = m_ResourceLoader.m_ResourceManager.GetFileSystem(resourceInfo.FileSystemName, resourceInfo.StorageInReadOnly);
+                            m_Helper.ReadFile(fileSystem, resourceInfo.ResourceName.FullName);
                         }
                         else
                         {
-                            _Helper.ReadFile(fullPath);
+                            m_Helper.ReadFile(fullPath);
                         }
                     }
                     else if (resourceInfo.LoadType == LoadType.LoadFromMemory || resourceInfo.LoadType == LoadType.LoadFromMemoryAndQuickDecrypt || resourceInfo.LoadType == LoadType.LoadFromMemoryAndDecrypt)
                     {
                         if (resourceInfo.UseFileSystem)
                         {
-                            IFileSystem fileSystem = _ResourceLoader._ResourceManager.GetFileSystem(resourceInfo.FileSystemName, resourceInfo.StorageInReadOnly);
-                            _Helper.ReadBytes(fileSystem, resourceInfo.ResourceName.FullName);
+                            IFileSystem fileSystem = m_ResourceLoader.m_ResourceManager.GetFileSystem(resourceInfo.FileSystemName, resourceInfo.StorageInReadOnly);
+                            m_Helper.ReadBytes(fileSystem, resourceInfo.ResourceName.FullName);
                         }
                         else
                         {
-                            _Helper.ReadBytes(fullPath);
+                            m_Helper.ReadBytes(fullPath);
                         }
                     }
                     else
@@ -244,8 +244,8 @@ namespace GameFramework.Resource
                 /// </summary>
                 public void Reset()
                 {
-                    _Helper.Reset();
-                    _Task = null;
+                    m_Helper.Reset();
+                    m_Task = null;
                 }
 
                 private static bool IsAssetLoading(string assetName)
@@ -260,85 +260,85 @@ namespace GameFramework.Resource
 
                 private void OnAssetObjectReady(AssetObject assetObject)
                 {
-                    _Helper.Reset();
+                    m_Helper.Reset();
 
                     object asset = assetObject.Target;
-                    if (_Task.IsScene)
+                    if (m_Task.IsScene)
                     {
-                        _ResourceLoader._SceneToAssetMap.Add(_Task.AssetName, asset);
+                        m_ResourceLoader.m_SceneToAssetMap.Add(m_Task.AssetName, asset);
                     }
 
-                    _Task.OnLoadAssetSuccess(this, asset, (float)(DateTime.UtcNow - _Task.StartTime).TotalSeconds);
-                    _Task.Done = true;
+                    m_Task.OnLoadAssetSuccess(this, asset, (float)(DateTime.UtcNow - m_Task.StartTime).TotalSeconds);
+                    m_Task.Done = true;
                 }
 
                 private void OnResourceObjectReady(ResourceObject resourceObject)
                 {
-                    _Task.LoadMain(this, resourceObject);
+                    m_Task.LoadMain(this, resourceObject);
                 }
 
                 private void OnError(LoadResourceStatus status, string errorMessage)
                 {
-                    _Helper.Reset();
-                    _Task.OnLoadAssetFailure(this, status, errorMessage);
-                    s_LoadingAssetNames.Remove(_Task.AssetName);
-                    s_LoadingResourceNames.Remove(_Task.ResourceInfo.ResourceName.Name);
-                    _Task.Done = true;
+                    m_Helper.Reset();
+                    m_Task.OnLoadAssetFailure(this, status, errorMessage);
+                    s_LoadingAssetNames.Remove(m_Task.AssetName);
+                    s_LoadingResourceNames.Remove(m_Task.ResourceInfo.ResourceName.Name);
+                    m_Task.Done = true;
                 }
 
                 private void OnLoadResourceAgentHelperUpdate(object sender, LoadResourceAgentHelperUpdateEventArgs e)
                 {
-                    _Task.OnLoadAssetUpdate(this, e.Type, e.Progress);
+                    m_Task.OnLoadAssetUpdate(this, e.Type, e.Progress);
                 }
 
                 private void OnLoadResourceAgentHelperReadFileComplete(object sender, LoadResourceAgentHelperReadFileCompleteEventArgs e)
                 {
-                    ResourceObject resourceObject = ResourceObject.Create(_Task.ResourceInfo.ResourceName.Name, e.Resource, _ResourceHelper, _ResourceLoader);
-                    _ResourceLoader._ResourcePool.Register(resourceObject, true);
-                    s_LoadingResourceNames.Remove(_Task.ResourceInfo.ResourceName.Name);
+                    ResourceObject resourceObject = ResourceObject.Create(m_Task.ResourceInfo.ResourceName.Name, e.Resource, m_ResourceHelper, m_ResourceLoader);
+                    m_ResourceLoader.m_ResourcePool.Register(resourceObject, true);
+                    s_LoadingResourceNames.Remove(m_Task.ResourceInfo.ResourceName.Name);
                     OnResourceObjectReady(resourceObject);
                 }
 
                 private void OnLoadResourceAgentHelperReadBytesComplete(object sender, LoadResourceAgentHelperReadBytesCompleteEventArgs e)
                 {
                     byte[] bytes = e.GetBytes();
-                    ResourceInfo resourceInfo = _Task.ResourceInfo;
+                    ResourceInfo resourceInfo = m_Task.ResourceInfo;
                     if (resourceInfo.LoadType == LoadType.LoadFromMemoryAndQuickDecrypt || resourceInfo.LoadType == LoadType.LoadFromMemoryAndDecrypt)
                     {
-                        _DecryptResourceCallback(bytes, 0, bytes.Length, resourceInfo.ResourceName.Name, resourceInfo.ResourceName.Variant, resourceInfo.ResourceName.Extension, resourceInfo.StorageInReadOnly, resourceInfo.FileSystemName, (byte)resourceInfo.LoadType, resourceInfo.Length, resourceInfo.HashCode);
+                        m_DecryptResourceCallback(bytes, 0, bytes.Length, resourceInfo.ResourceName.Name, resourceInfo.ResourceName.Variant, resourceInfo.ResourceName.Extension, resourceInfo.StorageInReadOnly, resourceInfo.FileSystemName, (byte)resourceInfo.LoadType, resourceInfo.Length, resourceInfo.HashCode);
                     }
 
-                    _Helper.ParseBytes(bytes);
+                    m_Helper.ParseBytes(bytes);
                 }
 
                 private void OnLoadResourceAgentHelperParseBytesComplete(object sender, LoadResourceAgentHelperParseBytesCompleteEventArgs e)
                 {
-                    ResourceObject resourceObject = ResourceObject.Create(_Task.ResourceInfo.ResourceName.Name, e.Resource, _ResourceHelper, _ResourceLoader);
-                    _ResourceLoader._ResourcePool.Register(resourceObject, true);
-                    s_LoadingResourceNames.Remove(_Task.ResourceInfo.ResourceName.Name);
+                    ResourceObject resourceObject = ResourceObject.Create(m_Task.ResourceInfo.ResourceName.Name, e.Resource, m_ResourceHelper, m_ResourceLoader);
+                    m_ResourceLoader.m_ResourcePool.Register(resourceObject, true);
+                    s_LoadingResourceNames.Remove(m_Task.ResourceInfo.ResourceName.Name);
                     OnResourceObjectReady(resourceObject);
                 }
 
                 private void OnLoadResourceAgentHelperLoadComplete(object sender, LoadResourceAgentHelperLoadCompleteEventArgs e)
                 {
                     AssetObject assetObject = null;
-                    if (_Task.IsScene)
+                    if (m_Task.IsScene)
                     {
-                        assetObject = _ResourceLoader._AssetPool.Spawn(_Task.AssetName);
+                        assetObject = m_ResourceLoader.m_AssetPool.Spawn(m_Task.AssetName);
                     }
 
                     if (assetObject == null)
                     {
-                        List<object> dependencyAssets = _Task.GetDependencyAssets();
-                        assetObject = AssetObject.Create(_Task.AssetName, e.Asset, dependencyAssets, _Task.ResourceObject.Target, _ResourceHelper, _ResourceLoader);
-                        _ResourceLoader._AssetPool.Register(assetObject, true);
-                        _ResourceLoader._AssetToResourceMap.Add(e.Asset, _Task.ResourceObject.Target);
+                        List<object> dependencyAssets = m_Task.GetDependencyAssets();
+                        assetObject = AssetObject.Create(m_Task.AssetName, e.Asset, dependencyAssets, m_Task.ResourceObject.Target, m_ResourceHelper, m_ResourceLoader);
+                        m_ResourceLoader.m_AssetPool.Register(assetObject, true);
+                        m_ResourceLoader.m_AssetToResourceMap.Add(e.Asset, m_Task.ResourceObject.Target);
                         foreach (object dependencyAsset in dependencyAssets)
                         {
                             object dependencyResource = null;
-                            if (_ResourceLoader._AssetToResourceMap.TryGetValue(dependencyAsset, out dependencyResource))
+                            if (m_ResourceLoader.m_AssetToResourceMap.TryGetValue(dependencyAsset, out dependencyResource))
                             {
-                                _Task.ResourceObject.AddDependencyResource(dependencyResource);
+                                m_Task.ResourceObject.AddDependencyResource(dependencyResource);
                             }
                             else
                             {
@@ -347,7 +347,7 @@ namespace GameFramework.Resource
                         }
                     }
 
-                    s_LoadingAssetNames.Remove(_Task.AssetName);
+                    s_LoadingAssetNames.Remove(m_Task.AssetName);
                     OnAssetObjectReady(assetObject);
                 }
 

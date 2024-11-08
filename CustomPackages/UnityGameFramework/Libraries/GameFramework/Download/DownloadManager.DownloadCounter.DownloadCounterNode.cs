@@ -13,20 +13,20 @@ namespace GameFramework.Download
         {
             private sealed class DownloadCounterNode : IReference
             {
-                private long _DeltaLength;
-                private float _ElapseSeconds;
+                private long m_DeltaLength;
+                private float m_ElapseSeconds;
 
                 public DownloadCounterNode()
                 {
-                    _DeltaLength = 0L;
-                    _ElapseSeconds = 0f;
+                    m_DeltaLength = 0L;
+                    m_ElapseSeconds = 0f;
                 }
 
                 public long DeltaLength
                 {
                     get
                     {
-                        return _DeltaLength;
+                        return m_DeltaLength;
                     }
                 }
 
@@ -34,7 +34,7 @@ namespace GameFramework.Download
                 {
                     get
                     {
-                        return _ElapseSeconds;
+                        return m_ElapseSeconds;
                     }
                 }
 
@@ -45,18 +45,18 @@ namespace GameFramework.Download
 
                 public void Update(float elapseSeconds, float realElapseSeconds)
                 {
-                    _ElapseSeconds += realElapseSeconds;
+                    m_ElapseSeconds += realElapseSeconds;
                 }
 
                 public void AddDeltaLength(int deltaLength)
                 {
-                    _DeltaLength += deltaLength;
+                    m_DeltaLength += deltaLength;
                 }
 
                 public void Clear()
                 {
-                    _DeltaLength = 0L;
-                    _ElapseSeconds = 0f;
+                    m_DeltaLength = 0L;
+                    m_ElapseSeconds = 0f;
                 }
             }
         }

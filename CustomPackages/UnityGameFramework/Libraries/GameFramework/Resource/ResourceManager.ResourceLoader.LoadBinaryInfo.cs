@@ -13,24 +13,24 @@ namespace GameFramework.Resource
         {
             private sealed class LoadBinaryInfo : IReference
             {
-                private string _BinaryAssetName;
-                private ResourceInfo _ResourceInfo;
-                private LoadBinaryCallbacks _LoadBinaryCallbacks;
-                private object _UserData;
+                private string m_BinaryAssetName;
+                private ResourceInfo m_ResourceInfo;
+                private LoadBinaryCallbacks m_LoadBinaryCallbacks;
+                private object m_UserData;
 
                 public LoadBinaryInfo()
                 {
-                    _BinaryAssetName = null;
-                    _ResourceInfo = null;
-                    _LoadBinaryCallbacks = null;
-                    _UserData = null;
+                    m_BinaryAssetName = null;
+                    m_ResourceInfo = null;
+                    m_LoadBinaryCallbacks = null;
+                    m_UserData = null;
                 }
 
                 public string BinaryAssetName
                 {
                     get
                     {
-                        return _BinaryAssetName;
+                        return m_BinaryAssetName;
                     }
                 }
 
@@ -38,7 +38,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _ResourceInfo;
+                        return m_ResourceInfo;
                     }
                 }
 
@@ -46,7 +46,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _LoadBinaryCallbacks;
+                        return m_LoadBinaryCallbacks;
                     }
                 }
 
@@ -54,26 +54,26 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _UserData;
+                        return m_UserData;
                     }
                 }
 
                 public static LoadBinaryInfo Create(string binaryAssetName, ResourceInfo resourceInfo, LoadBinaryCallbacks loadBinaryCallbacks, object userData)
                 {
                     LoadBinaryInfo loadBinaryInfo = ReferencePool.Acquire<LoadBinaryInfo>();
-                    loadBinaryInfo._BinaryAssetName = binaryAssetName;
-                    loadBinaryInfo._ResourceInfo = resourceInfo;
-                    loadBinaryInfo._LoadBinaryCallbacks = loadBinaryCallbacks;
-                    loadBinaryInfo._UserData = userData;
+                    loadBinaryInfo.m_BinaryAssetName = binaryAssetName;
+                    loadBinaryInfo.m_ResourceInfo = resourceInfo;
+                    loadBinaryInfo.m_LoadBinaryCallbacks = loadBinaryCallbacks;
+                    loadBinaryInfo.m_UserData = userData;
                     return loadBinaryInfo;
                 }
 
                 public void Clear()
                 {
-                    _BinaryAssetName = null;
-                    _ResourceInfo = null;
-                    _LoadBinaryCallbacks = null;
-                    _UserData = null;
+                    m_BinaryAssetName = null;
+                    m_ResourceInfo = null;
+                    m_LoadBinaryCallbacks = null;
+                    m_UserData = null;
                 }
             }
         }

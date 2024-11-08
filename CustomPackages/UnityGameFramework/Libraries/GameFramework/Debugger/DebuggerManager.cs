@@ -12,16 +12,16 @@ namespace GameFramework.Debugger
     /// </summary>
     internal sealed partial class DebuggerManager : GameFrameworkModule, IDebuggerManager
     {
-        private readonly DebuggerWindowGroup _DebuggerWindowRoot;
-        private bool _ActiveWindow;
+        private readonly DebuggerWindowGroup m_DebuggerWindowRoot;
+        private bool m_ActiveWindow;
 
         /// <summary>
         /// 初始化调试器管理器的新实例。
         /// </summary>
         public DebuggerManager()
         {
-            _DebuggerWindowRoot = new DebuggerWindowGroup();
-            _ActiveWindow = false;
+            m_DebuggerWindowRoot = new DebuggerWindowGroup();
+            m_ActiveWindow = false;
         }
 
         /// <summary>
@@ -43,11 +43,11 @@ namespace GameFramework.Debugger
         {
             get
             {
-                return _ActiveWindow;
+                return m_ActiveWindow;
             }
             set
             {
-                _ActiveWindow = value;
+                m_ActiveWindow = value;
             }
         }
 
@@ -58,7 +58,7 @@ namespace GameFramework.Debugger
         {
             get
             {
-                return _DebuggerWindowRoot;
+                return m_DebuggerWindowRoot;
             }
         }
 
@@ -69,12 +69,12 @@ namespace GameFramework.Debugger
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
         internal override void Update(float elapseSeconds, float realElapseSeconds)
         {
-            if (!_ActiveWindow)
+            if (!m_ActiveWindow)
             {
                 return;
             }
 
-            _DebuggerWindowRoot.OnUpdate(elapseSeconds, realElapseSeconds);
+            m_DebuggerWindowRoot.OnUpdate(elapseSeconds, realElapseSeconds);
         }
 
         /// <summary>
@@ -82,8 +82,8 @@ namespace GameFramework.Debugger
         /// </summary>
         internal override void Shutdown()
         {
-            _ActiveWindow = false;
-            _DebuggerWindowRoot.Shutdown();
+            m_ActiveWindow = false;
+            m_DebuggerWindowRoot.Shutdown();
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace GameFramework.Debugger
                 throw new GameFrameworkException("Debugger window is invalid.");
             }
 
-            _DebuggerWindowRoot.RegisterDebuggerWindow(path, debuggerWindow);
+            m_DebuggerWindowRoot.RegisterDebuggerWindow(path, debuggerWindow);
             debuggerWindow.Initialize(args);
         }
 
@@ -115,7 +115,7 @@ namespace GameFramework.Debugger
         /// <returns>是否解除注册调试器窗口成功。</returns>
         public bool UnregisterDebuggerWindow(string path)
         {
-            return _DebuggerWindowRoot.UnregisterDebuggerWindow(path);
+            return m_DebuggerWindowRoot.UnregisterDebuggerWindow(path);
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace GameFramework.Debugger
         /// <returns>要获取的调试器窗口。</returns>
         public IDebuggerWindow GetDebuggerWindow(string path)
         {
-            return _DebuggerWindowRoot.GetDebuggerWindow(path);
+            return m_DebuggerWindowRoot.GetDebuggerWindow(path);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace GameFramework.Debugger
         /// <returns>是否成功选中调试器窗口。</returns>
         public bool SelectDebuggerWindow(string path)
         {
-            return _DebuggerWindowRoot.SelectDebuggerWindow(path);
+            return m_DebuggerWindowRoot.SelectDebuggerWindow(path);
         }
     }
 }

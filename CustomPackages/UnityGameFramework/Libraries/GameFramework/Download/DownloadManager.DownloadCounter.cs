@@ -11,12 +11,12 @@ namespace GameFramework.Download
     {
         private sealed partial class DownloadCounter
         {
-            private readonly GameFrameworkLinkedList<DownloadCounterNode> _DownloadCounterNodes;
-            private float _UpdateInterval;
-            private float _RecordInterval;
-            private float _CurrentSpeed;
-            private float _Accumulator;
-            private float _TimeLeft;
+            private readonly GameFrameworkLinkedList<DownloadCounterNode> m_DownloadCounterNodes;
+            private float m_UpdateInterval;
+            private float m_RecordInterval;
+            private float m_CurrentSpeed;
+            private float m_Accumulator;
+            private float m_TimeLeft;
 
             public DownloadCounter(float updateInterval, float recordInterval)
             {
@@ -30,9 +30,9 @@ namespace GameFramework.Download
                     throw new GameFrameworkException("Record interval is invalid.");
                 }
 
-                _DownloadCounterNodes = new GameFrameworkLinkedList<DownloadCounterNode>();
-                _UpdateInterval = updateInterval;
-                _RecordInterval = recordInterval;
+                m_DownloadCounterNodes = new GameFrameworkLinkedList<DownloadCounterNode>();
+                m_UpdateInterval = updateInterval;
+                m_RecordInterval = recordInterval;
                 Reset();
             }
 
@@ -40,7 +40,7 @@ namespace GameFramework.Download
             {
                 get
                 {
-                    return _UpdateInterval;
+                    return m_UpdateInterval;
                 }
                 set
                 {
@@ -49,7 +49,7 @@ namespace GameFramework.Download
                         throw new GameFrameworkException("Update interval is invalid.");
                     }
 
-                    _UpdateInterval = value;
+                    m_UpdateInterval = value;
                     Reset();
                 }
             }
@@ -58,7 +58,7 @@ namespace GameFramework.Download
             {
                 get
                 {
-                    return _RecordInterval;
+                    return m_RecordInterval;
                 }
                 set
                 {
@@ -67,7 +67,7 @@ namespace GameFramework.Download
                         throw new GameFrameworkException("Record interval is invalid.");
                     }
 
-                    _RecordInterval = value;
+                    m_RecordInterval = value;
                     Reset();
                 }
             }
@@ -76,7 +76,7 @@ namespace GameFramework.Download
             {
                 get
                 {
-                    return _CurrentSpeed;
+                    return m_CurrentSpeed;
                 }
             }
 
@@ -87,51 +87,51 @@ namespace GameFramework.Download
 
             public void Update(float elapseSeconds, float realElapseSeconds)
             {
-                if (_DownloadCounterNodes.Count <= 0)
+                if (m_DownloadCounterNodes.Count <= 0)
                 {
                     return;
                 }
 
-                _Accumulator += realElapseSeconds;
-                if (_Accumulator > _RecordInterval)
+                m_Accumulator += realElapseSeconds;
+                if (m_Accumulator > m_RecordInterval)
                 {
-                    _Accumulator = _RecordInterval;
+                    m_Accumulator = m_RecordInterval;
                 }
 
-                _TimeLeft -= realElapseSeconds;
-                foreach (DownloadCounterNode downloadCounterNode in _DownloadCounterNodes)
+                m_TimeLeft -= realElapseSeconds;
+                foreach (DownloadCounterNode downloadCounterNode in m_DownloadCounterNodes)
                 {
                     downloadCounterNode.Update(elapseSeconds, realElapseSeconds);
                 }
 
-                while (_DownloadCounterNodes.Count > 0)
+                while (m_DownloadCounterNodes.Count > 0)
                 {
-                    DownloadCounterNode downloadCounterNode = _DownloadCounterNodes.First.Value;
-                    if (downloadCounterNode.ElapseSeconds < _RecordInterval)
+                    DownloadCounterNode downloadCounterNode = m_DownloadCounterNodes.First.Value;
+                    if (downloadCounterNode.ElapseSeconds < m_RecordInterval)
                     {
                         break;
                     }
 
                     ReferencePool.Release(downloadCounterNode);
-                    _DownloadCounterNodes.RemoveFirst();
+                    m_DownloadCounterNodes.RemoveFirst();
                 }
 
-                if (_DownloadCounterNodes.Count <= 0)
+                if (m_DownloadCounterNodes.Count <= 0)
                 {
                     Reset();
                     return;
                 }
 
-                if (_TimeLeft <= 0f)
+                if (m_TimeLeft <= 0f)
                 {
                     long totalDeltaLength = 0L;
-                    foreach (DownloadCounterNode downloadCounterNode in _DownloadCounterNodes)
+                    foreach (DownloadCounterNode downloadCounterNode in m_DownloadCounterNodes)
                     {
                         totalDeltaLength += downloadCounterNode.DeltaLength;
                     }
 
-                    _CurrentSpeed = _Accumulator > 0f ? totalDeltaLength / _Accumulator : 0f;
-                    _TimeLeft += _UpdateInterval;
+                    m_CurrentSpeed = m_Accumulator > 0f ? totalDeltaLength / m_Accumulator : 0f;
+                    m_TimeLeft += m_UpdateInterval;
                 }
             }
 
@@ -143,10 +143,10 @@ namespace GameFramework.Download
                 }
 
                 DownloadCounterNode downloadCounterNode = null;
-                if (_DownloadCounterNodes.Count > 0)
+                if (m_DownloadCounterNodes.Count > 0)
                 {
-                    downloadCounterNode = _DownloadCounterNodes.Last.Value;
-                    if (downloadCounterNode.ElapseSeconds < _UpdateInterval)
+                    downloadCounterNode = m_DownloadCounterNodes.Last.Value;
+                    if (downloadCounterNode.ElapseSeconds < m_UpdateInterval)
                     {
                         downloadCounterNode.AddDeltaLength(deltaLength);
                         return;
@@ -155,15 +155,15 @@ namespace GameFramework.Download
 
                 downloadCounterNode = DownloadCounterNode.Create();
                 downloadCounterNode.AddDeltaLength(deltaLength);
-                _DownloadCounterNodes.AddLast(downloadCounterNode);
+                m_DownloadCounterNodes.AddLast(downloadCounterNode);
             }
 
             private void Reset()
             {
-                _DownloadCounterNodes.Clear();
-                _CurrentSpeed = 0f;
-                _Accumulator = 0f;
-                _TimeLeft = 0f;
+                m_DownloadCounterNodes.Clear();
+                m_CurrentSpeed = 0f;
+                m_Accumulator = 0f;
+                m_TimeLeft = 0f;
             }
         }
     }

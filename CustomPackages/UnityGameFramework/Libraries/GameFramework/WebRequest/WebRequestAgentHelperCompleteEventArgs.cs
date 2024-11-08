@@ -12,14 +12,14 @@ namespace GameFramework.WebRequest
     /// </summary>
     public sealed class WebRequestAgentHelperCompleteEventArgs : GameFrameworkEventArgs
     {
-        private byte[] _WebResponseBytes;
+        private byte[] m_WebResponseBytes;
 
         /// <summary>
         /// 初始化 Web 请求代理辅助器完成事件的新实例。
         /// </summary>
         public WebRequestAgentHelperCompleteEventArgs()
         {
-            _WebResponseBytes = null;
+            m_WebResponseBytes = null;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace GameFramework.WebRequest
         public static WebRequestAgentHelperCompleteEventArgs Create(byte[] webResponseBytes)
         {
             WebRequestAgentHelperCompleteEventArgs webRequestAgentHelperCompleteEventArgs = ReferencePool.Acquire<WebRequestAgentHelperCompleteEventArgs>();
-            webRequestAgentHelperCompleteEventArgs._WebResponseBytes = webResponseBytes;
+            webRequestAgentHelperCompleteEventArgs.m_WebResponseBytes = webResponseBytes;
             return webRequestAgentHelperCompleteEventArgs;
         }
 
@@ -39,7 +39,7 @@ namespace GameFramework.WebRequest
         /// </summary>
         public override void Clear()
         {
-            _WebResponseBytes = null;
+            m_WebResponseBytes = null;
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace GameFramework.WebRequest
         /// <returns>Web 响应的数据流。</returns>
         public byte[] GetWebResponseBytes()
         {
-            return _WebResponseBytes;
+            return m_WebResponseBytes;
         }
     }
 }

@@ -16,17 +16,17 @@ namespace GameFramework.WebRequest
         {
             private static int s_Serial = 0;
 
-            private WebRequestTaskStatus _Status;
-            private string _WebRequestUri;
-            private byte[] _PostData;
-            private float _Timeout;
+            private WebRequestTaskStatus m_Status;
+            private string m_WebRequestUri;
+            private byte[] m_PostData;
+            private float m_Timeout;
 
             public WebRequestTask()
             {
-                _Status = WebRequestTaskStatus.Todo;
-                _WebRequestUri = null;
-                _PostData = null;
-                _Timeout = 0f;
+                m_Status = WebRequestTaskStatus.Todo;
+                m_WebRequestUri = null;
+                m_PostData = null;
+                m_Timeout = 0f;
             }
 
             /// <summary>
@@ -36,11 +36,11 @@ namespace GameFramework.WebRequest
             {
                 get
                 {
-                    return _Status;
+                    return m_Status;
                 }
                 set
                 {
-                    _Status = value;
+                    m_Status = value;
                 }
             }
 
@@ -51,7 +51,7 @@ namespace GameFramework.WebRequest
             {
                 get
                 {
-                    return _WebRequestUri;
+                    return m_WebRequestUri;
                 }
             }
 
@@ -62,7 +62,7 @@ namespace GameFramework.WebRequest
             {
                 get
                 {
-                    return _Timeout;
+                    return m_Timeout;
                 }
             }
 
@@ -73,7 +73,7 @@ namespace GameFramework.WebRequest
             {
                 get
                 {
-                    return _WebRequestUri;
+                    return m_WebRequestUri;
                 }
             }
 
@@ -91,9 +91,9 @@ namespace GameFramework.WebRequest
             {
                 WebRequestTask webRequestTask = ReferencePool.Acquire<WebRequestTask>();
                 webRequestTask.Initialize(++s_Serial, tag, priority, userData);
-                webRequestTask._WebRequestUri = webRequestUri;
-                webRequestTask._PostData = postData;
-                webRequestTask._Timeout = timeout;
+                webRequestTask.m_WebRequestUri = webRequestUri;
+                webRequestTask.m_PostData = postData;
+                webRequestTask.m_Timeout = timeout;
                 return webRequestTask;
             }
 
@@ -103,10 +103,10 @@ namespace GameFramework.WebRequest
             public override void Clear()
             {
                 base.Clear();
-                _Status = WebRequestTaskStatus.Todo;
-                _WebRequestUri = null;
-                _PostData = null;
-                _Timeout = 0f;
+                m_Status = WebRequestTaskStatus.Todo;
+                m_WebRequestUri = null;
+                m_PostData = null;
+                m_Timeout = 0f;
             }
 
             /// <summary>
@@ -114,7 +114,7 @@ namespace GameFramework.WebRequest
             /// </summary>
             public byte[] GetPostData()
             {
-                return _PostData;
+                return m_PostData;
             }
         }
     }

@@ -11,24 +11,24 @@ namespace GameFramework.Network
     {
         private sealed class HeartBeatState
         {
-            private float _HeartBeatElapseSeconds;
-            private int _MissHeartBeatCount;
+            private float m_HeartBeatElapseSeconds;
+            private int m_MissHeartBeatCount;
 
             public HeartBeatState()
             {
-                _HeartBeatElapseSeconds = 0f;
-                _MissHeartBeatCount = 0;
+                m_HeartBeatElapseSeconds = 0f;
+                m_MissHeartBeatCount = 0;
             }
 
             public float HeartBeatElapseSeconds
             {
                 get
                 {
-                    return _HeartBeatElapseSeconds;
+                    return m_HeartBeatElapseSeconds;
                 }
                 set
                 {
-                    _HeartBeatElapseSeconds = value;
+                    m_HeartBeatElapseSeconds = value;
                 }
             }
 
@@ -36,11 +36,11 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    return _MissHeartBeatCount;
+                    return m_MissHeartBeatCount;
                 }
                 set
                 {
-                    _MissHeartBeatCount = value;
+                    m_MissHeartBeatCount = value;
                 }
             }
 
@@ -48,10 +48,10 @@ namespace GameFramework.Network
             {
                 if (resetHeartBeatElapseSeconds)
                 {
-                    _HeartBeatElapseSeconds = 0f;
+                    m_HeartBeatElapseSeconds = 0f;
                 }
 
-                _MissHeartBeatCount = 0;
+                m_MissHeartBeatCount = 0;
             }
         }
     }

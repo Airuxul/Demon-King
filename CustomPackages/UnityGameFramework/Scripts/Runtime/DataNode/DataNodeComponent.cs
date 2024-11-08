@@ -18,12 +18,18 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Data Node")]
     public sealed class DataNodeComponent : GameFrameworkComponent
     {
-        private IDataNodeManager _dataNodeManager = null;
+        private IDataNodeManager m_DataNodeManager = null;
 
         /// <summary>
         /// 获取根数据结点。
         /// </summary>
-        public IDataNode Root => _dataNodeManager.Root;
+        public IDataNode Root
+        {
+            get
+            {
+                return m_DataNodeManager.Root;
+            }
+        }
 
         /// <summary>
         /// 游戏框架组件初始化。
@@ -32,8 +38,8 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            _dataNodeManager = GameFrameworkEntry.GetModule<IDataNodeManager>();
-            if (_dataNodeManager == null)
+            m_DataNodeManager = GameFrameworkEntry.GetModule<IDataNodeManager>();
+            if (m_DataNodeManager == null)
             {
                 Log.Fatal("Data node manager is invalid.");
                 return;
@@ -52,7 +58,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>指定类型的数据。</returns>
         public T GetData<T>(string path) where T : Variable
         {
-            return _dataNodeManager.GetData<T>(path);
+            return m_DataNodeManager.GetData<T>(path);
         }
 
         /// <summary>
@@ -62,7 +68,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>数据结点的数据。</returns>
         public Variable GetData(string path)
         {
-            return _dataNodeManager.GetData(path);
+            return m_DataNodeManager.GetData(path);
         }
 
         /// <summary>
@@ -74,7 +80,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>指定类型的数据。</returns>
         public T GetData<T>(string path, IDataNode node) where T : Variable
         {
-            return _dataNodeManager.GetData<T>(path, node);
+            return m_DataNodeManager.GetData<T>(path, node);
         }
 
         /// <summary>
@@ -85,7 +91,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>数据结点的数据。</returns>
         public Variable GetData(string path, IDataNode node)
         {
-            return _dataNodeManager.GetData(path, node);
+            return m_DataNodeManager.GetData(path, node);
         }
 
         /// <summary>
@@ -96,7 +102,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="data">要设置的数据。</param>
         public void SetData<T>(string path, T data) where T : Variable
         {
-            _dataNodeManager.SetData(path, data);
+            m_DataNodeManager.SetData(path, data);
         }
 
         /// <summary>
@@ -106,7 +112,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="data">要设置的数据。</param>
         public void SetData(string path, Variable data)
         {
-            _dataNodeManager.SetData(path, data);
+            m_DataNodeManager.SetData(path, data);
         }
 
         /// <summary>
@@ -118,7 +124,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="node">查找起始结点。</param>
         public void SetData<T>(string path, T data, IDataNode node) where T : Variable
         {
-            _dataNodeManager.SetData(path, data, node);
+            m_DataNodeManager.SetData(path, data, node);
         }
 
         /// <summary>
@@ -129,7 +135,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="node">查找起始结点。</param>
         public void SetData(string path, Variable data, IDataNode node)
         {
-            _dataNodeManager.SetData(path, data, node);
+            m_DataNodeManager.SetData(path, data, node);
         }
 
         /// <summary>
@@ -139,7 +145,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>指定位置的数据结点，如果没有找到，则返回空。</returns>
         public IDataNode GetNode(string path)
         {
-            return _dataNodeManager.GetNode(path);
+            return m_DataNodeManager.GetNode(path);
         }
 
         /// <summary>
@@ -150,7 +156,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>指定位置的数据结点，如果没有找到，则返回空。</returns>
         public IDataNode GetNode(string path, IDataNode node)
         {
-            return _dataNodeManager.GetNode(path, node);
+            return m_DataNodeManager.GetNode(path, node);
         }
 
         /// <summary>
@@ -160,7 +166,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>指定位置的数据结点，如果没有找到，则增加相应的数据结点。</returns>
         public IDataNode GetOrAddNode(string path)
         {
-            return _dataNodeManager.GetOrAddNode(path);
+            return m_DataNodeManager.GetOrAddNode(path);
         }
 
         /// <summary>
@@ -171,7 +177,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>指定位置的数据结点，如果没有找到，则增加相应的数据结点。</returns>
         public IDataNode GetOrAddNode(string path, IDataNode node)
         {
-            return _dataNodeManager.GetOrAddNode(path, node);
+            return m_DataNodeManager.GetOrAddNode(path, node);
         }
 
         /// <summary>
@@ -180,7 +186,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="path">相对于 node 的查找路径。</param>
         public void RemoveNode(string path)
         {
-            _dataNodeManager.RemoveNode(path);
+            m_DataNodeManager.RemoveNode(path);
         }
 
         /// <summary>
@@ -190,7 +196,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="node">查找起始结点。</param>
         public void RemoveNode(string path, IDataNode node)
         {
-            _dataNodeManager.RemoveNode(path, node);
+            m_DataNodeManager.RemoveNode(path, node);
         }
 
         /// <summary>
@@ -198,7 +204,7 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public void Clear()
         {
-            _dataNodeManager.Clear();
+            m_DataNodeManager.Clear();
         }
     }
 }

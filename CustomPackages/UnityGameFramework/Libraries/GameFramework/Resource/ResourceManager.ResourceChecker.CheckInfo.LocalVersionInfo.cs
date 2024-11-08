@@ -21,26 +21,26 @@ namespace GameFramework.Resource
                 [StructLayout(LayoutKind.Auto)]
                 private struct LocalVersionInfo
                 {
-                    private readonly bool _Exist;
-                    private readonly string _FileSystemName;
-                    private readonly LoadType _LoadType;
-                    private readonly int _Length;
-                    private readonly int _HashCode;
+                    private readonly bool m_Exist;
+                    private readonly string m_FileSystemName;
+                    private readonly LoadType m_LoadType;
+                    private readonly int m_Length;
+                    private readonly int m_HashCode;
 
                     public LocalVersionInfo(string fileSystemName, LoadType loadType, int length, int hashCode)
                     {
-                        _Exist = true;
-                        _FileSystemName = fileSystemName;
-                        _LoadType = loadType;
-                        _Length = length;
-                        _HashCode = hashCode;
+                        m_Exist = true;
+                        m_FileSystemName = fileSystemName;
+                        m_LoadType = loadType;
+                        m_Length = length;
+                        m_HashCode = hashCode;
                     }
 
                     public bool Exist
                     {
                         get
                         {
-                            return _Exist;
+                            return m_Exist;
                         }
                     }
 
@@ -48,7 +48,7 @@ namespace GameFramework.Resource
                     {
                         get
                         {
-                            return !string.IsNullOrEmpty(_FileSystemName);
+                            return !string.IsNullOrEmpty(m_FileSystemName);
                         }
                     }
 
@@ -56,7 +56,7 @@ namespace GameFramework.Resource
                     {
                         get
                         {
-                            return _FileSystemName;
+                            return m_FileSystemName;
                         }
                     }
 
@@ -64,7 +64,7 @@ namespace GameFramework.Resource
                     {
                         get
                         {
-                            return _LoadType;
+                            return m_LoadType;
                         }
                     }
 
@@ -72,7 +72,7 @@ namespace GameFramework.Resource
                     {
                         get
                         {
-                            return _Length;
+                            return m_Length;
                         }
                     }
 
@@ -80,7 +80,7 @@ namespace GameFramework.Resource
                     {
                         get
                         {
-                            return _HashCode;
+                            return m_HashCode;
                         }
                     }
                 }

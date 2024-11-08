@@ -35,7 +35,13 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 获取下载失败事件编号。
         /// </summary>
-        public override int Id => EventId;
+        public override int Id
+        {
+            get
+            {
+                return EventId;
+            }
+        }
 
         /// <summary>
         /// 获取下载任务的序列编号。

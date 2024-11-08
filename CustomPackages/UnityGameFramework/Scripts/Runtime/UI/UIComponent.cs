@@ -11,7 +11,6 @@ using GameFramework.Resource;
 using GameFramework.UI;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -24,68 +23,80 @@ namespace UnityGameFramework.Runtime
     {
         private const int DefaultPriority = 0;
 
-        private IUIManager _uiManager = null;
-        private EventComponent _eventComponent = null;
+        private IUIManager m_UIManager = null;
+        private EventComponent m_EventComponent = null;
 
-        private readonly List<IUIForm> _internalUIFormResults = new List<IUIForm>();
+        private readonly List<IUIForm> m_InternalUIFormResults = new List<IUIForm>();
 
-        [FormerlySerializedAs("_EnableOpenUIFormSuccessEvent")] [SerializeField]
-        private bool enableOpenUIFormSuccessEvent = true;
+        [SerializeField]
+        private bool m_EnableOpenUIFormSuccessEvent = true;
 
-        [FormerlySerializedAs("_EnableOpenUIFormFailureEvent")] [SerializeField]
-        private bool enableOpenUIFormFailureEvent = true;
+        [SerializeField]
+        private bool m_EnableOpenUIFormFailureEvent = true;
 
-        [FormerlySerializedAs("_EnableOpenUIFormUpdateEvent")] [SerializeField]
-        private bool enableOpenUIFormUpdateEvent = false;
+        [SerializeField]
+        private bool m_EnableOpenUIFormUpdateEvent = false;
 
-        [FormerlySerializedAs("_EnableOpenUIFormDependencyAssetEvent")] [SerializeField]
-        private bool enableOpenUIFormDependencyAssetEvent = false;
+        [SerializeField]
+        private bool m_EnableOpenUIFormDependencyAssetEvent = false;
 
-        [FormerlySerializedAs("_EnableCloseUIFormCompleteEvent")] [SerializeField]
-        private bool enableCloseUIFormCompleteEvent = true;
+        [SerializeField]
+        private bool m_EnableCloseUIFormCompleteEvent = true;
 
-        [FormerlySerializedAs("_InstanceAutoReleaseInterval")] [SerializeField]
-        private float instanceAutoReleaseInterval = 60f;
+        [SerializeField]
+        private float m_InstanceAutoReleaseInterval = 60f;
 
-        [FormerlySerializedAs("_InstanceCapacity")] [SerializeField]
-        private int instanceCapacity = 16;
+        [SerializeField]
+        private int m_InstanceCapacity = 16;
 
-        [FormerlySerializedAs("_InstanceExpireTime")] [SerializeField]
-        private float instanceExpireTime = 60f;
+        [SerializeField]
+        private float m_InstanceExpireTime = 60f;
 
-        [FormerlySerializedAs("_InstancePriority")] [SerializeField]
-        private int instancePriority = 0;
+        [SerializeField]
+        private int m_InstancePriority = 0;
 
-        [FormerlySerializedAs("_InstanceRoot")] [SerializeField]
-        private Transform instanceRoot = null;
+        [SerializeField]
+        private Transform m_InstanceRoot = null;
 
-        [FormerlySerializedAs("_UIFormHelperTypeName")] [SerializeField]
-        private string uiFormHelperTypeName = "UnityGameFramework.Runtime.DefaultUIFormHelper";
+        [SerializeField]
+        private string m_UIFormHelperTypeName = "UnityGameFramework.Runtime.DefaultUIFormHelper";
 
-        [FormerlySerializedAs("_CustomUIFormHelper")] [SerializeField]
-        private UIFormHelperBase customUIFormHelper = null;
+        [SerializeField]
+        private UIFormHelperBase m_CustomUIFormHelper = null;
 
-        [FormerlySerializedAs("_UIGroupHelperTypeName")] [SerializeField]
-        private string uiGroupHelperTypeName = "UnityGameFramework.Runtime.DefaultUIGroupHelper";
+        [SerializeField]
+        private string m_UIGroupHelperTypeName = "UnityGameFramework.Runtime.DefaultUIGroupHelper";
 
-        [FormerlySerializedAs("_CustomUIGroupHelper")] [SerializeField]
-        private UIGroupHelperBase customUIGroupHelper = null;
+        [SerializeField]
+        private UIGroupHelperBase m_CustomUIGroupHelper = null;
 
-        [FormerlySerializedAs("_UIGroups")] [SerializeField]
-        private UIGroup[] uiGroups = null;
+        [SerializeField]
+        private UIGroup[] m_UIGroups = null;
 
         /// <summary>
         /// 获取界面组数量。
         /// </summary>
-        public int UIGroupCount => _uiManager.UIGroupCount;
+        public int UIGroupCount
+        {
+            get
+            {
+                return m_UIManager.UIGroupCount;
+            }
+        }
 
         /// <summary>
         /// 获取或设置界面实例对象池自动释放可释放对象的间隔秒数。
         /// </summary>
         public float InstanceAutoReleaseInterval
         {
-            get => _uiManager.InstanceAutoReleaseInterval;
-            set => _uiManager.InstanceAutoReleaseInterval = instanceAutoReleaseInterval = value;
+            get
+            {
+                return m_UIManager.InstanceAutoReleaseInterval;
+            }
+            set
+            {
+                m_UIManager.InstanceAutoReleaseInterval = m_InstanceAutoReleaseInterval = value;
+            }
         }
 
         /// <summary>
@@ -93,8 +104,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public int InstanceCapacity
         {
-            get => _uiManager.InstanceCapacity;
-            set => _uiManager.InstanceCapacity = instanceCapacity = value;
+            get
+            {
+                return m_UIManager.InstanceCapacity;
+            }
+            set
+            {
+                m_UIManager.InstanceCapacity = m_InstanceCapacity = value;
+            }
         }
 
         /// <summary>
@@ -102,8 +119,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public float InstanceExpireTime
         {
-            get => _uiManager.InstanceExpireTime;
-            set => _uiManager.InstanceExpireTime = instanceExpireTime = value;
+            get
+            {
+                return m_UIManager.InstanceExpireTime;
+            }
+            set
+            {
+                m_UIManager.InstanceExpireTime = m_InstanceExpireTime = value;
+            }
         }
 
         /// <summary>
@@ -111,8 +134,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public int InstancePriority
         {
-            get => _uiManager.InstancePriority;
-            set => _uiManager.InstancePriority = instancePriority = value;
+            get
+            {
+                return m_UIManager.InstancePriority;
+            }
+            set
+            {
+                m_UIManager.InstancePriority = m_InstancePriority = value;
+            }
         }
 
         /// <summary>
@@ -122,33 +151,33 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            _uiManager = GameFrameworkEntry.GetModule<IUIManager>();
-            if (_uiManager == null)
+            m_UIManager = GameFrameworkEntry.GetModule<IUIManager>();
+            if (m_UIManager == null)
             {
                 Log.Fatal("UI manager is invalid.");
                 return;
             }
 
-            if (enableOpenUIFormSuccessEvent)
+            if (m_EnableOpenUIFormSuccessEvent)
             {
-                _uiManager.OpenUIFormSuccess += OnOpenUIFormSuccess;
+                m_UIManager.OpenUIFormSuccess += OnOpenUIFormSuccess;
             }
 
-            _uiManager.OpenUIFormFailure += OnOpenUIFormFailure;
+            m_UIManager.OpenUIFormFailure += OnOpenUIFormFailure;
 
-            if (enableOpenUIFormUpdateEvent)
+            if (m_EnableOpenUIFormUpdateEvent)
             {
-                _uiManager.OpenUIFormUpdate += OnOpenUIFormUpdate;
+                m_UIManager.OpenUIFormUpdate += OnOpenUIFormUpdate;
             }
 
-            if (enableOpenUIFormDependencyAssetEvent)
+            if (m_EnableOpenUIFormDependencyAssetEvent)
             {
-                _uiManager.OpenUIFormDependencyAsset += OnOpenUIFormDependencyAsset;
+                m_UIManager.OpenUIFormDependencyAsset += OnOpenUIFormDependencyAsset;
             }
 
-            if (enableCloseUIFormCompleteEvent)
+            if (m_EnableCloseUIFormCompleteEvent)
             {
-                _uiManager.CloseUIFormComplete += OnCloseUIFormComplete;
+                m_UIManager.CloseUIFormComplete += OnCloseUIFormComplete;
             }
         }
 
@@ -161,8 +190,8 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            _eventComponent = GameEntry.GetComponent<EventComponent>();
-            if (_eventComponent == null)
+            m_EventComponent = GameEntry.GetComponent<EventComponent>();
+            if (m_EventComponent == null)
             {
                 Log.Fatal("Event component is invalid.");
                 return;
@@ -170,20 +199,20 @@ namespace UnityGameFramework.Runtime
 
             if (baseComponent.EditorResourceMode)
             {
-                _uiManager.SetResourceManager(baseComponent.EditorResourceHelper);
+                m_UIManager.SetResourceManager(baseComponent.EditorResourceHelper);
             }
             else
             {
-                _uiManager.SetResourceManager(GameFrameworkEntry.GetModule<IResourceManager>());
+                m_UIManager.SetResourceManager(GameFrameworkEntry.GetModule<IResourceManager>());
             }
 
-            _uiManager.SetObjectPoolManager(GameFrameworkEntry.GetModule<IObjectPoolManager>());
-            _uiManager.InstanceAutoReleaseInterval = instanceAutoReleaseInterval;
-            _uiManager.InstanceCapacity = instanceCapacity;
-            _uiManager.InstanceExpireTime = instanceExpireTime;
-            _uiManager.InstancePriority = instancePriority;
+            m_UIManager.SetObjectPoolManager(GameFrameworkEntry.GetModule<IObjectPoolManager>());
+            m_UIManager.InstanceAutoReleaseInterval = m_InstanceAutoReleaseInterval;
+            m_UIManager.InstanceCapacity = m_InstanceCapacity;
+            m_UIManager.InstanceExpireTime = m_InstanceExpireTime;
+            m_UIManager.InstancePriority = m_InstancePriority;
 
-            UIFormHelperBase uiFormHelper = Helper.CreateHelper(uiFormHelperTypeName, customUIFormHelper);
+            UIFormHelperBase uiFormHelper = Helper.CreateHelper(m_UIFormHelperTypeName, m_CustomUIFormHelper);
             if (uiFormHelper == null)
             {
                 Log.Error("Can not create UI form helper.");
@@ -195,22 +224,22 @@ namespace UnityGameFramework.Runtime
             transform.SetParent(this.transform);
             transform.localScale = Vector3.one;
 
-            _uiManager.SetUIFormHelper(uiFormHelper);
+            m_UIManager.SetUIFormHelper(uiFormHelper);
 
-            if (instanceRoot == null)
+            if (m_InstanceRoot == null)
             {
-                instanceRoot = new GameObject("UI Form Instances").transform;
-                instanceRoot.SetParent(gameObject.transform);
-                instanceRoot.localScale = Vector3.one;
+                m_InstanceRoot = new GameObject("UI Form Instances").transform;
+                m_InstanceRoot.SetParent(gameObject.transform);
+                m_InstanceRoot.localScale = Vector3.one;
             }
 
-            instanceRoot.gameObject.layer = LayerMask.NameToLayer("UI");
+            m_InstanceRoot.gameObject.layer = LayerMask.NameToLayer("UI");
 
-            for (int i = 0; i < uiGroups.Length; i++)
+            for (int i = 0; i < m_UIGroups.Length; i++)
             {
-                if (!AddUIGroup(uiGroups[i].Name, uiGroups[i].Depth))
+                if (!AddUIGroup(m_UIGroups[i].Name, m_UIGroups[i].Depth))
                 {
-                    Log.Warning("Add UI group '{0}' failure.", uiGroups[i].Name);
+                    Log.Warning("Add UI group '{0}' failure.", m_UIGroups[i].Name);
                     continue;
                 }
             }
@@ -223,7 +252,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在界面组。</returns>
         public bool HasUIGroup(string uiGroupName)
         {
-            return _uiManager.HasUIGroup(uiGroupName);
+            return m_UIManager.HasUIGroup(uiGroupName);
         }
 
         /// <summary>
@@ -233,7 +262,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的界面组。</returns>
         public IUIGroup GetUIGroup(string uiGroupName)
         {
-            return _uiManager.GetUIGroup(uiGroupName);
+            return m_UIManager.GetUIGroup(uiGroupName);
         }
 
         /// <summary>
@@ -242,7 +271,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>所有界面组。</returns>
         public IUIGroup[] GetAllUIGroups()
         {
-            return _uiManager.GetAllUIGroups();
+            return m_UIManager.GetAllUIGroups();
         }
 
         /// <summary>
@@ -251,7 +280,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">所有界面组。</param>
         public void GetAllUIGroups(List<IUIGroup> results)
         {
-            _uiManager.GetAllUIGroups(results);
+            m_UIManager.GetAllUIGroups(results);
         }
 
         /// <summary>
@@ -272,12 +301,12 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否增加界面组成功。</returns>
         public bool AddUIGroup(string uiGroupName, int depth)
         {
-            if (_uiManager.HasUIGroup(uiGroupName))
+            if (m_UIManager.HasUIGroup(uiGroupName))
             {
                 return false;
             }
 
-            UIGroupHelperBase uiGroupHelper = Helper.CreateHelper(uiGroupHelperTypeName, customUIGroupHelper, UIGroupCount);
+            UIGroupHelperBase uiGroupHelper = Helper.CreateHelper(m_UIGroupHelperTypeName, m_CustomUIGroupHelper, UIGroupCount);
             if (uiGroupHelper == null)
             {
                 Log.Error("Can not create UI group helper.");
@@ -287,10 +316,10 @@ namespace UnityGameFramework.Runtime
             uiGroupHelper.name = Utility.Text.Format("UI Group - {0}", uiGroupName);
             uiGroupHelper.gameObject.layer = LayerMask.NameToLayer("UI");
             Transform transform = uiGroupHelper.transform;
-            transform.SetParent(instanceRoot);
+            transform.SetParent(m_InstanceRoot);
             transform.localScale = Vector3.one;
 
-            return _uiManager.AddUIGroup(uiGroupName, depth, uiGroupHelper);
+            return m_UIManager.AddUIGroup(uiGroupName, depth, uiGroupHelper);
         }
 
         /// <summary>
@@ -300,7 +329,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在界面。</returns>
         public bool HasUIForm(int serialId)
         {
-            return _uiManager.HasUIForm(serialId);
+            return m_UIManager.HasUIForm(serialId);
         }
 
         /// <summary>
@@ -310,7 +339,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在界面。</returns>
         public bool HasUIForm(string uiFormAssetName)
         {
-            return _uiManager.HasUIForm(uiFormAssetName);
+            return m_UIManager.HasUIForm(uiFormAssetName);
         }
 
         /// <summary>
@@ -320,7 +349,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的界面。</returns>
         public UIForm GetUIForm(int serialId)
         {
-            return (UIForm)_uiManager.GetUIForm(serialId);
+            return (UIForm)m_UIManager.GetUIForm(serialId);
         }
 
         /// <summary>
@@ -330,7 +359,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的界面。</returns>
         public UIForm GetUIForm(string uiFormAssetName)
         {
-            return (UIForm)_uiManager.GetUIForm(uiFormAssetName);
+            return (UIForm)m_UIManager.GetUIForm(uiFormAssetName);
         }
 
         /// <summary>
@@ -340,7 +369,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的界面。</returns>
         public UIForm[] GetUIForms(string uiFormAssetName)
         {
-            IUIForm[] uiForms = _uiManager.GetUIForms(uiFormAssetName);
+            IUIForm[] uiForms = m_UIManager.GetUIForms(uiFormAssetName);
             UIForm[] uiFormImpls = new UIForm[uiForms.Length];
             for (int i = 0; i < uiForms.Length; i++)
             {
@@ -364,8 +393,8 @@ namespace UnityGameFramework.Runtime
             }
 
             results.Clear();
-            _uiManager.GetUIForms(uiFormAssetName, _internalUIFormResults);
-            foreach (IUIForm uiForm in _internalUIFormResults)
+            m_UIManager.GetUIForms(uiFormAssetName, m_InternalUIFormResults);
+            foreach (IUIForm uiForm in m_InternalUIFormResults)
             {
                 results.Add((UIForm)uiForm);
             }
@@ -377,7 +406,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>所有已加载的界面。</returns>
         public UIForm[] GetAllLoadedUIForms()
         {
-            IUIForm[] uiForms = _uiManager.GetAllLoadedUIForms();
+            IUIForm[] uiForms = m_UIManager.GetAllLoadedUIForms();
             UIForm[] uiFormImpls = new UIForm[uiForms.Length];
             for (int i = 0; i < uiForms.Length; i++)
             {
@@ -400,8 +429,8 @@ namespace UnityGameFramework.Runtime
             }
 
             results.Clear();
-            _uiManager.GetAllLoadedUIForms(_internalUIFormResults);
-            foreach (IUIForm uiForm in _internalUIFormResults)
+            m_UIManager.GetAllLoadedUIForms(m_InternalUIFormResults);
+            foreach (IUIForm uiForm in m_InternalUIFormResults)
             {
                 results.Add((UIForm)uiForm);
             }
@@ -413,7 +442,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>所有正在加载界面的序列编号。</returns>
         public int[] GetAllLoadingUIFormSerialIds()
         {
-            return _uiManager.GetAllLoadingUIFormSerialIds();
+            return m_UIManager.GetAllLoadingUIFormSerialIds();
         }
 
         /// <summary>
@@ -422,7 +451,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">所有正在加载界面的序列编号。</param>
         public void GetAllLoadingUIFormSerialIds(List<int> results)
         {
-            _uiManager.GetAllLoadingUIFormSerialIds(results);
+            m_UIManager.GetAllLoadingUIFormSerialIds(results);
         }
 
         /// <summary>
@@ -432,7 +461,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否正在加载界面。</returns>
         public bool IsLoadingUIForm(int serialId)
         {
-            return _uiManager.IsLoadingUIForm(serialId);
+            return m_UIManager.IsLoadingUIForm(serialId);
         }
 
         /// <summary>
@@ -442,7 +471,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否正在加载界面。</returns>
         public bool IsLoadingUIForm(string uiFormAssetName)
         {
-            return _uiManager.IsLoadingUIForm(uiFormAssetName);
+            return m_UIManager.IsLoadingUIForm(uiFormAssetName);
         }
 
         /// <summary>
@@ -452,7 +481,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>界面是否合法。</returns>
         public bool IsValidUIForm(UIForm uiForm)
         {
-            return _uiManager.IsValidUIForm(uiForm);
+            return m_UIManager.IsValidUIForm(uiForm);
         }
 
         /// <summary>
@@ -552,7 +581,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>界面的序列编号。</returns>
         public int OpenUIForm(string uiFormAssetName, string uiGroupName, int priority, bool pauseCoveredUIForm, object userData)
         {
-            return _uiManager.OpenUIForm(uiFormAssetName, uiGroupName, priority, pauseCoveredUIForm, userData);
+            return m_UIManager.OpenUIForm(uiFormAssetName, uiGroupName, priority, pauseCoveredUIForm, userData);
         }
 
         /// <summary>
@@ -561,7 +590,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="serialId">要关闭界面的序列编号。</param>
         public void CloseUIForm(int serialId)
         {
-            _uiManager.CloseUIForm(serialId);
+            m_UIManager.CloseUIForm(serialId);
         }
 
         /// <summary>
@@ -571,7 +600,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void CloseUIForm(int serialId, object userData)
         {
-            _uiManager.CloseUIForm(serialId, userData);
+            m_UIManager.CloseUIForm(serialId, userData);
         }
 
         /// <summary>
@@ -580,7 +609,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="uiForm">要关闭的界面。</param>
         public void CloseUIForm(UIForm uiForm)
         {
-            _uiManager.CloseUIForm(uiForm);
+            m_UIManager.CloseUIForm(uiForm);
         }
 
         /// <summary>
@@ -590,7 +619,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void CloseUIForm(UIForm uiForm, object userData)
         {
-            _uiManager.CloseUIForm(uiForm, userData);
+            m_UIManager.CloseUIForm(uiForm, userData);
         }
 
         /// <summary>
@@ -598,7 +627,7 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public void CloseAllLoadedUIForms()
         {
-            _uiManager.CloseAllLoadedUIForms();
+            m_UIManager.CloseAllLoadedUIForms();
         }
 
         /// <summary>
@@ -607,7 +636,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void CloseAllLoadedUIForms(object userData)
         {
-            _uiManager.CloseAllLoadedUIForms(userData);
+            m_UIManager.CloseAllLoadedUIForms(userData);
         }
 
         /// <summary>
@@ -615,7 +644,7 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public void CloseAllLoadingUIForms()
         {
-            _uiManager.CloseAllLoadingUIForms();
+            m_UIManager.CloseAllLoadingUIForms();
         }
 
         /// <summary>
@@ -624,7 +653,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="uiForm">要激活的界面。</param>
         public void RefocusUIForm(UIForm uiForm)
         {
-            _uiManager.RefocusUIForm(uiForm);
+            m_UIManager.RefocusUIForm(uiForm);
         }
 
         /// <summary>
@@ -634,7 +663,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void RefocusUIForm(UIForm uiForm, object userData)
         {
-            _uiManager.RefocusUIForm(uiForm, userData);
+            m_UIManager.RefocusUIForm(uiForm, userData);
         }
 
         /// <summary>
@@ -650,7 +679,7 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            _uiManager.SetUIFormInstanceLocked(uiForm.gameObject, locked);
+            m_UIManager.SetUIFormInstanceLocked(uiForm.gameObject, locked);
         }
 
         /// <summary>
@@ -666,36 +695,36 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            _uiManager.SetUIFormInstancePriority(uiForm.gameObject, priority);
+            m_UIManager.SetUIFormInstancePriority(uiForm.gameObject, priority);
         }
 
         private void OnOpenUIFormSuccess(object sender, GameFramework.UI.OpenUIFormSuccessEventArgs e)
         {
-            _eventComponent.Fire(this, OpenUIFormSuccessEventArgs.Create(e));
+            m_EventComponent.Fire(this, OpenUIFormSuccessEventArgs.Create(e));
         }
 
         private void OnOpenUIFormFailure(object sender, GameFramework.UI.OpenUIFormFailureEventArgs e)
         {
             Log.Warning("Open UI form failure, asset name '{0}', UI group name '{1}', pause covered UI form '{2}', error message '{3}'.", e.UIFormAssetName, e.UIGroupName, e.PauseCoveredUIForm, e.ErrorMessage);
-            if (enableOpenUIFormFailureEvent)
+            if (m_EnableOpenUIFormFailureEvent)
             {
-                _eventComponent.Fire(this, OpenUIFormFailureEventArgs.Create(e));
+                m_EventComponent.Fire(this, OpenUIFormFailureEventArgs.Create(e));
             }
         }
 
         private void OnOpenUIFormUpdate(object sender, GameFramework.UI.OpenUIFormUpdateEventArgs e)
         {
-            _eventComponent.Fire(this, OpenUIFormUpdateEventArgs.Create(e));
+            m_EventComponent.Fire(this, OpenUIFormUpdateEventArgs.Create(e));
         }
 
         private void OnOpenUIFormDependencyAsset(object sender, GameFramework.UI.OpenUIFormDependencyAssetEventArgs e)
         {
-            _eventComponent.Fire(this, OpenUIFormDependencyAssetEventArgs.Create(e));
+            m_EventComponent.Fire(this, OpenUIFormDependencyAssetEventArgs.Create(e));
         }
 
         private void OnCloseUIFormComplete(object sender, GameFramework.UI.CloseUIFormCompleteEventArgs e)
         {
-            _eventComponent.Fire(this, CloseUIFormCompleteEventArgs.Create(e));
+            m_EventComponent.Fire(this, CloseUIFormCompleteEventArgs.Create(e));
         }
     }
 }

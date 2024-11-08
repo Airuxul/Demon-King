@@ -18,16 +18,16 @@ namespace GameFramework
     /// <typeparam name="T">指定链表的元素类型。</typeparam>
     public sealed class GameFrameworkLinkedList<T> : ICollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
-        private readonly LinkedList<T> _LinkedList;
-        private readonly Queue<LinkedListNode<T>> _CachedNodes;
+        private readonly LinkedList<T> m_LinkedList;
+        private readonly Queue<LinkedListNode<T>> m_CachedNodes;
 
         /// <summary>
         /// 初始化游戏框架链表类的新实例。
         /// </summary>
         public GameFrameworkLinkedList()
         {
-            _LinkedList = new LinkedList<T>();
-            _CachedNodes = new Queue<LinkedListNode<T>>();
+            m_LinkedList = new LinkedList<T>();
+            m_CachedNodes = new Queue<LinkedListNode<T>>();
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace GameFramework
         {
             get
             {
-                return _LinkedList.Count;
+                return m_LinkedList.Count;
             }
         }
 
@@ -48,7 +48,7 @@ namespace GameFramework
         {
             get
             {
-                return _CachedNodes.Count;
+                return m_CachedNodes.Count;
             }
         }
 
@@ -59,7 +59,7 @@ namespace GameFramework
         {
             get
             {
-                return _LinkedList.First;
+                return m_LinkedList.First;
             }
         }
 
@@ -70,7 +70,7 @@ namespace GameFramework
         {
             get
             {
-                return _LinkedList.Last;
+                return m_LinkedList.Last;
             }
         }
 
@@ -81,7 +81,7 @@ namespace GameFramework
         {
             get
             {
-                return ((ICollection<T>)_LinkedList).IsReadOnly;
+                return ((ICollection<T>)m_LinkedList).IsReadOnly;
             }
         }
 
@@ -92,7 +92,7 @@ namespace GameFramework
         {
             get
             {
-                return ((ICollection)_LinkedList).SyncRoot;
+                return ((ICollection)m_LinkedList).SyncRoot;
             }
         }
 
@@ -103,7 +103,7 @@ namespace GameFramework
         {
             get
             {
-                return ((ICollection)_LinkedList).IsSynchronized;
+                return ((ICollection)m_LinkedList).IsSynchronized;
             }
         }
 
@@ -116,7 +116,7 @@ namespace GameFramework
         public LinkedListNode<T> AddAfter(LinkedListNode<T> node, T value)
         {
             LinkedListNode<T> newNode = AcquireNode(value);
-            _LinkedList.AddAfter(node, newNode);
+            m_LinkedList.AddAfter(node, newNode);
             return newNode;
         }
 
@@ -127,7 +127,7 @@ namespace GameFramework
         /// <param name="newNode">指定的新结点。</param>
         public void AddAfter(LinkedListNode<T> node, LinkedListNode<T> newNode)
         {
-            _LinkedList.AddAfter(node, newNode);
+            m_LinkedList.AddAfter(node, newNode);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace GameFramework
         public LinkedListNode<T> AddBefore(LinkedListNode<T> node, T value)
         {
             LinkedListNode<T> newNode = AcquireNode(value);
-            _LinkedList.AddBefore(node, newNode);
+            m_LinkedList.AddBefore(node, newNode);
             return newNode;
         }
 
@@ -150,7 +150,7 @@ namespace GameFramework
         /// <param name="newNode">指定的新结点。</param>
         public void AddBefore(LinkedListNode<T> node, LinkedListNode<T> newNode)
         {
-            _LinkedList.AddBefore(node, newNode);
+            m_LinkedList.AddBefore(node, newNode);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace GameFramework
         public LinkedListNode<T> AddFirst(T value)
         {
             LinkedListNode<T> node = AcquireNode(value);
-            _LinkedList.AddFirst(node);
+            m_LinkedList.AddFirst(node);
             return node;
         }
 
@@ -171,7 +171,7 @@ namespace GameFramework
         /// <param name="node">指定的新结点。</param>
         public void AddFirst(LinkedListNode<T> node)
         {
-            _LinkedList.AddFirst(node);
+            m_LinkedList.AddFirst(node);
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace GameFramework
         public LinkedListNode<T> AddLast(T value)
         {
             LinkedListNode<T> node = AcquireNode(value);
-            _LinkedList.AddLast(node);
+            m_LinkedList.AddLast(node);
             return node;
         }
 
@@ -192,7 +192,7 @@ namespace GameFramework
         /// <param name="node">指定的新结点。</param>
         public void AddLast(LinkedListNode<T> node)
         {
-            _LinkedList.AddLast(node);
+            m_LinkedList.AddLast(node);
         }
 
         /// <summary>
@@ -200,14 +200,14 @@ namespace GameFramework
         /// </summary>
         public void Clear()
         {
-            LinkedListNode<T> current = _LinkedList.First;
+            LinkedListNode<T> current = m_LinkedList.First;
             while (current != null)
             {
                 ReleaseNode(current);
                 current = current.Next;
             }
 
-            _LinkedList.Clear();
+            m_LinkedList.Clear();
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace GameFramework
         /// </summary>
         public void ClearCachedNodes()
         {
-            _CachedNodes.Clear();
+            m_CachedNodes.Clear();
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace GameFramework
         /// <returns>某值是否在链表中。</returns>
         public bool Contains(T value)
         {
-            return _LinkedList.Contains(value);
+            return m_LinkedList.Contains(value);
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace GameFramework
         /// <param name="index">array 中从零开始的索引，从此处开始复制。</param>
         public void CopyTo(T[] array, int index)
         {
-            _LinkedList.CopyTo(array, index);
+            m_LinkedList.CopyTo(array, index);
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace GameFramework
         /// <param name="index">array 中从零开始的索引，从此处开始复制。</param>
         public void CopyTo(Array array, int index)
         {
-            ((ICollection)_LinkedList).CopyTo(array, index);
+            ((ICollection)m_LinkedList).CopyTo(array, index);
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace GameFramework
         /// <returns>包含指定值的第一个结点。</returns>
         public LinkedListNode<T> Find(T value)
         {
-            return _LinkedList.Find(value);
+            return m_LinkedList.Find(value);
         }
 
         /// <summary>
@@ -265,7 +265,7 @@ namespace GameFramework
         /// <returns>包含指定值的最后一个结点。</returns>
         public LinkedListNode<T> FindLast(T value)
         {
-            return _LinkedList.FindLast(value);
+            return m_LinkedList.FindLast(value);
         }
 
         /// <summary>
@@ -275,10 +275,10 @@ namespace GameFramework
         /// <returns>是否移除成功。</returns>
         public bool Remove(T value)
         {
-            LinkedListNode<T> node = _LinkedList.Find(value);
+            LinkedListNode<T> node = m_LinkedList.Find(value);
             if (node != null)
             {
-                _LinkedList.Remove(node);
+                m_LinkedList.Remove(node);
                 ReleaseNode(node);
                 return true;
             }
@@ -292,7 +292,7 @@ namespace GameFramework
         /// <param name="node">指定的结点。</param>
         public void Remove(LinkedListNode<T> node)
         {
-            _LinkedList.Remove(node);
+            m_LinkedList.Remove(node);
             ReleaseNode(node);
         }
 
@@ -301,13 +301,13 @@ namespace GameFramework
         /// </summary>
         public void RemoveFirst()
         {
-            LinkedListNode<T> first = _LinkedList.First;
+            LinkedListNode<T> first = m_LinkedList.First;
             if (first == null)
             {
                 throw new GameFrameworkException("First is invalid.");
             }
 
-            _LinkedList.RemoveFirst();
+            m_LinkedList.RemoveFirst();
             ReleaseNode(first);
         }
 
@@ -316,13 +316,13 @@ namespace GameFramework
         /// </summary>
         public void RemoveLast()
         {
-            LinkedListNode<T> last = _LinkedList.Last;
+            LinkedListNode<T> last = m_LinkedList.Last;
             if (last == null)
             {
                 throw new GameFrameworkException("Last is invalid.");
             }
 
-            _LinkedList.RemoveLast();
+            m_LinkedList.RemoveLast();
             ReleaseNode(last);
         }
 
@@ -332,15 +332,15 @@ namespace GameFramework
         /// <returns>循环访问集合的枚举数。</returns>
         public Enumerator GetEnumerator()
         {
-            return new Enumerator(_LinkedList);
+            return new Enumerator(m_LinkedList);
         }
 
         private LinkedListNode<T> AcquireNode(T value)
         {
             LinkedListNode<T> node = null;
-            if (_CachedNodes.Count > 0)
+            if (m_CachedNodes.Count > 0)
             {
-                node = _CachedNodes.Dequeue();
+                node = m_CachedNodes.Dequeue();
                 node.Value = value;
             }
             else
@@ -354,7 +354,7 @@ namespace GameFramework
         private void ReleaseNode(LinkedListNode<T> node)
         {
             node.Value = default(T);
-            _CachedNodes.Enqueue(node);
+            m_CachedNodes.Enqueue(node);
         }
 
         /// <summary>
@@ -390,7 +390,7 @@ namespace GameFramework
         [StructLayout(LayoutKind.Auto)]
         public struct Enumerator : IEnumerator<T>, IEnumerator
         {
-            private LinkedList<T>.Enumerator _Enumerator;
+            private LinkedList<T>.Enumerator m_Enumerator;
 
             internal Enumerator(LinkedList<T> linkedList)
             {
@@ -399,7 +399,7 @@ namespace GameFramework
                     throw new GameFrameworkException("Linked list is invalid.");
                 }
 
-                _Enumerator = linkedList.GetEnumerator();
+                m_Enumerator = linkedList.GetEnumerator();
             }
 
             /// <summary>
@@ -409,7 +409,7 @@ namespace GameFramework
             {
                 get
                 {
-                    return _Enumerator.Current;
+                    return m_Enumerator.Current;
                 }
             }
 
@@ -420,7 +420,7 @@ namespace GameFramework
             {
                 get
                 {
-                    return _Enumerator.Current;
+                    return m_Enumerator.Current;
                 }
             }
 
@@ -429,7 +429,7 @@ namespace GameFramework
             /// </summary>
             public void Dispose()
             {
-                _Enumerator.Dispose();
+                m_Enumerator.Dispose();
             }
 
             /// <summary>
@@ -438,7 +438,7 @@ namespace GameFramework
             /// <returns>返回下一个结点。</returns>
             public bool MoveNext()
             {
-                return _Enumerator.MoveNext();
+                return m_Enumerator.MoveNext();
             }
 
             /// <summary>
@@ -446,7 +446,7 @@ namespace GameFramework
             /// </summary>
             void IEnumerator.Reset()
             {
-                ((IEnumerator<T>)_Enumerator).Reset();
+                ((IEnumerator<T>)m_Enumerator).Reset();
             }
         }
     }

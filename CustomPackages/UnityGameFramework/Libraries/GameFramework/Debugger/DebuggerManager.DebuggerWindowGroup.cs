@@ -16,15 +16,15 @@ namespace GameFramework.Debugger
         /// </summary>
         private sealed class DebuggerWindowGroup : IDebuggerWindowGroup
         {
-            private readonly List<KeyValuePair<string, IDebuggerWindow>> _DebuggerWindows;
-            private int _SelectedIndex;
-            private string[] _DebuggerWindowNames;
+            private readonly List<KeyValuePair<string, IDebuggerWindow>> m_DebuggerWindows;
+            private int m_SelectedIndex;
+            private string[] m_DebuggerWindowNames;
 
             public DebuggerWindowGroup()
             {
-                _DebuggerWindows = new List<KeyValuePair<string, IDebuggerWindow>>();
-                _SelectedIndex = 0;
-                _DebuggerWindowNames = null;
+                m_DebuggerWindows = new List<KeyValuePair<string, IDebuggerWindow>>();
+                m_SelectedIndex = 0;
+                m_DebuggerWindowNames = null;
             }
 
             /// <summary>
@@ -34,7 +34,7 @@ namespace GameFramework.Debugger
             {
                 get
                 {
-                    return _DebuggerWindows.Count;
+                    return m_DebuggerWindows.Count;
                 }
             }
 
@@ -45,11 +45,11 @@ namespace GameFramework.Debugger
             {
                 get
                 {
-                    return _SelectedIndex;
+                    return m_SelectedIndex;
                 }
                 set
                 {
-                    _SelectedIndex = value;
+                    m_SelectedIndex = value;
                 }
             }
 
@@ -60,12 +60,12 @@ namespace GameFramework.Debugger
             {
                 get
                 {
-                    if (_SelectedIndex >= _DebuggerWindows.Count)
+                    if (m_SelectedIndex >= m_DebuggerWindows.Count)
                     {
                         return null;
                     }
 
-                    return _DebuggerWindows[_SelectedIndex].Value;
+                    return m_DebuggerWindows[m_SelectedIndex].Value;
                 }
             }
 
@@ -82,12 +82,12 @@ namespace GameFramework.Debugger
             /// </summary>
             public void Shutdown()
             {
-                foreach (KeyValuePair<string, IDebuggerWindow> debuggerWindow in _DebuggerWindows)
+                foreach (KeyValuePair<string, IDebuggerWindow> debuggerWindow in m_DebuggerWindows)
                 {
                     debuggerWindow.Value.Shutdown();
                 }
 
-                _DebuggerWindows.Clear();
+                m_DebuggerWindows.Clear();
             }
 
             /// <summary>
@@ -126,10 +126,10 @@ namespace GameFramework.Debugger
             private void RefreshDebuggerWindowNames()
             {
                 int index = 0;
-                _DebuggerWindowNames = new string[_DebuggerWindows.Count];
-                foreach (KeyValuePair<string, IDebuggerWindow> debuggerWindow in _DebuggerWindows)
+                m_DebuggerWindowNames = new string[m_DebuggerWindows.Count];
+                foreach (KeyValuePair<string, IDebuggerWindow> debuggerWindow in m_DebuggerWindows)
                 {
-                    _DebuggerWindowNames[index++] = debuggerWindow.Key;
+                    m_DebuggerWindowNames[index++] = debuggerWindow.Key;
                 }
             }
 
@@ -138,7 +138,7 @@ namespace GameFramework.Debugger
             /// </summary>
             public string[] GetDebuggerWindowNames()
             {
-                return _DebuggerWindowNames;
+                return m_DebuggerWindowNames;
             }
 
             /// <summary>
@@ -219,7 +219,7 @@ namespace GameFramework.Debugger
                         throw new GameFrameworkException("Debugger window has been registered.");
                     }
 
-                    _DebuggerWindows.Add(new KeyValuePair<string, IDebuggerWindow>(path, debuggerWindow));
+                    m_DebuggerWindows.Add(new KeyValuePair<string, IDebuggerWindow>(path, debuggerWindow));
                     RefreshDebuggerWindowNames();
                 }
                 else
@@ -235,7 +235,7 @@ namespace GameFramework.Debugger
                         }
 
                         debuggerWindowGroup = new DebuggerWindowGroup();
-                        _DebuggerWindows.Add(new KeyValuePair<string, IDebuggerWindow>(debuggerWindowGroupName, debuggerWindowGroup));
+                        m_DebuggerWindows.Add(new KeyValuePair<string, IDebuggerWindow>(debuggerWindowGroupName, debuggerWindowGroup));
                         RefreshDebuggerWindowNames();
                     }
 
@@ -259,7 +259,7 @@ namespace GameFramework.Debugger
                 if (pos < 0 || pos >= path.Length - 1)
                 {
                     IDebuggerWindow debuggerWindow = InternalGetDebuggerWindow(path);
-                    bool result = _DebuggerWindows.Remove(new KeyValuePair<string, IDebuggerWindow>(path, debuggerWindow));
+                    bool result = m_DebuggerWindows.Remove(new KeyValuePair<string, IDebuggerWindow>(path, debuggerWindow));
                     debuggerWindow.Shutdown();
                     RefreshDebuggerWindowNames();
                     return result;
@@ -278,7 +278,7 @@ namespace GameFramework.Debugger
 
             private IDebuggerWindow InternalGetDebuggerWindow(string name)
             {
-                foreach (KeyValuePair<string, IDebuggerWindow> debuggerWindow in _DebuggerWindows)
+                foreach (KeyValuePair<string, IDebuggerWindow> debuggerWindow in m_DebuggerWindows)
                 {
                     if (debuggerWindow.Key == name)
                     {
@@ -291,11 +291,11 @@ namespace GameFramework.Debugger
 
             private bool InternalSelectDebuggerWindow(string name)
             {
-                for (int i = 0; i < _DebuggerWindows.Count; i++)
+                for (int i = 0; i < m_DebuggerWindows.Count; i++)
                 {
-                    if (_DebuggerWindows[i].Key == name)
+                    if (m_DebuggerWindows[i].Key == name)
                     {
-                        _SelectedIndex = i;
+                        m_SelectedIndex = i;
                         return true;
                     }
                 }

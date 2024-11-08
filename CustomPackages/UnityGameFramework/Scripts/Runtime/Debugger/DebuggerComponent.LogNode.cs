@@ -18,48 +18,78 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public sealed class LogNode : IReference
         {
-            private DateTime _logTime;
-            private int _logFrameCount;
-            private LogType _logType;
-            private string _logMessage;
-            private string _stackTrack;
+            private DateTime m_LogTime;
+            private int m_LogFrameCount;
+            private LogType m_LogType;
+            private string m_LogMessage;
+            private string m_StackTrack;
 
             /// <summary>
             /// 初始化日志记录结点的新实例。
             /// </summary>
             public LogNode()
             {
-                _logTime = default(DateTime);
-                _logFrameCount = 0;
-                _logType = LogType.Error;
-                _logMessage = null;
-                _stackTrack = null;
+                m_LogTime = default(DateTime);
+                m_LogFrameCount = 0;
+                m_LogType = LogType.Error;
+                m_LogMessage = null;
+                m_StackTrack = null;
             }
 
             /// <summary>
             /// 获取日志时间。
             /// </summary>
-            public DateTime LogTime => _logTime;
+            public DateTime LogTime
+            {
+                get
+                {
+                    return m_LogTime;
+                }
+            }
 
             /// <summary>
             /// 获取日志帧计数。
             /// </summary>
-            public int LogFrameCount => _logFrameCount;
+            public int LogFrameCount
+            {
+                get
+                {
+                    return m_LogFrameCount;
+                }
+            }
 
             /// <summary>
             /// 获取日志类型。
             /// </summary>
-            public LogType LogType => _logType;
+            public LogType LogType
+            {
+                get
+                {
+                    return m_LogType;
+                }
+            }
 
             /// <summary>
             /// 获取日志内容。
             /// </summary>
-            public string LogMessage => _logMessage;
+            public string LogMessage
+            {
+                get
+                {
+                    return m_LogMessage;
+                }
+            }
 
             /// <summary>
             /// 获取日志堆栈信息。
             /// </summary>
-            public string StackTrack => _stackTrack;
+            public string StackTrack
+            {
+                get
+                {
+                    return m_StackTrack;
+                }
+            }
 
             /// <summary>
             /// 创建日志记录结点。
@@ -71,11 +101,11 @@ namespace UnityGameFramework.Runtime
             public static LogNode Create(LogType logType, string logMessage, string stackTrack)
             {
                 LogNode logNode = ReferencePool.Acquire<LogNode>();
-                logNode._logTime = DateTime.UtcNow;
-                logNode._logFrameCount = Time.frameCount;
-                logNode._logType = logType;
-                logNode._logMessage = logMessage;
-                logNode._stackTrack = stackTrack;
+                logNode.m_LogTime = DateTime.UtcNow;
+                logNode.m_LogFrameCount = Time.frameCount;
+                logNode.m_LogType = logType;
+                logNode.m_LogMessage = logMessage;
+                logNode.m_StackTrack = stackTrack;
                 return logNode;
             }
 
@@ -84,11 +114,11 @@ namespace UnityGameFramework.Runtime
             /// </summary>
             public void Clear()
             {
-                _logTime = default(DateTime);
-                _logFrameCount = 0;
-                _logType = LogType.Error;
-                _logMessage = null;
-                _stackTrack = null;
+                m_LogTime = default(DateTime);
+                m_LogFrameCount = 0;
+                m_LogType = LogType.Error;
+                m_LogMessage = null;
+                m_StackTrack = null;
             }
         }
     }

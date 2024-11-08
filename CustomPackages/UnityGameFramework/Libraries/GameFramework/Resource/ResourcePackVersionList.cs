@@ -17,11 +17,11 @@ namespace GameFramework.Resource
     {
         private static readonly Resource[] EmptyResourceArray = new Resource[] { };
 
-        private readonly bool _IsValid;
-        private readonly int _Offset;
-        private readonly long _Length;
-        private readonly int _HashCode;
-        private readonly Resource[] _Resources;
+        private readonly bool m_IsValid;
+        private readonly int m_Offset;
+        private readonly long m_Length;
+        private readonly int m_HashCode;
+        private readonly Resource[] m_Resources;
 
         /// <summary>
         /// 初始化资源包版本资源列表的新实例。
@@ -32,11 +32,11 @@ namespace GameFramework.Resource
         /// <param name="resources">包含的资源集合。</param>
         public ResourcePackVersionList(int offset, long length, int hashCode, Resource[] resources)
         {
-            _IsValid = true;
-            _Offset = offset;
-            _Length = length;
-            _HashCode = hashCode;
-            _Resources = resources ?? EmptyResourceArray;
+            m_IsValid = true;
+            m_Offset = offset;
+            m_Length = length;
+            m_HashCode = hashCode;
+            m_Resources = resources ?? EmptyResourceArray;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return _IsValid;
+                return m_IsValid;
             }
         }
 
@@ -57,12 +57,12 @@ namespace GameFramework.Resource
         {
             get
             {
-                if (!_IsValid)
+                if (!m_IsValid)
                 {
                     throw new GameFrameworkException("Data is invalid.");
                 }
 
-                return _Offset;
+                return m_Offset;
             }
         }
 
@@ -73,12 +73,12 @@ namespace GameFramework.Resource
         {
             get
             {
-                if (!_IsValid)
+                if (!m_IsValid)
                 {
                     throw new GameFrameworkException("Data is invalid.");
                 }
 
-                return _Length;
+                return m_Length;
             }
         }
 
@@ -89,12 +89,12 @@ namespace GameFramework.Resource
         {
             get
             {
-                if (!_IsValid)
+                if (!m_IsValid)
                 {
                     throw new GameFrameworkException("Data is invalid.");
                 }
 
-                return _HashCode;
+                return m_HashCode;
             }
         }
 
@@ -104,12 +104,12 @@ namespace GameFramework.Resource
         /// <returns>包含的资源集合。</returns>
         public Resource[] GetResources()
         {
-            if (!_IsValid)
+            if (!m_IsValid)
             {
                 throw new GameFrameworkException("Data is invalid.");
             }
 
-            return _Resources;
+            return m_Resources;
         }
     }
 }

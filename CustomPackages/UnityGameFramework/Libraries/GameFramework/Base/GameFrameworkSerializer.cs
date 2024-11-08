@@ -16,20 +16,20 @@ namespace GameFramework
     /// <typeparam name="T">要序列化的数据类型。</typeparam>
     public abstract class GameFrameworkSerializer<T>
     {
-        private readonly Dictionary<byte, SerializeCallback> _SerializeCallbacks;
-        private readonly Dictionary<byte, DeserializeCallback> _DeserializeCallbacks;
-        private readonly Dictionary<byte, TryGetValueCallback> _TryGetValueCallbacks;
-        private byte _LatestSerializeCallbackVersion;
+        private readonly Dictionary<byte, SerializeCallback> m_SerializeCallbacks;
+        private readonly Dictionary<byte, DeserializeCallback> m_DeserializeCallbacks;
+        private readonly Dictionary<byte, TryGetValueCallback> m_TryGetValueCallbacks;
+        private byte m_LatestSerializeCallbackVersion;
 
         /// <summary>
         /// 初始化游戏框架序列化器基类的新实例。
         /// </summary>
         public GameFrameworkSerializer()
         {
-            _SerializeCallbacks = new Dictionary<byte, SerializeCallback>();
-            _DeserializeCallbacks = new Dictionary<byte, DeserializeCallback>();
-            _TryGetValueCallbacks = new Dictionary<byte, TryGetValueCallback>();
-            _LatestSerializeCallbackVersion = 0;
+            m_SerializeCallbacks = new Dictionary<byte, SerializeCallback>();
+            m_DeserializeCallbacks = new Dictionary<byte, DeserializeCallback>();
+            m_TryGetValueCallbacks = new Dictionary<byte, TryGetValueCallback>();
+            m_LatestSerializeCallbackVersion = 0;
         }
 
         /// <summary>
@@ -68,10 +68,10 @@ namespace GameFramework
                 throw new GameFrameworkException("Serialize callback is invalid.");
             }
 
-            _SerializeCallbacks[version] = callback;
-            if (version > _LatestSerializeCallbackVersion)
+            m_SerializeCallbacks[version] = callback;
+            if (version > m_LatestSerializeCallbackVersion)
             {
-                _LatestSerializeCallbackVersion = version;
+                m_LatestSerializeCallbackVersion = version;
             }
         }
 
@@ -87,7 +87,7 @@ namespace GameFramework
                 throw new GameFrameworkException("Deserialize callback is invalid.");
             }
 
-            _DeserializeCallbacks[version] = callback;
+            m_DeserializeCallbacks[version] = callback;
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace GameFramework
                 throw new GameFrameworkException("Try get value callback is invalid.");
             }
 
-            _TryGetValueCallbacks[version] = callback;
+            m_TryGetValueCallbacks[version] = callback;
         }
 
         /// <summary>
@@ -113,12 +113,12 @@ namespace GameFramework
         /// <returns>是否序列化数据成功。</returns>
         public bool Serialize(Stream stream, T data)
         {
-            if (_SerializeCallbacks.Count <= 0)
+            if (m_SerializeCallbacks.Count <= 0)
             {
                 throw new GameFrameworkException("No serialize callback registered.");
             }
 
-            return Serialize(stream, data, _LatestSerializeCallbackVersion);
+            return Serialize(stream, data, m_LatestSerializeCallbackVersion);
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace GameFramework
             stream.WriteByte(header[2]);
             stream.WriteByte(version);
             SerializeCallback callback = null;
-            if (!_SerializeCallbacks.TryGetValue(version, out callback))
+            if (!m_SerializeCallbacks.TryGetValue(version, out callback))
             {
                 throw new GameFrameworkException(Utility.Text.Format("Serialize callback '{0}' is not exist.", version));
             }
@@ -162,7 +162,7 @@ namespace GameFramework
 
             byte version = (byte)stream.ReadByte();
             DeserializeCallback callback = null;
-            if (!_DeserializeCallbacks.TryGetValue(version, out callback))
+            if (!m_DeserializeCallbacks.TryGetValue(version, out callback))
             {
                 throw new GameFrameworkException(Utility.Text.Format("Deserialize callback '{0}' is not exist.", version));
             }
@@ -191,7 +191,7 @@ namespace GameFramework
 
             byte version = (byte)stream.ReadByte();
             TryGetValueCallback callback = null;
-            if (!_TryGetValueCallbacks.TryGetValue(version, out callback))
+            if (!m_TryGetValueCallbacks.TryGetValue(version, out callback))
             {
                 return false;
             }

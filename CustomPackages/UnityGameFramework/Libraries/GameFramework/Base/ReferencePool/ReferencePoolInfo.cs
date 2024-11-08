@@ -16,13 +16,13 @@ namespace GameFramework
     [StructLayout(LayoutKind.Auto)]
     public struct ReferencePoolInfo
     {
-        private readonly Type _Type;
-        private readonly int _UnusedReferenceCount;
-        private readonly int _UsingReferenceCount;
-        private readonly int _AcquireReferenceCount;
-        private readonly int _ReleaseReferenceCount;
-        private readonly int _AddReferenceCount;
-        private readonly int _RemoveReferenceCount;
+        private readonly Type m_Type;
+        private readonly int m_UnusedReferenceCount;
+        private readonly int m_UsingReferenceCount;
+        private readonly int m_AcquireReferenceCount;
+        private readonly int m_ReleaseReferenceCount;
+        private readonly int m_AddReferenceCount;
+        private readonly int m_RemoveReferenceCount;
 
         /// <summary>
         /// 初始化引用池信息的新实例。
@@ -36,13 +36,13 @@ namespace GameFramework
         /// <param name="removeReferenceCount">移除引用数量。</param>
         public ReferencePoolInfo(Type type, int unusedReferenceCount, int usingReferenceCount, int acquireReferenceCount, int releaseReferenceCount, int addReferenceCount, int removeReferenceCount)
         {
-            _Type = type;
-            _UnusedReferenceCount = unusedReferenceCount;
-            _UsingReferenceCount = usingReferenceCount;
-            _AcquireReferenceCount = acquireReferenceCount;
-            _ReleaseReferenceCount = releaseReferenceCount;
-            _AddReferenceCount = addReferenceCount;
-            _RemoveReferenceCount = removeReferenceCount;
+            m_Type = type;
+            m_UnusedReferenceCount = unusedReferenceCount;
+            m_UsingReferenceCount = usingReferenceCount;
+            m_AcquireReferenceCount = acquireReferenceCount;
+            m_ReleaseReferenceCount = releaseReferenceCount;
+            m_AddReferenceCount = addReferenceCount;
+            m_RemoveReferenceCount = removeReferenceCount;
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace GameFramework
         {
             get
             {
-                return _Type;
+                return m_Type;
             }
         }
 
@@ -63,7 +63,7 @@ namespace GameFramework
         {
             get
             {
-                return _UnusedReferenceCount;
+                return m_UnusedReferenceCount;
             }
         }
 
@@ -74,7 +74,7 @@ namespace GameFramework
         {
             get
             {
-                return _UsingReferenceCount;
+                return m_UsingReferenceCount;
             }
         }
 
@@ -85,7 +85,7 @@ namespace GameFramework
         {
             get
             {
-                return _AcquireReferenceCount;
+                return m_AcquireReferenceCount;
             }
         }
 
@@ -96,7 +96,7 @@ namespace GameFramework
         {
             get
             {
-                return _ReleaseReferenceCount;
+                return m_ReleaseReferenceCount;
             }
         }
 
@@ -107,7 +107,7 @@ namespace GameFramework
         {
             get
             {
-                return _AddReferenceCount;
+                return m_AddReferenceCount;
             }
         }
 
@@ -118,7 +118,7 @@ namespace GameFramework
         {
             get
             {
-                return _RemoveReferenceCount;
+                return m_RemoveReferenceCount;
             }
         }
     }

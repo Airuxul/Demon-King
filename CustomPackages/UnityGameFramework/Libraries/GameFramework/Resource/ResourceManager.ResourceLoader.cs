@@ -22,16 +22,16 @@ namespace GameFramework.Resource
         {
             private const int CachedHashBytesLength = 4;
 
-            private readonly ResourceManager _ResourceManager;
-            private readonly TaskPool<LoadResourceTaskBase> _TaskPool;
-            private readonly Dictionary<object, int> _AssetDependencyCount;
-            private readonly Dictionary<object, int> _ResourceDependencyCount;
-            private readonly Dictionary<object, object> _AssetToResourceMap;
-            private readonly Dictionary<string, object> _SceneToAssetMap;
-            private readonly LoadBytesCallbacks _LoadBytesCallbacks;
-            private readonly byte[] _CachedHashBytes;
-            private IObjectPool<AssetObject> _AssetPool;
-            private IObjectPool<ResourceObject> _ResourcePool;
+            private readonly ResourceManager m_ResourceManager;
+            private readonly TaskPool<LoadResourceTaskBase> m_TaskPool;
+            private readonly Dictionary<object, int> m_AssetDependencyCount;
+            private readonly Dictionary<object, int> m_ResourceDependencyCount;
+            private readonly Dictionary<object, object> m_AssetToResourceMap;
+            private readonly Dictionary<string, object> m_SceneToAssetMap;
+            private readonly LoadBytesCallbacks m_LoadBytesCallbacks;
+            private readonly byte[] m_CachedHashBytes;
+            private IObjectPool<AssetObject> m_AssetPool;
+            private IObjectPool<ResourceObject> m_ResourcePool;
 
             /// <summary>
             /// 初始化加载资源器的新实例。
@@ -39,16 +39,16 @@ namespace GameFramework.Resource
             /// <param name="resourceManager">资源管理器。</param>
             public ResourceLoader(ResourceManager resourceManager)
             {
-                _ResourceManager = resourceManager;
-                _TaskPool = new TaskPool<LoadResourceTaskBase>();
-                _AssetDependencyCount = new Dictionary<object, int>();
-                _ResourceDependencyCount = new Dictionary<object, int>();
-                _AssetToResourceMap = new Dictionary<object, object>();
-                _SceneToAssetMap = new Dictionary<string, object>(StringComparer.Ordinal);
-                _LoadBytesCallbacks = new LoadBytesCallbacks(OnLoadBinarySuccess, OnLoadBinaryFailure);
-                _CachedHashBytes = new byte[CachedHashBytesLength];
-                _AssetPool = null;
-                _ResourcePool = null;
+                m_ResourceManager = resourceManager;
+                m_TaskPool = new TaskPool<LoadResourceTaskBase>();
+                m_AssetDependencyCount = new Dictionary<object, int>();
+                m_ResourceDependencyCount = new Dictionary<object, int>();
+                m_AssetToResourceMap = new Dictionary<object, object>();
+                m_SceneToAssetMap = new Dictionary<string, object>(StringComparer.Ordinal);
+                m_LoadBytesCallbacks = new LoadBytesCallbacks(OnLoadBinarySuccess, OnLoadBinaryFailure);
+                m_CachedHashBytes = new byte[CachedHashBytesLength];
+                m_AssetPool = null;
+                m_ResourcePool = null;
             }
 
             /// <summary>
@@ -58,7 +58,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _TaskPool.TotalAgentCount;
+                    return m_TaskPool.TotalAgentCount;
                 }
             }
 
@@ -69,7 +69,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _TaskPool.FreeAgentCount;
+                    return m_TaskPool.FreeAgentCount;
                 }
             }
 
@@ -80,7 +80,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _TaskPool.WorkingAgentCount;
+                    return m_TaskPool.WorkingAgentCount;
                 }
             }
 
@@ -91,7 +91,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _TaskPool.WaitingTaskCount;
+                    return m_TaskPool.WaitingTaskCount;
                 }
             }
 
@@ -102,11 +102,11 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _AssetPool.AutoReleaseInterval;
+                    return m_AssetPool.AutoReleaseInterval;
                 }
                 set
                 {
-                    _AssetPool.AutoReleaseInterval = value;
+                    m_AssetPool.AutoReleaseInterval = value;
                 }
             }
 
@@ -117,11 +117,11 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _AssetPool.Capacity;
+                    return m_AssetPool.Capacity;
                 }
                 set
                 {
-                    _AssetPool.Capacity = value;
+                    m_AssetPool.Capacity = value;
                 }
             }
 
@@ -132,11 +132,11 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _AssetPool.ExpireTime;
+                    return m_AssetPool.ExpireTime;
                 }
                 set
                 {
-                    _AssetPool.ExpireTime = value;
+                    m_AssetPool.ExpireTime = value;
                 }
             }
 
@@ -147,11 +147,11 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _AssetPool.Priority;
+                    return m_AssetPool.Priority;
                 }
                 set
                 {
-                    _AssetPool.Priority = value;
+                    m_AssetPool.Priority = value;
                 }
             }
 
@@ -162,11 +162,11 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _ResourcePool.AutoReleaseInterval;
+                    return m_ResourcePool.AutoReleaseInterval;
                 }
                 set
                 {
-                    _ResourcePool.AutoReleaseInterval = value;
+                    m_ResourcePool.AutoReleaseInterval = value;
                 }
             }
 
@@ -177,11 +177,11 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _ResourcePool.Capacity;
+                    return m_ResourcePool.Capacity;
                 }
                 set
                 {
-                    _ResourcePool.Capacity = value;
+                    m_ResourcePool.Capacity = value;
                 }
             }
 
@@ -192,11 +192,11 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _ResourcePool.ExpireTime;
+                    return m_ResourcePool.ExpireTime;
                 }
                 set
                 {
-                    _ResourcePool.ExpireTime = value;
+                    m_ResourcePool.ExpireTime = value;
                 }
             }
 
@@ -207,11 +207,11 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _ResourcePool.Priority;
+                    return m_ResourcePool.Priority;
                 }
                 set
                 {
-                    _ResourcePool.Priority = value;
+                    m_ResourcePool.Priority = value;
                 }
             }
 
@@ -222,7 +222,7 @@ namespace GameFramework.Resource
             /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
             public void Update(float elapseSeconds, float realElapseSeconds)
             {
-                _TaskPool.Update(elapseSeconds, realElapseSeconds);
+                m_TaskPool.Update(elapseSeconds, realElapseSeconds);
             }
 
             /// <summary>
@@ -230,11 +230,11 @@ namespace GameFramework.Resource
             /// </summary>
             public void Shutdown()
             {
-                _TaskPool.Shutdown();
-                _AssetDependencyCount.Clear();
-                _ResourceDependencyCount.Clear();
-                _AssetToResourceMap.Clear();
-                _SceneToAssetMap.Clear();
+                m_TaskPool.Shutdown();
+                m_AssetDependencyCount.Clear();
+                m_ResourceDependencyCount.Clear();
+                m_AssetToResourceMap.Clear();
+                m_SceneToAssetMap.Clear();
                 LoadResourceAgent.Clear();
             }
 
@@ -244,8 +244,8 @@ namespace GameFramework.Resource
             /// <param name="objectPoolManager">对象池管理器。</param>
             public void SetObjectPoolManager(IObjectPoolManager objectPoolManager)
             {
-                _AssetPool = objectPoolManager.CreateMultiSpawnObjectPool<AssetObject>("Asset Pool");
-                _ResourcePool = objectPoolManager.CreateMultiSpawnObjectPool<ResourceObject>("Resource Pool");
+                m_AssetPool = objectPoolManager.CreateMultiSpawnObjectPool<AssetObject>("Asset Pool");
+                m_ResourcePool = objectPoolManager.CreateMultiSpawnObjectPool<ResourceObject>("Resource Pool");
             }
 
             /// <summary>
@@ -258,13 +258,13 @@ namespace GameFramework.Resource
             /// <param name="decryptResourceCallback">要设置的解密资源回调函数。</param>
             public void AddLoadResourceAgentHelper(ILoadResourceAgentHelper loadResourceAgentHelper, IResourceHelper resourceHelper, string readOnlyPath, string readWritePath, DecryptResourceCallback decryptResourceCallback)
             {
-                if (_AssetPool == null || _ResourcePool == null)
+                if (m_AssetPool == null || m_ResourcePool == null)
                 {
                     throw new GameFrameworkException("You must set object pool manager first.");
                 }
 
                 LoadResourceAgent agent = new LoadResourceAgent(loadResourceAgentHelper, resourceHelper, this, readOnlyPath, readWritePath, decryptResourceCallback ?? DefaultDecryptResourceCallback);
-                _TaskPool.AddAgent(agent);
+                m_TaskPool.AddAgent(agent);
             }
 
             /// <summary>
@@ -280,7 +280,7 @@ namespace GameFramework.Resource
                     return HasAssetResult.NotExist;
                 }
 
-                if (!resourceInfo.Ready && _ResourceManager._ResourceMode != ResourceMode.UpdatableWhilePlaying)
+                if (!resourceInfo.Ready && m_ResourceManager.m_ResourceMode != ResourceMode.UpdatableWhilePlaying)
                 {
                     return HasAssetResult.NotReady;
                 }
@@ -347,10 +347,10 @@ namespace GameFramework.Resource
                     }
                 }
 
-                _TaskPool.AddTask(mainTask);
+                m_TaskPool.AddTask(mainTask);
                 if (!resourceInfo.Ready)
                 {
-                    _ResourceManager.UpdateResource(resourceInfo.ResourceName);
+                    m_ResourceManager.UpdateResource(resourceInfo.ResourceName);
                 }
             }
 
@@ -360,7 +360,7 @@ namespace GameFramework.Resource
             /// <param name="asset">要卸载的资源。</param>
             public void UnloadAsset(object asset)
             {
-                _AssetPool.Unspawn(asset);
+                m_AssetPool.Unspawn(asset);
             }
 
             /// <summary>
@@ -414,10 +414,10 @@ namespace GameFramework.Resource
                     }
                 }
 
-                _TaskPool.AddTask(mainTask);
+                m_TaskPool.AddTask(mainTask);
                 if (!resourceInfo.Ready)
                 {
-                    _ResourceManager.UpdateResource(resourceInfo.ResourceName);
+                    m_ResourceManager.UpdateResource(resourceInfo.ResourceName);
                 }
             }
 
@@ -429,24 +429,24 @@ namespace GameFramework.Resource
             /// <param name="userData">用户自定义数据。</param>
             public void UnloadScene(string sceneAssetName, UnloadSceneCallbacks unloadSceneCallbacks, object userData)
             {
-                if (_ResourceManager._ResourceHelper == null)
+                if (m_ResourceManager.m_ResourceHelper == null)
                 {
                     throw new GameFrameworkException("You must set resource helper first.");
                 }
 
                 object asset = null;
-                if (_SceneToAssetMap.TryGetValue(sceneAssetName, out asset))
+                if (m_SceneToAssetMap.TryGetValue(sceneAssetName, out asset))
                 {
-                    _SceneToAssetMap.Remove(sceneAssetName);
-                    _AssetPool.Unspawn(asset);
-                    _AssetPool.ReleaseObject(asset);
+                    m_SceneToAssetMap.Remove(sceneAssetName);
+                    m_AssetPool.Unspawn(asset);
+                    m_AssetPool.ReleaseObject(asset);
                 }
                 else
                 {
                     throw new GameFrameworkException(Utility.Text.Format("Can not find asset of scene '{0}'.", sceneAssetName));
                 }
 
-                _ResourceManager._ResourceHelper.UnloadScene(sceneAssetName, unloadSceneCallbacks, userData);
+                m_ResourceManager.m_ResourceHelper.UnloadScene(sceneAssetName, unloadSceneCallbacks, userData);
             }
 
             /// <summary>
@@ -478,7 +478,7 @@ namespace GameFramework.Resource
                     return null;
                 }
 
-                return Utility.Path.GetRegularPath(Path.Combine(resourceInfo.StorageInReadOnly ? _ResourceManager._ReadOnlyPath : _ResourceManager._ReadWritePath, resourceInfo.ResourceName.FullName));
+                return Utility.Path.GetRegularPath(Path.Combine(resourceInfo.StorageInReadOnly ? m_ResourceManager.m_ReadOnlyPath : m_ResourceManager.m_ReadWritePath, resourceInfo.ResourceName.FullName));
             }
 
             /// <summary>
@@ -605,8 +605,8 @@ namespace GameFramework.Resource
                 }
                 else
                 {
-                    string path = Utility.Path.GetRemotePath(Path.Combine(resourceInfo.StorageInReadOnly ? _ResourceManager._ReadOnlyPath : _ResourceManager._ReadWritePath, resourceInfo.ResourceName.FullName));
-                    _ResourceManager._ResourceHelper.LoadBytes(path, _LoadBytesCallbacks, LoadBinaryInfo.Create(binaryAssetName, resourceInfo, loadBinaryCallbacks, userData));
+                    string path = Utility.Path.GetRemotePath(Path.Combine(resourceInfo.StorageInReadOnly ? m_ResourceManager.m_ReadOnlyPath : m_ResourceManager.m_ReadWritePath, resourceInfo.ResourceName.FullName));
+                    m_ResourceManager.m_ResourceHelper.LoadBytes(path, m_LoadBytesCallbacks, LoadBinaryInfo.Create(binaryAssetName, resourceInfo, loadBinaryCallbacks, userData));
                 }
             }
 
@@ -638,7 +638,7 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException(Utility.Text.Format("Can not load binary '{0}' from file system which is not use file system.", binaryAssetName));
                 }
 
-                IFileSystem fileSystem = _ResourceManager.GetFileSystem(resourceInfo.FileSystemName, resourceInfo.StorageInReadOnly);
+                IFileSystem fileSystem = m_ResourceManager.GetFileSystem(resourceInfo.FileSystemName, resourceInfo.StorageInReadOnly);
                 byte[] bytes = fileSystem.ReadFile(resourceInfo.ResourceName.FullName);
                 if (bytes == null)
                 {
@@ -647,7 +647,7 @@ namespace GameFramework.Resource
 
                 if (resourceInfo.LoadType == LoadType.LoadFromBinaryAndQuickDecrypt || resourceInfo.LoadType == LoadType.LoadFromBinaryAndDecrypt)
                 {
-                    DecryptResourceCallback decryptResourceCallback = _ResourceManager._DecryptResourceCallback ?? DefaultDecryptResourceCallback;
+                    DecryptResourceCallback decryptResourceCallback = m_ResourceManager.m_DecryptResourceCallback ?? DefaultDecryptResourceCallback;
                     decryptResourceCallback(bytes, 0, bytes.Length, resourceInfo.ResourceName.Name, resourceInfo.ResourceName.Variant, resourceInfo.ResourceName.Extension, resourceInfo.StorageInReadOnly, resourceInfo.FileSystemName, (byte)resourceInfo.LoadType, resourceInfo.Length, resourceInfo.HashCode);
                 }
 
@@ -685,11 +685,11 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException(Utility.Text.Format("Can not load binary '{0}' from file system which is not use file system.", binaryAssetName));
                 }
 
-                IFileSystem fileSystem = _ResourceManager.GetFileSystem(resourceInfo.FileSystemName, resourceInfo.StorageInReadOnly);
+                IFileSystem fileSystem = m_ResourceManager.GetFileSystem(resourceInfo.FileSystemName, resourceInfo.StorageInReadOnly);
                 int bytesRead = fileSystem.ReadFile(resourceInfo.ResourceName.FullName, buffer, startIndex, length);
                 if (resourceInfo.LoadType == LoadType.LoadFromBinaryAndQuickDecrypt || resourceInfo.LoadType == LoadType.LoadFromBinaryAndDecrypt)
                 {
-                    DecryptResourceCallback decryptResourceCallback = _ResourceManager._DecryptResourceCallback ?? DefaultDecryptResourceCallback;
+                    DecryptResourceCallback decryptResourceCallback = m_ResourceManager.m_DecryptResourceCallback ?? DefaultDecryptResourceCallback;
                     decryptResourceCallback(buffer, startIndex, bytesRead, resourceInfo.ResourceName.Name, resourceInfo.ResourceName.Variant, resourceInfo.ResourceName.Extension, resourceInfo.StorageInReadOnly, resourceInfo.FileSystemName, (byte)resourceInfo.LoadType, resourceInfo.Length, resourceInfo.HashCode);
                 }
 
@@ -726,7 +726,7 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException(Utility.Text.Format("Can not load binary '{0}' from file system which is not use file system.", binaryAssetName));
                 }
 
-                IFileSystem fileSystem = _ResourceManager.GetFileSystem(resourceInfo.FileSystemName, resourceInfo.StorageInReadOnly);
+                IFileSystem fileSystem = m_ResourceManager.GetFileSystem(resourceInfo.FileSystemName, resourceInfo.StorageInReadOnly);
                 byte[] bytes = fileSystem.ReadFileSegment(resourceInfo.ResourceName.FullName, offset, length);
                 if (bytes == null)
                 {
@@ -735,7 +735,7 @@ namespace GameFramework.Resource
 
                 if (resourceInfo.LoadType == LoadType.LoadFromBinaryAndQuickDecrypt || resourceInfo.LoadType == LoadType.LoadFromBinaryAndDecrypt)
                 {
-                    DecryptResourceCallback decryptResourceCallback = _ResourceManager._DecryptResourceCallback ?? DefaultDecryptResourceCallback;
+                    DecryptResourceCallback decryptResourceCallback = m_ResourceManager.m_DecryptResourceCallback ?? DefaultDecryptResourceCallback;
                     decryptResourceCallback(bytes, 0, bytes.Length, resourceInfo.ResourceName.Name, resourceInfo.ResourceName.Variant, resourceInfo.ResourceName.Extension, resourceInfo.StorageInReadOnly, resourceInfo.FileSystemName, (byte)resourceInfo.LoadType, resourceInfo.Length, resourceInfo.HashCode);
                 }
 
@@ -774,11 +774,11 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException(Utility.Text.Format("Can not load binary '{0}' from file system which is not use file system.", binaryAssetName));
                 }
 
-                IFileSystem fileSystem = _ResourceManager.GetFileSystem(resourceInfo.FileSystemName, resourceInfo.StorageInReadOnly);
+                IFileSystem fileSystem = m_ResourceManager.GetFileSystem(resourceInfo.FileSystemName, resourceInfo.StorageInReadOnly);
                 int bytesRead = fileSystem.ReadFileSegment(resourceInfo.ResourceName.FullName, offset, buffer, startIndex, length);
                 if (resourceInfo.LoadType == LoadType.LoadFromBinaryAndQuickDecrypt || resourceInfo.LoadType == LoadType.LoadFromBinaryAndDecrypt)
                 {
-                    DecryptResourceCallback decryptResourceCallback = _ResourceManager._DecryptResourceCallback ?? DefaultDecryptResourceCallback;
+                    DecryptResourceCallback decryptResourceCallback = m_ResourceManager.m_DecryptResourceCallback ?? DefaultDecryptResourceCallback;
                     decryptResourceCallback(buffer, startIndex, bytesRead, resourceInfo.ResourceName.Name, resourceInfo.ResourceName.Variant, resourceInfo.ResourceName.Extension, resourceInfo.StorageInReadOnly, resourceInfo.FileSystemName, (byte)resourceInfo.LoadType, resourceInfo.Length, resourceInfo.HashCode);
                 }
 
@@ -791,7 +791,7 @@ namespace GameFramework.Resource
             /// <returns>所有加载资源任务的信息。</returns>
             public TaskInfo[] GetAllLoadAssetInfos()
             {
-                return _TaskPool.GetAllTaskInfos();
+                return m_TaskPool.GetAllTaskInfos();
             }
 
             /// <summary>
@@ -800,7 +800,7 @@ namespace GameFramework.Resource
             /// <param name="results">所有加载资源任务的信息。</param>
             public void GetAllLoadAssetInfos(List<TaskInfo> results)
             {
-                _TaskPool.GetAllTaskInfos(results);
+                m_TaskPool.GetAllTaskInfos(results);
             }
 
             private bool LoadDependencyAsset(string assetName, int priority, LoadResourceTaskBase mainTask, object userData)
@@ -831,10 +831,10 @@ namespace GameFramework.Resource
                     }
                 }
 
-                _TaskPool.AddTask(dependencyTask);
+                m_TaskPool.AddTask(dependencyTask);
                 if (!resourceInfo.Ready)
                 {
-                    _ResourceManager.UpdateResource(resourceInfo.ResourceName);
+                    m_ResourceManager.UpdateResource(resourceInfo.ResourceName);
                 }
 
                 return true;
@@ -847,13 +847,13 @@ namespace GameFramework.Resource
                     return null;
                 }
 
-                AssetInfo assetInfo = _ResourceManager.GetAssetInfo(assetName);
+                AssetInfo assetInfo = m_ResourceManager.GetAssetInfo(assetName);
                 if (assetInfo == null)
                 {
                     return null;
                 }
 
-                return _ResourceManager.GetResourceInfo(assetInfo.ResourceName);
+                return m_ResourceManager.GetResourceInfo(assetInfo.ResourceName);
             }
 
             private bool CheckAsset(string assetName, out ResourceInfo resourceInfo, out string[] dependencyAssetNames)
@@ -866,42 +866,42 @@ namespace GameFramework.Resource
                     return false;
                 }
 
-                AssetInfo assetInfo = _ResourceManager.GetAssetInfo(assetName);
+                AssetInfo assetInfo = m_ResourceManager.GetAssetInfo(assetName);
                 if (assetInfo == null)
                 {
                     return false;
                 }
 
-                resourceInfo = _ResourceManager.GetResourceInfo(assetInfo.ResourceName);
+                resourceInfo = m_ResourceManager.GetResourceInfo(assetInfo.ResourceName);
                 if (resourceInfo == null)
                 {
                     return false;
                 }
 
                 dependencyAssetNames = assetInfo.GetDependencyAssetNames();
-                return _ResourceManager._ResourceMode == ResourceMode.UpdatableWhilePlaying ? true : resourceInfo.Ready;
+                return m_ResourceManager.m_ResourceMode == ResourceMode.UpdatableWhilePlaying ? true : resourceInfo.Ready;
             }
 
             private void DefaultDecryptResourceCallback(byte[] bytes, int startIndex, int count, string name, string variant, string extension, bool storageInReadOnly, string fileSystem, byte loadType, int length, int hashCode)
             {
-                Utility.Converter.GetBytes(hashCode, _CachedHashBytes);
+                Utility.Converter.GetBytes(hashCode, m_CachedHashBytes);
                 switch ((LoadType)loadType)
                 {
                     case LoadType.LoadFromMemoryAndQuickDecrypt:
                     case LoadType.LoadFromBinaryAndQuickDecrypt:
-                        Utility.Encryption.GetQuickSelfXorBytes(bytes, _CachedHashBytes);
+                        Utility.Encryption.GetQuickSelfXorBytes(bytes, m_CachedHashBytes);
                         break;
 
                     case LoadType.LoadFromMemoryAndDecrypt:
                     case LoadType.LoadFromBinaryAndDecrypt:
-                        Utility.Encryption.GetSelfXorBytes(bytes, _CachedHashBytes);
+                        Utility.Encryption.GetSelfXorBytes(bytes, m_CachedHashBytes);
                         break;
 
                     default:
                         throw new GameFrameworkException("Not supported load type when decrypt resource.");
                 }
 
-                Array.Clear(_CachedHashBytes, 0, CachedHashBytesLength);
+                Array.Clear(m_CachedHashBytes, 0, CachedHashBytesLength);
             }
 
             private void OnLoadBinarySuccess(string fileUri, byte[] bytes, float duration, object userData)
@@ -915,7 +915,7 @@ namespace GameFramework.Resource
                 ResourceInfo resourceInfo = loadBinaryInfo.ResourceInfo;
                 if (resourceInfo.LoadType == LoadType.LoadFromBinaryAndQuickDecrypt || resourceInfo.LoadType == LoadType.LoadFromBinaryAndDecrypt)
                 {
-                    DecryptResourceCallback decryptResourceCallback = _ResourceManager._DecryptResourceCallback ?? DefaultDecryptResourceCallback;
+                    DecryptResourceCallback decryptResourceCallback = m_ResourceManager.m_DecryptResourceCallback ?? DefaultDecryptResourceCallback;
                     decryptResourceCallback(bytes, 0, bytes.Length, resourceInfo.ResourceName.Name, resourceInfo.ResourceName.Variant, resourceInfo.ResourceName.Extension, resourceInfo.StorageInReadOnly, resourceInfo.FileSystemName, (byte)resourceInfo.LoadType, resourceInfo.Length, resourceInfo.HashCode);
                 }
 

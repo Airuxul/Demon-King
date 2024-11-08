@@ -13,20 +13,20 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(UIComponent))]
     internal sealed class UIComponentInspector : GameFrameworkInspector
     {
-        private SerializedProperty _EnableOpenUIFormSuccessEvent = null;
-        private SerializedProperty _EnableOpenUIFormFailureEvent = null;
-        private SerializedProperty _EnableOpenUIFormUpdateEvent = null;
-        private SerializedProperty _EnableOpenUIFormDependencyAssetEvent = null;
-        private SerializedProperty _EnableCloseUIFormCompleteEvent = null;
-        private SerializedProperty _InstanceAutoReleaseInterval = null;
-        private SerializedProperty _InstanceCapacity = null;
-        private SerializedProperty _InstanceExpireTime = null;
-        private SerializedProperty _InstancePriority = null;
-        private SerializedProperty _InstanceRoot = null;
-        private SerializedProperty _UIGroups = null;
+        private SerializedProperty m_EnableOpenUIFormSuccessEvent = null;
+        private SerializedProperty m_EnableOpenUIFormFailureEvent = null;
+        private SerializedProperty m_EnableOpenUIFormUpdateEvent = null;
+        private SerializedProperty m_EnableOpenUIFormDependencyAssetEvent = null;
+        private SerializedProperty m_EnableCloseUIFormCompleteEvent = null;
+        private SerializedProperty m_InstanceAutoReleaseInterval = null;
+        private SerializedProperty m_InstanceCapacity = null;
+        private SerializedProperty m_InstanceExpireTime = null;
+        private SerializedProperty m_InstancePriority = null;
+        private SerializedProperty m_InstanceRoot = null;
+        private SerializedProperty m_UIGroups = null;
 
-        private HelperInfo<UIFormHelperBase> _UIFormHelperInfo = new HelperInfo<UIFormHelperBase>("UIForm");
-        private HelperInfo<UIGroupHelperBase> _UIGroupHelperInfo = new HelperInfo<UIGroupHelperBase>("UIGroup");
+        private HelperInfo<UIFormHelperBase> m_UIFormHelperInfo = new HelperInfo<UIFormHelperBase>("UIForm");
+        private HelperInfo<UIGroupHelperBase> m_UIGroupHelperInfo = new HelperInfo<UIGroupHelperBase>("UIGroup");
 
         public override void OnInspectorGUI()
         {
@@ -38,16 +38,16 @@ namespace UnityGameFramework.Editor
 
             EditorGUI.BeginDisabledGroup(EditorApplication.isPlayingOrWillChangePlaymode);
             {
-                EditorGUILayout.PropertyField(_EnableOpenUIFormSuccessEvent);
-                EditorGUILayout.PropertyField(_EnableOpenUIFormFailureEvent);
-                EditorGUILayout.PropertyField(_EnableOpenUIFormUpdateEvent);
-                EditorGUILayout.PropertyField(_EnableOpenUIFormDependencyAssetEvent);
-                EditorGUILayout.PropertyField(_EnableCloseUIFormCompleteEvent);
+                EditorGUILayout.PropertyField(m_EnableOpenUIFormSuccessEvent);
+                EditorGUILayout.PropertyField(m_EnableOpenUIFormFailureEvent);
+                EditorGUILayout.PropertyField(m_EnableOpenUIFormUpdateEvent);
+                EditorGUILayout.PropertyField(m_EnableOpenUIFormDependencyAssetEvent);
+                EditorGUILayout.PropertyField(m_EnableCloseUIFormCompleteEvent);
             }
             EditorGUI.EndDisabledGroup();
 
-            float instanceAutoReleaseInterval = EditorGUILayout.DelayedFloatField("Instance Auto Release Interval", _InstanceAutoReleaseInterval.floatValue);
-            if (instanceAutoReleaseInterval != _InstanceAutoReleaseInterval.floatValue)
+            float instanceAutoReleaseInterval = EditorGUILayout.DelayedFloatField("Instance Auto Release Interval", m_InstanceAutoReleaseInterval.floatValue);
+            if (instanceAutoReleaseInterval != m_InstanceAutoReleaseInterval.floatValue)
             {
                 if (EditorApplication.isPlaying)
                 {
@@ -55,12 +55,12 @@ namespace UnityGameFramework.Editor
                 }
                 else
                 {
-                    _InstanceAutoReleaseInterval.floatValue = instanceAutoReleaseInterval;
+                    m_InstanceAutoReleaseInterval.floatValue = instanceAutoReleaseInterval;
                 }
             }
 
-            int instanceCapacity = EditorGUILayout.DelayedIntField("Instance Capacity", _InstanceCapacity.intValue);
-            if (instanceCapacity != _InstanceCapacity.intValue)
+            int instanceCapacity = EditorGUILayout.DelayedIntField("Instance Capacity", m_InstanceCapacity.intValue);
+            if (instanceCapacity != m_InstanceCapacity.intValue)
             {
                 if (EditorApplication.isPlaying)
                 {
@@ -68,12 +68,12 @@ namespace UnityGameFramework.Editor
                 }
                 else
                 {
-                    _InstanceCapacity.intValue = instanceCapacity;
+                    m_InstanceCapacity.intValue = instanceCapacity;
                 }
             }
 
-            float instanceExpireTime = EditorGUILayout.DelayedFloatField("Instance Expire Time", _InstanceExpireTime.floatValue);
-            if (instanceExpireTime != _InstanceExpireTime.floatValue)
+            float instanceExpireTime = EditorGUILayout.DelayedFloatField("Instance Expire Time", m_InstanceExpireTime.floatValue);
+            if (instanceExpireTime != m_InstanceExpireTime.floatValue)
             {
                 if (EditorApplication.isPlaying)
                 {
@@ -81,12 +81,12 @@ namespace UnityGameFramework.Editor
                 }
                 else
                 {
-                    _InstanceExpireTime.floatValue = instanceExpireTime;
+                    m_InstanceExpireTime.floatValue = instanceExpireTime;
                 }
             }
 
-            int instancePriority = EditorGUILayout.DelayedIntField("Instance Priority", _InstancePriority.intValue);
-            if (instancePriority != _InstancePriority.intValue)
+            int instancePriority = EditorGUILayout.DelayedIntField("Instance Priority", m_InstancePriority.intValue);
+            if (instancePriority != m_InstancePriority.intValue)
             {
                 if (EditorApplication.isPlaying)
                 {
@@ -94,16 +94,16 @@ namespace UnityGameFramework.Editor
                 }
                 else
                 {
-                    _InstancePriority.intValue = instancePriority;
+                    m_InstancePriority.intValue = instancePriority;
                 }
             }
 
             EditorGUI.BeginDisabledGroup(EditorApplication.isPlayingOrWillChangePlaymode);
             {
-                EditorGUILayout.PropertyField(_InstanceRoot);
-                _UIFormHelperInfo.Draw();
-                _UIGroupHelperInfo.Draw();
-                EditorGUILayout.PropertyField(_UIGroups, true);
+                EditorGUILayout.PropertyField(m_InstanceRoot);
+                m_UIFormHelperInfo.Draw();
+                m_UIGroupHelperInfo.Draw();
+                EditorGUILayout.PropertyField(m_UIGroups, true);
             }
             EditorGUI.EndDisabledGroup();
 
@@ -126,28 +126,28 @@ namespace UnityGameFramework.Editor
 
         private void OnEnable()
         {
-            _EnableOpenUIFormSuccessEvent = serializedObject.FindProperty("_EnableOpenUIFormSuccessEvent");
-            _EnableOpenUIFormFailureEvent = serializedObject.FindProperty("_EnableOpenUIFormFailureEvent");
-            _EnableOpenUIFormUpdateEvent = serializedObject.FindProperty("_EnableOpenUIFormUpdateEvent");
-            _EnableOpenUIFormDependencyAssetEvent = serializedObject.FindProperty("_EnableOpenUIFormDependencyAssetEvent");
-            _EnableCloseUIFormCompleteEvent = serializedObject.FindProperty("_EnableCloseUIFormCompleteEvent");
-            _InstanceAutoReleaseInterval = serializedObject.FindProperty("_InstanceAutoReleaseInterval");
-            _InstanceCapacity = serializedObject.FindProperty("_InstanceCapacity");
-            _InstanceExpireTime = serializedObject.FindProperty("_InstanceExpireTime");
-            _InstancePriority = serializedObject.FindProperty("_InstancePriority");
-            _InstanceRoot = serializedObject.FindProperty("_InstanceRoot");
-            _UIGroups = serializedObject.FindProperty("_UIGroups");
+            m_EnableOpenUIFormSuccessEvent = serializedObject.FindProperty("m_EnableOpenUIFormSuccessEvent");
+            m_EnableOpenUIFormFailureEvent = serializedObject.FindProperty("m_EnableOpenUIFormFailureEvent");
+            m_EnableOpenUIFormUpdateEvent = serializedObject.FindProperty("m_EnableOpenUIFormUpdateEvent");
+            m_EnableOpenUIFormDependencyAssetEvent = serializedObject.FindProperty("m_EnableOpenUIFormDependencyAssetEvent");
+            m_EnableCloseUIFormCompleteEvent = serializedObject.FindProperty("m_EnableCloseUIFormCompleteEvent");
+            m_InstanceAutoReleaseInterval = serializedObject.FindProperty("m_InstanceAutoReleaseInterval");
+            m_InstanceCapacity = serializedObject.FindProperty("m_InstanceCapacity");
+            m_InstanceExpireTime = serializedObject.FindProperty("m_InstanceExpireTime");
+            m_InstancePriority = serializedObject.FindProperty("m_InstancePriority");
+            m_InstanceRoot = serializedObject.FindProperty("m_InstanceRoot");
+            m_UIGroups = serializedObject.FindProperty("m_UIGroups");
 
-            _UIFormHelperInfo.Init(serializedObject);
-            _UIGroupHelperInfo.Init(serializedObject);
+            m_UIFormHelperInfo.Init(serializedObject);
+            m_UIGroupHelperInfo.Init(serializedObject);
 
             RefreshTypeNames();
         }
 
         private void RefreshTypeNames()
         {
-            _UIFormHelperInfo.Refresh();
-            _UIGroupHelperInfo.Refresh();
+            m_UIFormHelperInfo.Refresh();
+            m_UIGroupHelperInfo.Refresh();
             serializedObject.ApplyModifiedProperties();
         }
     }

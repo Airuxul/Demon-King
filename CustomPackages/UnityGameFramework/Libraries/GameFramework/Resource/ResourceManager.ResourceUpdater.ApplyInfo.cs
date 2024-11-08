@@ -19,15 +19,15 @@ namespace GameFramework.Resource
             [StructLayout(LayoutKind.Auto)]
             private struct ApplyInfo
             {
-                private readonly ResourceName _ResourceName;
-                private readonly string _FileSystemName;
-                private readonly LoadType _LoadType;
-                private readonly long _Offset;
-                private readonly int _Length;
-                private readonly int _HashCode;
-                private readonly int _CompressedLength;
-                private readonly int _CompressedHashCode;
-                private readonly string _ResourcePath;
+                private readonly ResourceName m_ResourceName;
+                private readonly string m_FileSystemName;
+                private readonly LoadType m_LoadType;
+                private readonly long m_Offset;
+                private readonly int m_Length;
+                private readonly int m_HashCode;
+                private readonly int m_CompressedLength;
+                private readonly int m_CompressedHashCode;
+                private readonly string m_ResourcePath;
 
                 /// <summary>
                 /// 初始化资源应用信息的新实例。
@@ -43,15 +43,15 @@ namespace GameFramework.Resource
                 /// <param name="resourcePath">资源路径。</param>
                 public ApplyInfo(ResourceName resourceName, string fileSystemName, LoadType loadType, long offset, int length, int hashCode, int compressedLength, int compressedHashCode, string resourcePath)
                 {
-                    _ResourceName = resourceName;
-                    _FileSystemName = fileSystemName;
-                    _LoadType = loadType;
-                    _Offset = offset;
-                    _Length = length;
-                    _HashCode = hashCode;
-                    _CompressedLength = compressedLength;
-                    _CompressedHashCode = compressedHashCode;
-                    _ResourcePath = resourcePath;
+                    m_ResourceName = resourceName;
+                    m_FileSystemName = fileSystemName;
+                    m_LoadType = loadType;
+                    m_Offset = offset;
+                    m_Length = length;
+                    m_HashCode = hashCode;
+                    m_CompressedLength = compressedLength;
+                    m_CompressedHashCode = compressedHashCode;
+                    m_ResourcePath = resourcePath;
                 }
 
                 /// <summary>
@@ -61,7 +61,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _ResourceName;
+                        return m_ResourceName;
                     }
                 }
 
@@ -72,7 +72,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return !string.IsNullOrEmpty(_FileSystemName);
+                        return !string.IsNullOrEmpty(m_FileSystemName);
                     }
                 }
 
@@ -83,7 +83,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _FileSystemName;
+                        return m_FileSystemName;
                     }
                 }
 
@@ -94,7 +94,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _LoadType;
+                        return m_LoadType;
                     }
                 }
 
@@ -105,7 +105,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _Offset;
+                        return m_Offset;
                     }
                 }
 
@@ -116,7 +116,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _Length;
+                        return m_Length;
                     }
                 }
 
@@ -127,7 +127,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _HashCode;
+                        return m_HashCode;
                     }
                 }
 
@@ -138,7 +138,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _CompressedLength;
+                        return m_CompressedLength;
                     }
                 }
 
@@ -149,7 +149,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _CompressedHashCode;
+                        return m_CompressedHashCode;
                     }
                 }
 
@@ -160,7 +160,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _ResourcePath;
+                        return m_ResourcePath;
                     }
                 }
             }

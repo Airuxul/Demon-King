@@ -11,24 +11,24 @@ namespace GameFramework.Sound
     {
         private sealed class PlaySoundInfo : IReference
         {
-            private int _SerialId;
-            private SoundGroup _SoundGroup;
-            private PlaySoundParams _PlaySoundParams;
-            private object _UserData;
+            private int m_SerialId;
+            private SoundGroup m_SoundGroup;
+            private PlaySoundParams m_PlaySoundParams;
+            private object m_UserData;
 
             public PlaySoundInfo()
             {
-                _SerialId = 0;
-                _SoundGroup = null;
-                _PlaySoundParams = null;
-                _UserData = null;
+                m_SerialId = 0;
+                m_SoundGroup = null;
+                m_PlaySoundParams = null;
+                m_UserData = null;
             }
 
             public int SerialId
             {
                 get
                 {
-                    return _SerialId;
+                    return m_SerialId;
                 }
             }
 
@@ -36,7 +36,7 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return _SoundGroup;
+                    return m_SoundGroup;
                 }
             }
 
@@ -44,7 +44,7 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return _PlaySoundParams;
+                    return m_PlaySoundParams;
                 }
             }
 
@@ -52,26 +52,26 @@ namespace GameFramework.Sound
             {
                 get
                 {
-                    return _UserData;
+                    return m_UserData;
                 }
             }
 
             public static PlaySoundInfo Create(int serialId, SoundGroup soundGroup, PlaySoundParams playSoundParams, object userData)
             {
                 PlaySoundInfo playSoundInfo = ReferencePool.Acquire<PlaySoundInfo>();
-                playSoundInfo._SerialId = serialId;
-                playSoundInfo._SoundGroup = soundGroup;
-                playSoundInfo._PlaySoundParams = playSoundParams;
-                playSoundInfo._UserData = userData;
+                playSoundInfo.m_SerialId = serialId;
+                playSoundInfo.m_SoundGroup = soundGroup;
+                playSoundInfo.m_PlaySoundParams = playSoundParams;
+                playSoundInfo.m_UserData = userData;
                 return playSoundInfo;
             }
 
             public void Clear()
             {
-                _SerialId = 0;
-                _SoundGroup = null;
-                _PlaySoundParams = null;
-                _UserData = null;
+                m_SerialId = 0;
+                m_SoundGroup = null;
+                m_PlaySoundParams = null;
+                m_UserData = null;
             }
         }
     }

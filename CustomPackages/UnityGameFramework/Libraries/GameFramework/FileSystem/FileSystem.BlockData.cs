@@ -19,9 +19,9 @@ namespace GameFramework.FileSystem
         {
             public static readonly BlockData Empty = new BlockData(0, 0);
 
-            private readonly int _StringIndex;
-            private readonly int _ClusterIndex;
-            private readonly int _Length;
+            private readonly int m_StringIndex;
+            private readonly int m_ClusterIndex;
+            private readonly int m_Length;
 
             public BlockData(int clusterIndex, int length)
                 : this(-1, clusterIndex, length)
@@ -30,16 +30,16 @@ namespace GameFramework.FileSystem
 
             public BlockData(int stringIndex, int clusterIndex, int length)
             {
-                _StringIndex = stringIndex;
-                _ClusterIndex = clusterIndex;
-                _Length = length;
+                m_StringIndex = stringIndex;
+                m_ClusterIndex = clusterIndex;
+                m_Length = length;
             }
 
             public bool Using
             {
                 get
                 {
-                    return _StringIndex >= 0;
+                    return m_StringIndex >= 0;
                 }
             }
 
@@ -47,7 +47,7 @@ namespace GameFramework.FileSystem
             {
                 get
                 {
-                    return _StringIndex;
+                    return m_StringIndex;
                 }
             }
 
@@ -55,7 +55,7 @@ namespace GameFramework.FileSystem
             {
                 get
                 {
-                    return _ClusterIndex;
+                    return m_ClusterIndex;
                 }
             }
 
@@ -63,13 +63,13 @@ namespace GameFramework.FileSystem
             {
                 get
                 {
-                    return _Length;
+                    return m_Length;
                 }
             }
 
             public BlockData Free()
             {
-                return new BlockData(_ClusterIndex, (int)GetUpBoundClusterOffset(_Length));
+                return new BlockData(m_ClusterIndex, (int)GetUpBoundClusterOffset(m_Length));
             }
         }
     }

@@ -7,7 +7,6 @@
 
 using GameFramework;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -18,15 +17,18 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/ReferencePool")]
     public sealed class ReferencePoolComponent : GameFrameworkComponent
     {
-        [FormerlySerializedAs("_EnableStrictCheck")] [SerializeField]
-        private ReferenceStrictCheckType enableStrictCheck = ReferenceStrictCheckType.AlwaysEnable;
+        [SerializeField]
+        private ReferenceStrictCheckType m_EnableStrictCheck = ReferenceStrictCheckType.AlwaysEnable;
 
         /// <summary>
         /// 获取或设置是否开启强制检查。
         /// </summary>
         public bool EnableStrictCheck
         {
-            get => ReferencePool.EnableStrictCheck;
+            get
+            {
+                return ReferencePool.EnableStrictCheck;
+            }
             set
             {
                 ReferencePool.EnableStrictCheck = value;
@@ -47,7 +49,7 @@ namespace UnityGameFramework.Runtime
 
         private void Start()
         {
-            switch (enableStrictCheck)
+            switch (m_EnableStrictCheck)
             {
                 case ReferenceStrictCheckType.AlwaysEnable:
                     EnableStrictCheck = true;

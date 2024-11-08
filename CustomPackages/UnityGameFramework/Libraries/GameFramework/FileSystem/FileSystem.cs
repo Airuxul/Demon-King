@@ -27,20 +27,20 @@ namespace GameFramework.FileSystem
         private static readonly int BlockDataSize = Marshal.SizeOf(typeof(BlockData));
         private static readonly int StringDataSize = Marshal.SizeOf(typeof(StringData));
 
-        private readonly string _FullPath;
-        private readonly FileSystemAccess _Access;
-        private readonly FileSystemStream _Stream;
-        private readonly Dictionary<string, int> _FileDatas;
-        private readonly List<BlockData> _BlockDatas;
-        private readonly GameFrameworkMultiDictionary<int, int> _FreeBlockIndexes;
-        private readonly SortedDictionary<int, StringData> _StringDatas;
-        private readonly Queue<int> _FreeStringIndexes;
-        private readonly Queue<StringData> _FreeStringDatas;
+        private readonly string m_FullPath;
+        private readonly FileSystemAccess m_Access;
+        private readonly FileSystemStream m_Stream;
+        private readonly Dictionary<string, int> m_FileDatas;
+        private readonly List<BlockData> m_BlockDatas;
+        private readonly GameFrameworkMultiDictionary<int, int> m_FreeBlockIndexes;
+        private readonly SortedDictionary<int, StringData> m_StringDatas;
+        private readonly Queue<int> m_FreeStringIndexes;
+        private readonly Queue<StringData> m_FreeStringDatas;
 
-        private HeaderData _HeaderData;
-        private int _BlockDataOffset;
-        private int _StringDataOffset;
-        private int _FileDataOffset;
+        private HeaderData m_HeaderData;
+        private int m_BlockDataOffset;
+        private int m_StringDataOffset;
+        private int m_FileDataOffset;
 
         /// <summary>
         /// 初始化文件系统的新实例。
@@ -65,20 +65,20 @@ namespace GameFramework.FileSystem
                 throw new GameFrameworkException("Stream is invalid.");
             }
 
-            _FullPath = fullPath;
-            _Access = access;
-            _Stream = stream;
-            _FileDatas = new Dictionary<string, int>(StringComparer.Ordinal);
-            _BlockDatas = new List<BlockData>();
-            _FreeBlockIndexes = new GameFrameworkMultiDictionary<int, int>();
-            _StringDatas = new SortedDictionary<int, StringData>();
-            _FreeStringIndexes = new Queue<int>();
-            _FreeStringDatas = new Queue<StringData>();
+            m_FullPath = fullPath;
+            m_Access = access;
+            m_Stream = stream;
+            m_FileDatas = new Dictionary<string, int>(StringComparer.Ordinal);
+            m_BlockDatas = new List<BlockData>();
+            m_FreeBlockIndexes = new GameFrameworkMultiDictionary<int, int>();
+            m_StringDatas = new SortedDictionary<int, StringData>();
+            m_FreeStringIndexes = new Queue<int>();
+            m_FreeStringDatas = new Queue<StringData>();
 
-            _HeaderData = default(HeaderData);
-            _BlockDataOffset = 0;
-            _StringDataOffset = 0;
-            _FileDataOffset = 0;
+            m_HeaderData = default(HeaderData);
+            m_BlockDataOffset = 0;
+            m_StringDataOffset = 0;
+            m_FileDataOffset = 0;
 
             Utility.Marshal.EnsureCachedHGlobalSize(CachedBytesLength);
         }
@@ -90,7 +90,7 @@ namespace GameFramework.FileSystem
         {
             get
             {
-                return _FullPath;
+                return m_FullPath;
             }
         }
 
@@ -101,7 +101,7 @@ namespace GameFramework.FileSystem
         {
             get
             {
-                return _Access;
+                return m_Access;
             }
         }
 
@@ -112,7 +112,7 @@ namespace GameFramework.FileSystem
         {
             get
             {
-                return _FileDatas.Count;
+                return m_FileDatas.Count;
             }
         }
 
@@ -123,7 +123,7 @@ namespace GameFramework.FileSystem
         {
             get
             {
-                return _HeaderData.MaxFileCount;
+                return m_HeaderData.MaxFileCount;
             }
         }
 
@@ -154,14 +154,14 @@ namespace GameFramework.FileSystem
             }
 
             FileSystem fileSystem = new FileSystem(fullPath, access, stream);
-            fileSystem._HeaderData = new HeaderData(maxFileCount, maxBlockCount);
+            fileSystem.m_HeaderData = new HeaderData(maxFileCount, maxBlockCount);
             CalcOffsets(fileSystem);
-            Utility.Marshal.StructureToBytes(fileSystem._HeaderData, HeaderDataSize, s_CachedBytes);
+            Utility.Marshal.StructureToBytes(fileSystem.m_HeaderData, HeaderDataSize, s_CachedBytes);
 
             try
             {
                 stream.Write(s_CachedBytes, 0, HeaderDataSize);
-                stream.SetLength(fileSystem._FileDataOffset);
+                stream.SetLength(fileSystem.m_FileDataOffset);
                 return fileSystem;
             }
             catch
@@ -183,47 +183,47 @@ namespace GameFramework.FileSystem
             FileSystem fileSystem = new FileSystem(fullPath, access, stream);
 
             stream.Read(s_CachedBytes, 0, HeaderDataSize);
-            fileSystem._HeaderData = Utility.Marshal.BytesToStructure<HeaderData>(HeaderDataSize, s_CachedBytes);
-            if (!fileSystem._HeaderData.IsValid)
+            fileSystem.m_HeaderData = Utility.Marshal.BytesToStructure<HeaderData>(HeaderDataSize, s_CachedBytes);
+            if (!fileSystem.m_HeaderData.IsValid)
             {
                 return null;
             }
 
             CalcOffsets(fileSystem);
 
-            if (fileSystem._BlockDatas.Capacity < fileSystem._HeaderData.BlockCount)
+            if (fileSystem.m_BlockDatas.Capacity < fileSystem.m_HeaderData.BlockCount)
             {
-                fileSystem._BlockDatas.Capacity = fileSystem._HeaderData.BlockCount;
+                fileSystem.m_BlockDatas.Capacity = fileSystem.m_HeaderData.BlockCount;
             }
 
-            for (int i = 0; i < fileSystem._HeaderData.BlockCount; i++)
+            for (int i = 0; i < fileSystem.m_HeaderData.BlockCount; i++)
             {
                 stream.Read(s_CachedBytes, 0, BlockDataSize);
                 BlockData blockData = Utility.Marshal.BytesToStructure<BlockData>(BlockDataSize, s_CachedBytes);
-                fileSystem._BlockDatas.Add(blockData);
+                fileSystem.m_BlockDatas.Add(blockData);
             }
 
-            for (int i = 0; i < fileSystem._BlockDatas.Count; i++)
+            for (int i = 0; i < fileSystem.m_BlockDatas.Count; i++)
             {
-                BlockData blockData = fileSystem._BlockDatas[i];
+                BlockData blockData = fileSystem.m_BlockDatas[i];
                 if (blockData.Using)
                 {
                     StringData stringData = fileSystem.ReadStringData(blockData.StringIndex);
-                    fileSystem._StringDatas.Add(blockData.StringIndex, stringData);
-                    fileSystem._FileDatas.Add(stringData.GetString(fileSystem._HeaderData.GetEncryptBytes()), i);
+                    fileSystem.m_StringDatas.Add(blockData.StringIndex, stringData);
+                    fileSystem.m_FileDatas.Add(stringData.GetString(fileSystem.m_HeaderData.GetEncryptBytes()), i);
                 }
                 else
                 {
-                    fileSystem._FreeBlockIndexes.Add(blockData.Length, i);
+                    fileSystem.m_FreeBlockIndexes.Add(blockData.Length, i);
                 }
             }
 
             int index = 0;
-            foreach (KeyValuePair<int, StringData> i in fileSystem._StringDatas)
+            foreach (KeyValuePair<int, StringData> i in fileSystem.m_StringDatas)
             {
                 while (index < i.Key)
                 {
-                    fileSystem._FreeStringIndexes.Enqueue(index++);
+                    fileSystem.m_FreeStringIndexes.Enqueue(index++);
                 }
 
                 index++;
@@ -237,18 +237,18 @@ namespace GameFramework.FileSystem
         /// </summary>
         public void Shutdown()
         {
-            _Stream.Close();
+            m_Stream.Close();
 
-            _FileDatas.Clear();
-            _BlockDatas.Clear();
-            _FreeBlockIndexes.Clear();
-            _StringDatas.Clear();
-            _FreeStringIndexes.Clear();
-            _FreeStringDatas.Clear();
+            m_FileDatas.Clear();
+            m_BlockDatas.Clear();
+            m_FreeBlockIndexes.Clear();
+            m_StringDatas.Clear();
+            m_FreeStringIndexes.Clear();
+            m_FreeStringDatas.Clear();
 
-            _BlockDataOffset = 0;
-            _StringDataOffset = 0;
-            _FileDataOffset = 0;
+            m_BlockDataOffset = 0;
+            m_StringDataOffset = 0;
+            m_FileDataOffset = 0;
         }
 
         /// <summary>
@@ -264,12 +264,12 @@ namespace GameFramework.FileSystem
             }
 
             int blockIndex = 0;
-            if (!_FileDatas.TryGetValue(name, out blockIndex))
+            if (!m_FileDatas.TryGetValue(name, out blockIndex))
             {
                 return default(FileInfo);
             }
 
-            BlockData blockData = _BlockDatas[blockIndex];
+            BlockData blockData = m_BlockDatas[blockIndex];
             return new FileInfo(name, GetClusterOffset(blockData.ClusterIndex), blockData.Length);
         }
 
@@ -280,10 +280,10 @@ namespace GameFramework.FileSystem
         public FileInfo[] GetAllFileInfos()
         {
             int index = 0;
-            FileInfo[] results = new FileInfo[_FileDatas.Count];
-            foreach (KeyValuePair<string, int> fileData in _FileDatas)
+            FileInfo[] results = new FileInfo[m_FileDatas.Count];
+            foreach (KeyValuePair<string, int> fileData in m_FileDatas)
             {
-                BlockData blockData = _BlockDatas[fileData.Value];
+                BlockData blockData = m_BlockDatas[fileData.Value];
                 results[index++] = new FileInfo(fileData.Key, GetClusterOffset(blockData.ClusterIndex), blockData.Length);
             }
 
@@ -302,9 +302,9 @@ namespace GameFramework.FileSystem
             }
 
             results.Clear();
-            foreach (KeyValuePair<string, int> fileData in _FileDatas)
+            foreach (KeyValuePair<string, int> fileData in m_FileDatas)
             {
-                BlockData blockData = _BlockDatas[fileData.Value];
+                BlockData blockData = m_BlockDatas[fileData.Value];
                 results.Add(new FileInfo(fileData.Key, GetClusterOffset(blockData.ClusterIndex), blockData.Length));
             }
         }
@@ -321,7 +321,7 @@ namespace GameFramework.FileSystem
                 throw new GameFrameworkException("Name is invalid.");
             }
 
-            return _FileDatas.ContainsKey(name);
+            return m_FileDatas.ContainsKey(name);
         }
 
         /// <summary>
@@ -331,7 +331,7 @@ namespace GameFramework.FileSystem
         /// <returns>存储读取文件内容的二进制流。</returns>
         public byte[] ReadFile(string name)
         {
-            if (_Access != FileSystemAccess.Read && _Access != FileSystemAccess.ReadWrite)
+            if (m_Access != FileSystemAccess.Read && m_Access != FileSystemAccess.ReadWrite)
             {
                 throw new GameFrameworkException("File system is not readable.");
             }
@@ -351,8 +351,8 @@ namespace GameFramework.FileSystem
             byte[] buffer = new byte[length];
             if (length > 0)
             {
-                _Stream.Position = fileInfo.Offset;
-                _Stream.Read(buffer, 0, length);
+                m_Stream.Position = fileInfo.Offset;
+                m_Stream.Read(buffer, 0, length);
             }
 
             return buffer;
@@ -401,7 +401,7 @@ namespace GameFramework.FileSystem
         /// <returns>实际读取了多少字节。</returns>
         public int ReadFile(string name, byte[] buffer, int startIndex, int length)
         {
-            if (_Access != FileSystemAccess.Read && _Access != FileSystemAccess.ReadWrite)
+            if (m_Access != FileSystemAccess.Read && m_Access != FileSystemAccess.ReadWrite)
             {
                 throw new GameFrameworkException("File system is not readable.");
             }
@@ -427,7 +427,7 @@ namespace GameFramework.FileSystem
                 return 0;
             }
 
-            _Stream.Position = fileInfo.Offset;
+            m_Stream.Position = fileInfo.Offset;
             if (length > fileInfo.Length)
             {
                 length = fileInfo.Length;
@@ -435,7 +435,7 @@ namespace GameFramework.FileSystem
 
             if (length > 0)
             {
-                return _Stream.Read(buffer, startIndex, length);
+                return m_Stream.Read(buffer, startIndex, length);
             }
 
             return 0;
@@ -449,7 +449,7 @@ namespace GameFramework.FileSystem
         /// <returns>实际读取了多少字节。</returns>
         public int ReadFile(string name, Stream stream)
         {
-            if (_Access != FileSystemAccess.Read && _Access != FileSystemAccess.ReadWrite)
+            if (m_Access != FileSystemAccess.Read && m_Access != FileSystemAccess.ReadWrite)
             {
                 throw new GameFrameworkException("File system is not readable.");
             }
@@ -478,8 +478,8 @@ namespace GameFramework.FileSystem
             int length = fileInfo.Length;
             if (length > 0)
             {
-                _Stream.Position = fileInfo.Offset;
-                return _Stream.Read(stream, length);
+                m_Stream.Position = fileInfo.Offset;
+                return m_Stream.Read(stream, length);
             }
 
             return 0;
@@ -505,7 +505,7 @@ namespace GameFramework.FileSystem
         /// <returns>存储读取文件片段内容的二进制流。</returns>
         public byte[] ReadFileSegment(string name, int offset, int length)
         {
-            if (_Access != FileSystemAccess.Read && _Access != FileSystemAccess.ReadWrite)
+            if (m_Access != FileSystemAccess.Read && m_Access != FileSystemAccess.ReadWrite)
             {
                 throw new GameFrameworkException("File system is not readable.");
             }
@@ -545,8 +545,8 @@ namespace GameFramework.FileSystem
             byte[] buffer = new byte[length];
             if (length > 0)
             {
-                _Stream.Position = fileInfo.Offset + offset;
-                _Stream.Read(buffer, 0, length);
+                m_Stream.Position = fileInfo.Offset + offset;
+                m_Stream.Read(buffer, 0, length);
             }
 
             return buffer;
@@ -634,7 +634,7 @@ namespace GameFramework.FileSystem
         /// <returns>实际读取了多少字节。</returns>
         public int ReadFileSegment(string name, int offset, byte[] buffer, int startIndex, int length)
         {
-            if (_Access != FileSystemAccess.Read && _Access != FileSystemAccess.ReadWrite)
+            if (m_Access != FileSystemAccess.Read && m_Access != FileSystemAccess.ReadWrite)
             {
                 throw new GameFrameworkException("File system is not readable.");
             }
@@ -678,8 +678,8 @@ namespace GameFramework.FileSystem
 
             if (length > 0)
             {
-                _Stream.Position = fileInfo.Offset + offset;
-                return _Stream.Read(buffer, startIndex, length);
+                m_Stream.Position = fileInfo.Offset + offset;
+                return m_Stream.Read(buffer, startIndex, length);
             }
 
             return 0;
@@ -707,7 +707,7 @@ namespace GameFramework.FileSystem
         /// <returns>实际读取了多少字节。</returns>
         public int ReadFileSegment(string name, int offset, Stream stream, int length)
         {
-            if (_Access != FileSystemAccess.Read && _Access != FileSystemAccess.ReadWrite)
+            if (m_Access != FileSystemAccess.Read && m_Access != FileSystemAccess.ReadWrite)
             {
                 throw new GameFrameworkException("File system is not readable.");
             }
@@ -756,8 +756,8 @@ namespace GameFramework.FileSystem
 
             if (length > 0)
             {
-                _Stream.Position = fileInfo.Offset + offset;
-                return _Stream.Read(stream, length);
+                m_Stream.Position = fileInfo.Offset + offset;
+                return m_Stream.Read(stream, length);
             }
 
             return 0;
@@ -806,7 +806,7 @@ namespace GameFramework.FileSystem
         /// <returns>是否写入指定文件成功。</returns>
         public bool WriteFile(string name, byte[] buffer, int startIndex, int length)
         {
-            if (_Access != FileSystemAccess.Write && _Access != FileSystemAccess.ReadWrite)
+            if (m_Access != FileSystemAccess.Write && m_Access != FileSystemAccess.ReadWrite)
             {
                 throw new GameFrameworkException("File system is not writable.");
             }
@@ -833,12 +833,12 @@ namespace GameFramework.FileSystem
 
             bool hasFile = false;
             int oldBlockIndex = -1;
-            if (_FileDatas.TryGetValue(name, out oldBlockIndex))
+            if (m_FileDatas.TryGetValue(name, out oldBlockIndex))
             {
                 hasFile = true;
             }
 
-            if (!hasFile && _FileDatas.Count >= _HeaderData.MaxFileCount)
+            if (!hasFile && m_FileDatas.Count >= m_HeaderData.MaxFileCount)
             {
                 return false;
             }
@@ -851,12 +851,12 @@ namespace GameFramework.FileSystem
 
             if (length > 0)
             {
-                _Stream.Position = GetClusterOffset(_BlockDatas[blockIndex].ClusterIndex);
-                _Stream.Write(buffer, startIndex, length);
+                m_Stream.Position = GetClusterOffset(m_BlockDatas[blockIndex].ClusterIndex);
+                m_Stream.Write(buffer, startIndex, length);
             }
 
             ProcessWriteFile(name, hasFile, oldBlockIndex, blockIndex, length);
-            _Stream.Flush();
+            m_Stream.Flush();
             return true;
         }
 
@@ -868,7 +868,7 @@ namespace GameFramework.FileSystem
         /// <returns>是否写入指定文件成功。</returns>
         public bool WriteFile(string name, Stream stream)
         {
-            if (_Access != FileSystemAccess.Write && _Access != FileSystemAccess.ReadWrite)
+            if (m_Access != FileSystemAccess.Write && m_Access != FileSystemAccess.ReadWrite)
             {
                 throw new GameFrameworkException("File system is not writable.");
             }
@@ -895,12 +895,12 @@ namespace GameFramework.FileSystem
 
             bool hasFile = false;
             int oldBlockIndex = -1;
-            if (_FileDatas.TryGetValue(name, out oldBlockIndex))
+            if (m_FileDatas.TryGetValue(name, out oldBlockIndex))
             {
                 hasFile = true;
             }
 
-            if (!hasFile && _FileDatas.Count >= _HeaderData.MaxFileCount)
+            if (!hasFile && m_FileDatas.Count >= m_HeaderData.MaxFileCount)
             {
                 return false;
             }
@@ -914,12 +914,12 @@ namespace GameFramework.FileSystem
 
             if (length > 0)
             {
-                _Stream.Position = GetClusterOffset(_BlockDatas[blockIndex].ClusterIndex);
-                _Stream.Write(stream, length);
+                m_Stream.Position = GetClusterOffset(m_BlockDatas[blockIndex].ClusterIndex);
+                m_Stream.Write(stream, length);
             }
 
             ProcessWriteFile(name, hasFile, oldBlockIndex, blockIndex, length);
-            _Stream.Flush();
+            m_Stream.Flush();
             return true;
         }
 
@@ -955,7 +955,7 @@ namespace GameFramework.FileSystem
         /// <returns>是否将指定文件另存为物理文件成功。</returns>
         public bool SaveAsFile(string name, string filePath)
         {
-            if (_Access != FileSystemAccess.Read && _Access != FileSystemAccess.ReadWrite)
+            if (m_Access != FileSystemAccess.Read && m_Access != FileSystemAccess.ReadWrite)
             {
                 throw new GameFrameworkException("File system is not readable.");
             }
@@ -992,8 +992,8 @@ namespace GameFramework.FileSystem
                 int length = fileInfo.Length;
                 if (length > 0)
                 {
-                    _Stream.Position = fileInfo.Offset;
-                    return _Stream.Read(fileStream, length) == length;
+                    m_Stream.Position = fileInfo.Offset;
+                    return m_Stream.Read(fileStream, length) == length;
                 }
 
                 return true;
@@ -1008,7 +1008,7 @@ namespace GameFramework.FileSystem
         /// <returns>是否重命名指定文件成功。</returns>
         public bool RenameFile(string oldName, string newName)
         {
-            if (_Access != FileSystemAccess.Write && _Access != FileSystemAccess.ReadWrite)
+            if (m_Access != FileSystemAccess.Write && m_Access != FileSystemAccess.ReadWrite)
             {
                 throw new GameFrameworkException("File system is not writable.");
             }
@@ -1033,24 +1033,24 @@ namespace GameFramework.FileSystem
                 return true;
             }
 
-            if (_FileDatas.ContainsKey(newName))
+            if (m_FileDatas.ContainsKey(newName))
             {
                 return false;
             }
 
             int blockIndex = 0;
-            if (!_FileDatas.TryGetValue(oldName, out blockIndex))
+            if (!m_FileDatas.TryGetValue(oldName, out blockIndex))
             {
                 return false;
             }
 
-            int stringIndex = _BlockDatas[blockIndex].StringIndex;
-            StringData stringData = _StringDatas[stringIndex].SetString(newName, _HeaderData.GetEncryptBytes());
-            _StringDatas[stringIndex] = stringData;
+            int stringIndex = m_BlockDatas[blockIndex].StringIndex;
+            StringData stringData = m_StringDatas[stringIndex].SetString(newName, m_HeaderData.GetEncryptBytes());
+            m_StringDatas[stringIndex] = stringData;
             WriteStringData(stringIndex, stringData);
-            _FileDatas.Add(newName, blockIndex);
-            _FileDatas.Remove(oldName);
-            _Stream.Flush();
+            m_FileDatas.Add(newName, blockIndex);
+            m_FileDatas.Remove(oldName);
+            m_Stream.Flush();
             return true;
         }
 
@@ -1061,7 +1061,7 @@ namespace GameFramework.FileSystem
         /// <returns>是否删除指定文件成功。</returns>
         public bool DeleteFile(string name)
         {
-            if (_Access != FileSystemAccess.Write && _Access != FileSystemAccess.ReadWrite)
+            if (m_Access != FileSystemAccess.Write && m_Access != FileSystemAccess.ReadWrite)
             {
                 throw new GameFrameworkException("File system is not writable.");
             }
@@ -1072,48 +1072,48 @@ namespace GameFramework.FileSystem
             }
 
             int blockIndex = 0;
-            if (!_FileDatas.TryGetValue(name, out blockIndex))
+            if (!m_FileDatas.TryGetValue(name, out blockIndex))
             {
                 return false;
             }
 
-            _FileDatas.Remove(name);
+            m_FileDatas.Remove(name);
 
-            BlockData blockData = _BlockDatas[blockIndex];
+            BlockData blockData = m_BlockDatas[blockIndex];
             int stringIndex = blockData.StringIndex;
-            StringData stringData = _StringDatas[stringIndex].Clear();
-            _FreeStringIndexes.Enqueue(stringIndex);
-            _FreeStringDatas.Enqueue(stringData);
-            _StringDatas.Remove(stringIndex);
+            StringData stringData = m_StringDatas[stringIndex].Clear();
+            m_FreeStringIndexes.Enqueue(stringIndex);
+            m_FreeStringDatas.Enqueue(stringData);
+            m_StringDatas.Remove(stringIndex);
             WriteStringData(stringIndex, stringData);
 
             blockData = blockData.Free();
-            _BlockDatas[blockIndex] = blockData;
+            m_BlockDatas[blockIndex] = blockData;
             if (!TryCombineFreeBlocks(blockIndex))
             {
-                _FreeBlockIndexes.Add(blockData.Length, blockIndex);
+                m_FreeBlockIndexes.Add(blockData.Length, blockIndex);
                 WriteBlockData(blockIndex);
             }
 
-            _Stream.Flush();
+            m_Stream.Flush();
             return true;
         }
 
         private void ProcessWriteFile(string name, bool hasFile, int oldBlockIndex, int blockIndex, int length)
         {
-            BlockData blockData = _BlockDatas[blockIndex];
+            BlockData blockData = m_BlockDatas[blockIndex];
             if (hasFile)
             {
-                BlockData oldBlockData = _BlockDatas[oldBlockIndex];
+                BlockData oldBlockData = m_BlockDatas[oldBlockIndex];
                 blockData = new BlockData(oldBlockData.StringIndex, blockData.ClusterIndex, length);
-                _BlockDatas[blockIndex] = blockData;
+                m_BlockDatas[blockIndex] = blockData;
                 WriteBlockData(blockIndex);
 
                 oldBlockData = oldBlockData.Free();
-                _BlockDatas[oldBlockIndex] = oldBlockData;
+                m_BlockDatas[oldBlockIndex] = oldBlockData;
                 if (!TryCombineFreeBlocks(oldBlockIndex))
                 {
-                    _FreeBlockIndexes.Add(oldBlockData.Length, oldBlockIndex);
+                    m_FreeBlockIndexes.Add(oldBlockData.Length, oldBlockIndex);
                     WriteBlockData(oldBlockIndex);
                 }
             }
@@ -1121,23 +1121,23 @@ namespace GameFramework.FileSystem
             {
                 int stringIndex = AllocString(name);
                 blockData = new BlockData(stringIndex, blockData.ClusterIndex, length);
-                _BlockDatas[blockIndex] = blockData;
+                m_BlockDatas[blockIndex] = blockData;
                 WriteBlockData(blockIndex);
             }
 
             if (hasFile)
             {
-                _FileDatas[name] = blockIndex;
+                m_FileDatas[name] = blockIndex;
             }
             else
             {
-                _FileDatas.Add(name, blockIndex);
+                m_FileDatas.Add(name, blockIndex);
             }
         }
 
         private bool TryCombineFreeBlocks(int freeBlockIndex)
         {
-            BlockData freeBlockData = _BlockDatas[freeBlockIndex];
+            BlockData freeBlockData = m_BlockDatas[freeBlockIndex];
             if (freeBlockData.Length <= 0)
             {
                 return false;
@@ -1146,7 +1146,7 @@ namespace GameFramework.FileSystem
             int previousFreeBlockIndex = -1;
             int nextFreeBlockIndex = -1;
             int nextBlockDataClusterIndex = freeBlockData.ClusterIndex + GetUpBoundClusterCount(freeBlockData.Length);
-            foreach (KeyValuePair<int, GameFrameworkLinkedListRange<int>> blockIndexes in _FreeBlockIndexes)
+            foreach (KeyValuePair<int, GameFrameworkLinkedListRange<int>> blockIndexes in m_FreeBlockIndexes)
             {
                 if (blockIndexes.Key <= 0)
                 {
@@ -1156,7 +1156,7 @@ namespace GameFramework.FileSystem
                 int blockDataClusterCount = GetUpBoundClusterCount(blockIndexes.Key);
                 foreach (int blockIndex in blockIndexes.Value)
                 {
-                    BlockData blockData = _BlockDatas[blockIndex];
+                    BlockData blockData = m_BlockDatas[blockIndex];
                     if (blockData.ClusterIndex + blockDataClusterCount == freeBlockData.ClusterIndex)
                     {
                         previousFreeBlockIndex = blockIndex;
@@ -1173,29 +1173,29 @@ namespace GameFramework.FileSystem
                 return false;
             }
 
-            _FreeBlockIndexes.Remove(freeBlockData.Length, freeBlockIndex);
+            m_FreeBlockIndexes.Remove(freeBlockData.Length, freeBlockIndex);
             if (previousFreeBlockIndex >= 0)
             {
-                BlockData previousFreeBlockData = _BlockDatas[previousFreeBlockIndex];
-                _FreeBlockIndexes.Remove(previousFreeBlockData.Length, previousFreeBlockIndex);
+                BlockData previousFreeBlockData = m_BlockDatas[previousFreeBlockIndex];
+                m_FreeBlockIndexes.Remove(previousFreeBlockData.Length, previousFreeBlockIndex);
                 freeBlockData = new BlockData(previousFreeBlockData.ClusterIndex, previousFreeBlockData.Length + freeBlockData.Length);
-                _BlockDatas[previousFreeBlockIndex] = BlockData.Empty;
-                _FreeBlockIndexes.Add(0, previousFreeBlockIndex);
+                m_BlockDatas[previousFreeBlockIndex] = BlockData.Empty;
+                m_FreeBlockIndexes.Add(0, previousFreeBlockIndex);
                 WriteBlockData(previousFreeBlockIndex);
             }
 
             if (nextFreeBlockIndex >= 0)
             {
-                BlockData nextFreeBlockData = _BlockDatas[nextFreeBlockIndex];
-                _FreeBlockIndexes.Remove(nextFreeBlockData.Length, nextFreeBlockIndex);
+                BlockData nextFreeBlockData = m_BlockDatas[nextFreeBlockIndex];
+                m_FreeBlockIndexes.Remove(nextFreeBlockData.Length, nextFreeBlockIndex);
                 freeBlockData = new BlockData(freeBlockData.ClusterIndex, freeBlockData.Length + nextFreeBlockData.Length);
-                _BlockDatas[nextFreeBlockIndex] = BlockData.Empty;
-                _FreeBlockIndexes.Add(0, nextFreeBlockIndex);
+                m_BlockDatas[nextFreeBlockIndex] = BlockData.Empty;
+                m_FreeBlockIndexes.Add(0, nextFreeBlockIndex);
                 WriteBlockData(nextFreeBlockIndex);
             }
 
-            _BlockDatas[freeBlockIndex] = freeBlockData;
-            _FreeBlockIndexes.Add(freeBlockData.Length, freeBlockIndex);
+            m_BlockDatas[freeBlockIndex] = freeBlockData;
+            m_FreeBlockIndexes.Add(freeBlockData.Length, freeBlockIndex);
             WriteBlockData(freeBlockIndex);
             return true;
         }
@@ -1203,17 +1203,17 @@ namespace GameFramework.FileSystem
         private int GetEmptyBlockIndex()
         {
             GameFrameworkLinkedListRange<int> lengthRange = default(GameFrameworkLinkedListRange<int>);
-            if (_FreeBlockIndexes.TryGetValue(0, out lengthRange))
+            if (m_FreeBlockIndexes.TryGetValue(0, out lengthRange))
             {
                 int blockIndex = lengthRange.First.Value;
-                _FreeBlockIndexes.Remove(0, blockIndex);
+                m_FreeBlockIndexes.Remove(0, blockIndex);
                 return blockIndex;
             }
 
-            if (_BlockDatas.Count < _HeaderData.MaxBlockCount)
+            if (m_BlockDatas.Count < m_HeaderData.MaxBlockCount)
             {
-                int blockIndex = _BlockDatas.Count;
-                _BlockDatas.Add(BlockData.Empty);
+                int blockIndex = m_BlockDatas.Count;
+                m_BlockDatas.Add(BlockData.Empty);
                 WriteHeaderData();
                 return blockIndex;
             }
@@ -1232,7 +1232,7 @@ namespace GameFramework.FileSystem
 
             int lengthFound = -1;
             GameFrameworkLinkedListRange<int> lengthRange = default(GameFrameworkLinkedListRange<int>);
-            foreach (KeyValuePair<int, GameFrameworkLinkedListRange<int>> i in _FreeBlockIndexes)
+            foreach (KeyValuePair<int, GameFrameworkLinkedListRange<int>> i in m_FreeBlockIndexes)
             {
                 if (i.Key < length)
                 {
@@ -1250,23 +1250,23 @@ namespace GameFramework.FileSystem
 
             if (lengthFound >= 0)
             {
-                if (lengthFound > length && _BlockDatas.Count >= _HeaderData.MaxBlockCount)
+                if (lengthFound > length && m_BlockDatas.Count >= m_HeaderData.MaxBlockCount)
                 {
                     return -1;
                 }
 
                 int blockIndex = lengthRange.First.Value;
-                _FreeBlockIndexes.Remove(lengthFound, blockIndex);
+                m_FreeBlockIndexes.Remove(lengthFound, blockIndex);
                 if (lengthFound > length)
                 {
-                    BlockData blockData = _BlockDatas[blockIndex];
-                    _BlockDatas[blockIndex] = new BlockData(blockData.ClusterIndex, length);
+                    BlockData blockData = m_BlockDatas[blockIndex];
+                    m_BlockDatas[blockIndex] = new BlockData(blockData.ClusterIndex, length);
                     WriteBlockData(blockIndex);
 
                     int deltaLength = lengthFound - length;
                     int anotherBlockIndex = GetEmptyBlockIndex();
-                    _BlockDatas[anotherBlockIndex] = new BlockData(blockData.ClusterIndex + GetUpBoundClusterCount(length), deltaLength);
-                    _FreeBlockIndexes.Add(deltaLength, anotherBlockIndex);
+                    m_BlockDatas[anotherBlockIndex] = new BlockData(blockData.ClusterIndex + GetUpBoundClusterCount(length), deltaLength);
+                    m_FreeBlockIndexes.Add(deltaLength, anotherBlockIndex);
                     WriteBlockData(anotherBlockIndex);
                 }
 
@@ -1280,17 +1280,17 @@ namespace GameFramework.FileSystem
                     return -1;
                 }
 
-                long fileLength = _Stream.Length;
+                long fileLength = m_Stream.Length;
                 try
                 {
-                    _Stream.SetLength(fileLength + length);
+                    m_Stream.SetLength(fileLength + length);
                 }
                 catch
                 {
                     return -1;
                 }
 
-                _BlockDatas[blockIndex] = new BlockData(GetUpBoundClusterCount(fileLength), length);
+                m_BlockDatas[blockIndex] = new BlockData(GetUpBoundClusterCount(fileLength), length);
                 WriteBlockData(blockIndex);
                 return blockIndex;
             }
@@ -1301,18 +1301,18 @@ namespace GameFramework.FileSystem
             int stringIndex = -1;
             StringData stringData = default(StringData);
 
-            if (_FreeStringIndexes.Count > 0)
+            if (m_FreeStringIndexes.Count > 0)
             {
-                stringIndex = _FreeStringIndexes.Dequeue();
+                stringIndex = m_FreeStringIndexes.Dequeue();
             }
             else
             {
-                stringIndex = _StringDatas.Count;
+                stringIndex = m_StringDatas.Count;
             }
 
-            if (_FreeStringDatas.Count > 0)
+            if (m_FreeStringDatas.Count > 0)
             {
-                stringData = _FreeStringDatas.Dequeue();
+                stringData = m_FreeStringDatas.Dequeue();
             }
             else
             {
@@ -1321,46 +1321,46 @@ namespace GameFramework.FileSystem
                 stringData = new StringData(0, bytes);
             }
 
-            stringData = stringData.SetString(value, _HeaderData.GetEncryptBytes());
-            _StringDatas.Add(stringIndex, stringData);
+            stringData = stringData.SetString(value, m_HeaderData.GetEncryptBytes());
+            m_StringDatas.Add(stringIndex, stringData);
             WriteStringData(stringIndex, stringData);
             return stringIndex;
         }
 
         private void WriteHeaderData()
         {
-            _HeaderData = _HeaderData.SetBlockCount(_BlockDatas.Count);
-            Utility.Marshal.StructureToBytes(_HeaderData, HeaderDataSize, s_CachedBytes);
-            _Stream.Position = 0L;
-            _Stream.Write(s_CachedBytes, 0, HeaderDataSize);
+            m_HeaderData = m_HeaderData.SetBlockCount(m_BlockDatas.Count);
+            Utility.Marshal.StructureToBytes(m_HeaderData, HeaderDataSize, s_CachedBytes);
+            m_Stream.Position = 0L;
+            m_Stream.Write(s_CachedBytes, 0, HeaderDataSize);
         }
 
         private void WriteBlockData(int blockIndex)
         {
-            Utility.Marshal.StructureToBytes(_BlockDatas[blockIndex], BlockDataSize, s_CachedBytes);
-            _Stream.Position = _BlockDataOffset + BlockDataSize * blockIndex;
-            _Stream.Write(s_CachedBytes, 0, BlockDataSize);
+            Utility.Marshal.StructureToBytes(m_BlockDatas[blockIndex], BlockDataSize, s_CachedBytes);
+            m_Stream.Position = m_BlockDataOffset + BlockDataSize * blockIndex;
+            m_Stream.Write(s_CachedBytes, 0, BlockDataSize);
         }
 
         private StringData ReadStringData(int stringIndex)
         {
-            _Stream.Position = _StringDataOffset + StringDataSize * stringIndex;
-            _Stream.Read(s_CachedBytes, 0, StringDataSize);
+            m_Stream.Position = m_StringDataOffset + StringDataSize * stringIndex;
+            m_Stream.Read(s_CachedBytes, 0, StringDataSize);
             return Utility.Marshal.BytesToStructure<StringData>(StringDataSize, s_CachedBytes);
         }
 
         private void WriteStringData(int stringIndex, StringData stringData)
         {
             Utility.Marshal.StructureToBytes(stringData, StringDataSize, s_CachedBytes);
-            _Stream.Position = _StringDataOffset + StringDataSize * stringIndex;
-            _Stream.Write(s_CachedBytes, 0, StringDataSize);
+            m_Stream.Position = m_StringDataOffset + StringDataSize * stringIndex;
+            m_Stream.Write(s_CachedBytes, 0, StringDataSize);
         }
 
         private static void CalcOffsets(FileSystem fileSystem)
         {
-            fileSystem._BlockDataOffset = HeaderDataSize;
-            fileSystem._StringDataOffset = fileSystem._BlockDataOffset + BlockDataSize * fileSystem._HeaderData.MaxBlockCount;
-            fileSystem._FileDataOffset = (int)GetUpBoundClusterOffset(fileSystem._StringDataOffset + StringDataSize * fileSystem._HeaderData.MaxFileCount);
+            fileSystem.m_BlockDataOffset = HeaderDataSize;
+            fileSystem.m_StringDataOffset = fileSystem.m_BlockDataOffset + BlockDataSize * fileSystem.m_HeaderData.MaxBlockCount;
+            fileSystem.m_FileDataOffset = (int)GetUpBoundClusterOffset(fileSystem.m_StringDataOffset + StringDataSize * fileSystem.m_HeaderData.MaxFileCount);
         }
 
         private static long GetUpBoundClusterOffset(long offset)

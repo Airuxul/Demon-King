@@ -19,17 +19,17 @@ namespace GameFramework.Resource
             /// </summary>
             private sealed class AssetObject : ObjectBase
             {
-                private List<object> _DependencyAssets;
-                private object _Resource;
-                private IResourceHelper _ResourceHelper;
-                private ResourceLoader _ResourceLoader;
+                private List<object> m_DependencyAssets;
+                private object m_Resource;
+                private IResourceHelper m_ResourceHelper;
+                private ResourceLoader m_ResourceLoader;
 
                 public AssetObject()
                 {
-                    _DependencyAssets = new List<object>();
-                    _Resource = null;
-                    _ResourceHelper = null;
-                    _ResourceLoader = null;
+                    m_DependencyAssets = new List<object>();
+                    m_Resource = null;
+                    m_ResourceHelper = null;
+                    m_ResourceLoader = null;
                 }
 
                 public override bool CustomCanReleaseFlag
@@ -37,7 +37,7 @@ namespace GameFramework.Resource
                     get
                     {
                         int targetReferenceCount = 0;
-                        _ResourceLoader._AssetDependencyCount.TryGetValue(Target, out targetReferenceCount);
+                        m_ResourceLoader.m_AssetDependencyCount.TryGetValue(Target, out targetReferenceCount);
                         return base.CustomCanReleaseFlag && targetReferenceCount <= 0;
                     }
                 }
@@ -66,21 +66,21 @@ namespace GameFramework.Resource
 
                     AssetObject assetObject = ReferencePool.Acquire<AssetObject>();
                     assetObject.Initialize(name, target);
-                    assetObject._DependencyAssets.AddRange(dependencyAssets);
-                    assetObject._Resource = resource;
-                    assetObject._ResourceHelper = resourceHelper;
-                    assetObject._ResourceLoader = resourceLoader;
+                    assetObject.m_DependencyAssets.AddRange(dependencyAssets);
+                    assetObject.m_Resource = resource;
+                    assetObject.m_ResourceHelper = resourceHelper;
+                    assetObject.m_ResourceLoader = resourceLoader;
 
                     foreach (object dependencyAsset in dependencyAssets)
                     {
                         int referenceCount = 0;
-                        if (resourceLoader._AssetDependencyCount.TryGetValue(dependencyAsset, out referenceCount))
+                        if (resourceLoader.m_AssetDependencyCount.TryGetValue(dependencyAsset, out referenceCount))
                         {
-                            resourceLoader._AssetDependencyCount[dependencyAsset] = referenceCount + 1;
+                            resourceLoader.m_AssetDependencyCount[dependencyAsset] = referenceCount + 1;
                         }
                         else
                         {
-                            resourceLoader._AssetDependencyCount.Add(dependencyAsset, 1);
+                            resourceLoader.m_AssetDependencyCount.Add(dependencyAsset, 1);
                         }
                     }
 
@@ -90,18 +90,18 @@ namespace GameFramework.Resource
                 public override void Clear()
                 {
                     base.Clear();
-                    _DependencyAssets.Clear();
-                    _Resource = null;
-                    _ResourceHelper = null;
-                    _ResourceLoader = null;
+                    m_DependencyAssets.Clear();
+                    m_Resource = null;
+                    m_ResourceHelper = null;
+                    m_ResourceLoader = null;
                 }
 
                 protected internal override void OnUnspawn()
                 {
                     base.OnUnspawn();
-                    foreach (object dependencyAsset in _DependencyAssets)
+                    foreach (object dependencyAsset in m_DependencyAssets)
                     {
-                        _ResourceLoader._AssetPool.Unspawn(dependencyAsset);
+                        m_ResourceLoader.m_AssetPool.Unspawn(dependencyAsset);
                     }
                 }
 
@@ -110,17 +110,17 @@ namespace GameFramework.Resource
                     if (!isShutdown)
                     {
                         int targetReferenceCount = 0;
-                        if (_ResourceLoader._AssetDependencyCount.TryGetValue(Target, out targetReferenceCount) && targetReferenceCount > 0)
+                        if (m_ResourceLoader.m_AssetDependencyCount.TryGetValue(Target, out targetReferenceCount) && targetReferenceCount > 0)
                         {
                             throw new GameFrameworkException(Utility.Text.Format("Asset target '{0}' reference count is '{1}' larger than 0.", Name, targetReferenceCount));
                         }
 
-                        foreach (object dependencyAsset in _DependencyAssets)
+                        foreach (object dependencyAsset in m_DependencyAssets)
                         {
                             int referenceCount = 0;
-                            if (_ResourceLoader._AssetDependencyCount.TryGetValue(dependencyAsset, out referenceCount))
+                            if (m_ResourceLoader.m_AssetDependencyCount.TryGetValue(dependencyAsset, out referenceCount))
                             {
-                                _ResourceLoader._AssetDependencyCount[dependencyAsset] = referenceCount - 1;
+                                m_ResourceLoader.m_AssetDependencyCount[dependencyAsset] = referenceCount - 1;
                             }
                             else
                             {
@@ -128,12 +128,12 @@ namespace GameFramework.Resource
                             }
                         }
 
-                        _ResourceLoader._ResourcePool.Unspawn(_Resource);
+                        m_ResourceLoader.m_ResourcePool.Unspawn(m_Resource);
                     }
 
-                    _ResourceLoader._AssetDependencyCount.Remove(Target);
-                    _ResourceLoader._AssetToResourceMap.Remove(Target);
-                    _ResourceHelper.Release(Target);
+                    m_ResourceLoader.m_AssetDependencyCount.Remove(Target);
+                    m_ResourceLoader.m_AssetToResourceMap.Remove(Target);
+                    m_ResourceHelper.Release(Target);
                 }
             }
         }

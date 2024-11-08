@@ -14,7 +14,7 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(SettingComponent))]
     internal sealed class SettingComponentInspector : GameFrameworkInspector
     {
-        private HelperInfo<SettingHelperBase> _SettingHelperInfo = new HelperInfo<SettingHelperBase>("Setting");
+        private HelperInfo<SettingHelperBase> m_SettingHelperInfo = new HelperInfo<SettingHelperBase>("Setting");
 
         public override void OnInspectorGUI()
         {
@@ -24,7 +24,7 @@ namespace UnityGameFramework.Editor
 
             EditorGUI.BeginDisabledGroup(EditorApplication.isPlayingOrWillChangePlaymode);
             {
-                _SettingHelperInfo.Draw();
+                m_SettingHelperInfo.Draw();
             }
             EditorGUI.EndDisabledGroup();
 
@@ -67,14 +67,14 @@ namespace UnityGameFramework.Editor
 
         private void OnEnable()
         {
-            _SettingHelperInfo.Init(serializedObject);
+            m_SettingHelperInfo.Init(serializedObject);
 
             RefreshTypeNames();
         }
 
         private void RefreshTypeNames()
         {
-            _SettingHelperInfo.Refresh();
+            m_SettingHelperInfo.Refresh();
             serializedObject.ApplyModifiedProperties();
         }
     }

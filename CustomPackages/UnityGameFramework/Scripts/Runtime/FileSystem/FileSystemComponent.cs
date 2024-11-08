@@ -9,7 +9,6 @@ using GameFramework;
 using GameFramework.FileSystem;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -20,18 +19,24 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/File System")]
     public sealed class FileSystemComponent : GameFrameworkComponent
     {
-        private IFileSystemManager _fileSystemManager = null;
+        private IFileSystemManager m_FileSystemManager = null;
 
-        [FormerlySerializedAs("_FileSystemHelperTypeName")] [SerializeField]
-        private string fileSystemHelperTypeName = "UnityGameFramework.Runtime.DefaultFileSystemHelper";
+        [SerializeField]
+        private string m_FileSystemHelperTypeName = "UnityGameFramework.Runtime.DefaultFileSystemHelper";
 
-        [FormerlySerializedAs("_CustomFileSystemHelper")] [SerializeField]
-        private FileSystemHelperBase customFileSystemHelper = null;
+        [SerializeField]
+        private FileSystemHelperBase m_CustomFileSystemHelper = null;
 
         /// <summary>
         /// 获取文件系统数量。
         /// </summary>
-        public int Count => _fileSystemManager.Count;
+        public int Count
+        {
+            get
+            {
+                return m_FileSystemManager.Count;
+            }
+        }
 
         /// <summary>
         /// 游戏框架组件初始化。
@@ -40,14 +45,14 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            _fileSystemManager = GameFrameworkEntry.GetModule<IFileSystemManager>();
-            if (_fileSystemManager == null)
+            m_FileSystemManager = GameFrameworkEntry.GetModule<IFileSystemManager>();
+            if (m_FileSystemManager == null)
             {
                 Log.Fatal("File system manager is invalid.");
                 return;
             }
 
-            FileSystemHelperBase fileSystemHelper = Helper.CreateHelper(fileSystemHelperTypeName, customFileSystemHelper);
+            FileSystemHelperBase fileSystemHelper = Helper.CreateHelper(m_FileSystemHelperTypeName, m_CustomFileSystemHelper);
             if (fileSystemHelper == null)
             {
                 Log.Error("Can not create fileSystem helper.");
@@ -59,7 +64,7 @@ namespace UnityGameFramework.Runtime
             transform.SetParent(this.transform);
             transform.localScale = Vector3.one;
 
-            _fileSystemManager.SetFileSystemHelper(fileSystemHelper);
+            m_FileSystemManager.SetFileSystemHelper(fileSystemHelper);
         }
 
         private void Start()
@@ -73,7 +78,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在文件系统。</returns>
         public bool HasFileSystem(string fullPath)
         {
-            return _fileSystemManager.HasFileSystem(fullPath);
+            return m_FileSystemManager.HasFileSystem(fullPath);
         }
 
         /// <summary>
@@ -83,7 +88,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>获取的文件系统。</returns>
         public IFileSystem GetFileSystem(string fullPath)
         {
-            return _fileSystemManager.GetFileSystem(fullPath);
+            return m_FileSystemManager.GetFileSystem(fullPath);
         }
 
         /// <summary>
@@ -96,7 +101,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>创建的文件系统。</returns>
         public IFileSystem CreateFileSystem(string fullPath, FileSystemAccess access, int maxFileCount, int maxBlockCount)
         {
-            return _fileSystemManager.CreateFileSystem(fullPath, access, maxFileCount, maxBlockCount);
+            return m_FileSystemManager.CreateFileSystem(fullPath, access, maxFileCount, maxBlockCount);
         }
 
         /// <summary>
@@ -107,7 +112,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>加载的文件系统。</returns>
         public IFileSystem LoadFileSystem(string fullPath, FileSystemAccess access)
         {
-            return _fileSystemManager.LoadFileSystem(fullPath, access);
+            return m_FileSystemManager.LoadFileSystem(fullPath, access);
         }
 
         /// <summary>
@@ -117,7 +122,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="deletePhysicalFile">是否删除文件系统对应的物理文件。</param>
         public void DestroyFileSystem(IFileSystem fileSystem, bool deletePhysicalFile)
         {
-            _fileSystemManager.DestroyFileSystem(fileSystem, deletePhysicalFile);
+            m_FileSystemManager.DestroyFileSystem(fileSystem, deletePhysicalFile);
         }
 
         /// <summary>
@@ -126,7 +131,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>获取的所有文件系统集合。</returns>
         public IFileSystem[] GetAllFileSystems()
         {
-            return _fileSystemManager.GetAllFileSystems();
+            return m_FileSystemManager.GetAllFileSystems();
         }
 
         /// <summary>
@@ -135,7 +140,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">获取的所有文件系统集合。</param>
         public void GetAllFileSystems(List<IFileSystem> results)
         {
-            _fileSystemManager.GetAllFileSystems(results);
+            m_FileSystemManager.GetAllFileSystems(results);
         }
     }
 }

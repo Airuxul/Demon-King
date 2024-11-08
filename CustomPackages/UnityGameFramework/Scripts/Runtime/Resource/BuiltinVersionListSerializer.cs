@@ -16,7 +16,7 @@ namespace UnityGameFramework.Runtime
     {
         private const string DefaultExtension = "dat";
         private const int CachedHashBytesLength = 4;
-        private static readonly byte[] SCachedHashBytes = new byte[CachedHashBytesLength];
+        private static readonly byte[] s_CachedHashBytes = new byte[CachedHashBytesLength];
 
         private static int AssetNameToDependencyAssetNamesComparer(KeyValuePair<string, string[]> a, KeyValuePair<string, string[]> b)
         {

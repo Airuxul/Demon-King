@@ -7,7 +7,6 @@
 
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -16,30 +15,60 @@ namespace UnityGameFramework.Runtime
         [Serializable]
         private sealed class SoundGroup
         {
-            [FormerlySerializedAs("_Name")] [SerializeField]
-            private string name = null;
+            [SerializeField]
+            private string m_Name = null;
 
-            [FormerlySerializedAs("_AvoidBeingReplacedBySamePriority")] [SerializeField]
-            private bool avoidBeingReplacedBySamePriority = false;
+            [SerializeField]
+            private bool m_AvoidBeingReplacedBySamePriority = false;
 
-            [FormerlySerializedAs("_Mute")] [SerializeField]
-            private bool mute = false;
+            [SerializeField]
+            private bool m_Mute = false;
 
-            [FormerlySerializedAs("_Volume")] [SerializeField, Range(0f, 1f)]
-            private float volume = 1f;
+            [SerializeField, Range(0f, 1f)]
+            private float m_Volume = 1f;
 
-            [FormerlySerializedAs("_AgentHelperCount")] [SerializeField]
-            private int agentHelperCount = 1;
+            [SerializeField]
+            private int m_AgentHelperCount = 1;
 
-            public string Name => name;
+            public string Name
+            {
+                get
+                {
+                    return m_Name;
+                }
+            }
 
-            public bool AvoidBeingReplacedBySamePriority => avoidBeingReplacedBySamePriority;
+            public bool AvoidBeingReplacedBySamePriority
+            {
+                get
+                {
+                    return m_AvoidBeingReplacedBySamePriority;
+                }
+            }
 
-            public bool Mute => mute;
+            public bool Mute
+            {
+                get
+                {
+                    return m_Mute;
+                }
+            }
 
-            public float Volume => volume;
+            public float Volume
+            {
+                get
+                {
+                    return m_Volume;
+                }
+            }
 
-            public int AgentHelperCount => agentHelperCount;
+            public int AgentHelperCount
+            {
+                get
+                {
+                    return m_AgentHelperCount;
+                }
+            }
         }
     }
 }

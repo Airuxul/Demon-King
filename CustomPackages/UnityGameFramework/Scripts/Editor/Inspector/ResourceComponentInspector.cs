@@ -21,29 +21,29 @@ namespace UnityGameFramework.Editor
     {
         private static readonly string[] ResourceModeNames = new string[] { "Package", "Updatable", "Updatable While Playing" };
 
-        private SerializedProperty _ResourceMode = null;
-        private SerializedProperty _ReadWritePathType = null;
-        private SerializedProperty _MinUnloadUnusedAssetsInterval = null;
-        private SerializedProperty _MaxUnloadUnusedAssetsInterval = null;
-        private SerializedProperty _AssetAutoReleaseInterval = null;
-        private SerializedProperty _AssetCapacity = null;
-        private SerializedProperty _AssetExpireTime = null;
-        private SerializedProperty _AssetPriority = null;
-        private SerializedProperty _ResourceAutoReleaseInterval = null;
-        private SerializedProperty _ResourceCapacity = null;
-        private SerializedProperty _ResourceExpireTime = null;
-        private SerializedProperty _ResourcePriority = null;
-        private SerializedProperty _UpdatePrefixUri = null;
-        private SerializedProperty _GenerateReadWriteVersionListLength = null;
-        private SerializedProperty _UpdateRetryCount = null;
-        private SerializedProperty _InstanceRoot = null;
-        private SerializedProperty _LoadResourceAgentHelperCount = null;
+        private SerializedProperty m_ResourceMode = null;
+        private SerializedProperty m_ReadWritePathType = null;
+        private SerializedProperty m_MinUnloadUnusedAssetsInterval = null;
+        private SerializedProperty m_MaxUnloadUnusedAssetsInterval = null;
+        private SerializedProperty m_AssetAutoReleaseInterval = null;
+        private SerializedProperty m_AssetCapacity = null;
+        private SerializedProperty m_AssetExpireTime = null;
+        private SerializedProperty m_AssetPriority = null;
+        private SerializedProperty m_ResourceAutoReleaseInterval = null;
+        private SerializedProperty m_ResourceCapacity = null;
+        private SerializedProperty m_ResourceExpireTime = null;
+        private SerializedProperty m_ResourcePriority = null;
+        private SerializedProperty m_UpdatePrefixUri = null;
+        private SerializedProperty m_GenerateReadWriteVersionListLength = null;
+        private SerializedProperty m_UpdateRetryCount = null;
+        private SerializedProperty m_InstanceRoot = null;
+        private SerializedProperty m_LoadResourceAgentHelperCount = null;
 
-        private FieldInfo _EditorResourceModeFieldInfo = null;
+        private FieldInfo m_EditorResourceModeFieldInfo = null;
 
-        private int _ResourceModeIndex = 0;
-        private HelperInfo<ResourceHelperBase> _ResourceHelperInfo = new HelperInfo<ResourceHelperBase>("Resource");
-        private HelperInfo<LoadResourceAgentHelperBase> _LoadResourceAgentHelperInfo = new HelperInfo<LoadResourceAgentHelperBase>("LoadResourceAgent");
+        private int m_ResourceModeIndex = 0;
+        private HelperInfo<ResourceHelperBase> m_ResourceHelperInfo = new HelperInfo<ResourceHelperBase>("Resource");
+        private HelperInfo<LoadResourceAgentHelperBase> m_LoadResourceAgentHelperInfo = new HelperInfo<LoadResourceAgentHelperBase>("LoadResourceAgent");
 
         public override void OnInspectorGUI()
         {
@@ -53,7 +53,7 @@ namespace UnityGameFramework.Editor
 
             ResourceComponent t = (ResourceComponent)target;
 
-            bool isEditorResourceMode = (bool)_EditorResourceModeFieldInfo.GetValue(target);
+            bool isEditorResourceMode = (bool)m_EditorResourceModeFieldInfo.GetValue(target);
 
             if (isEditorResourceMode)
             {
@@ -68,20 +68,20 @@ namespace UnityGameFramework.Editor
                 }
                 else
                 {
-                    int selectedIndex = EditorGUILayout.Popup("Resource Mode", _ResourceModeIndex, ResourceModeNames);
-                    if (selectedIndex != _ResourceModeIndex)
+                    int selectedIndex = EditorGUILayout.Popup("Resource Mode", m_ResourceModeIndex, ResourceModeNames);
+                    if (selectedIndex != m_ResourceModeIndex)
                     {
-                        _ResourceModeIndex = selectedIndex;
-                        _ResourceMode.enumValueIndex = selectedIndex + 1;
+                        m_ResourceModeIndex = selectedIndex;
+                        m_ResourceMode.enumValueIndex = selectedIndex + 1;
                     }
                 }
 
-                _ReadWritePathType.enumValueIndex = (int)(ReadWritePathType)EditorGUILayout.EnumPopup("Read-Write Path Type", t.ReadWritePathType);
+                m_ReadWritePathType.enumValueIndex = (int)(ReadWritePathType)EditorGUILayout.EnumPopup("Read-Write Path Type", t.ReadWritePathType);
             }
             EditorGUI.EndDisabledGroup();
 
-            float minUnloadUnusedAssetsInterval = EditorGUILayout.Slider("Min Unload Unused Assets Interval", _MinUnloadUnusedAssetsInterval.floatValue, 0f, 3600f);
-            if (minUnloadUnusedAssetsInterval != _MinUnloadUnusedAssetsInterval.floatValue)
+            float minUnloadUnusedAssetsInterval = EditorGUILayout.Slider("Min Unload Unused Assets Interval", m_MinUnloadUnusedAssetsInterval.floatValue, 0f, 3600f);
+            if (minUnloadUnusedAssetsInterval != m_MinUnloadUnusedAssetsInterval.floatValue)
             {
                 if (EditorApplication.isPlaying)
                 {
@@ -89,12 +89,12 @@ namespace UnityGameFramework.Editor
                 }
                 else
                 {
-                    _MinUnloadUnusedAssetsInterval.floatValue = minUnloadUnusedAssetsInterval;
+                    m_MinUnloadUnusedAssetsInterval.floatValue = minUnloadUnusedAssetsInterval;
                 }
             }
 
-            float maxUnloadUnusedAssetsInterval = EditorGUILayout.Slider("Max Unload Unused Assets Interval", _MaxUnloadUnusedAssetsInterval.floatValue, 0f, 3600f);
-            if (maxUnloadUnusedAssetsInterval != _MaxUnloadUnusedAssetsInterval.floatValue)
+            float maxUnloadUnusedAssetsInterval = EditorGUILayout.Slider("Max Unload Unused Assets Interval", m_MaxUnloadUnusedAssetsInterval.floatValue, 0f, 3600f);
+            if (maxUnloadUnusedAssetsInterval != m_MaxUnloadUnusedAssetsInterval.floatValue)
             {
                 if (EditorApplication.isPlaying)
                 {
@@ -102,14 +102,14 @@ namespace UnityGameFramework.Editor
                 }
                 else
                 {
-                    _MaxUnloadUnusedAssetsInterval.floatValue = maxUnloadUnusedAssetsInterval;
+                    m_MaxUnloadUnusedAssetsInterval.floatValue = maxUnloadUnusedAssetsInterval;
                 }
             }
 
             EditorGUI.BeginDisabledGroup(EditorApplication.isPlaying && isEditorResourceMode);
             {
-                float assetAutoReleaseInterval = EditorGUILayout.DelayedFloatField("Asset Auto Release Interval", _AssetAutoReleaseInterval.floatValue);
-                if (assetAutoReleaseInterval != _AssetAutoReleaseInterval.floatValue)
+                float assetAutoReleaseInterval = EditorGUILayout.DelayedFloatField("Asset Auto Release Interval", m_AssetAutoReleaseInterval.floatValue);
+                if (assetAutoReleaseInterval != m_AssetAutoReleaseInterval.floatValue)
                 {
                     if (EditorApplication.isPlaying)
                     {
@@ -117,12 +117,12 @@ namespace UnityGameFramework.Editor
                     }
                     else
                     {
-                        _AssetAutoReleaseInterval.floatValue = assetAutoReleaseInterval;
+                        m_AssetAutoReleaseInterval.floatValue = assetAutoReleaseInterval;
                     }
                 }
 
-                int assetCapacity = EditorGUILayout.DelayedIntField("Asset Capacity", _AssetCapacity.intValue);
-                if (assetCapacity != _AssetCapacity.intValue)
+                int assetCapacity = EditorGUILayout.DelayedIntField("Asset Capacity", m_AssetCapacity.intValue);
+                if (assetCapacity != m_AssetCapacity.intValue)
                 {
                     if (EditorApplication.isPlaying)
                     {
@@ -130,12 +130,12 @@ namespace UnityGameFramework.Editor
                     }
                     else
                     {
-                        _AssetCapacity.intValue = assetCapacity;
+                        m_AssetCapacity.intValue = assetCapacity;
                     }
                 }
 
-                float assetExpireTime = EditorGUILayout.DelayedFloatField("Asset Expire Time", _AssetExpireTime.floatValue);
-                if (assetExpireTime != _AssetExpireTime.floatValue)
+                float assetExpireTime = EditorGUILayout.DelayedFloatField("Asset Expire Time", m_AssetExpireTime.floatValue);
+                if (assetExpireTime != m_AssetExpireTime.floatValue)
                 {
                     if (EditorApplication.isPlaying)
                     {
@@ -143,12 +143,12 @@ namespace UnityGameFramework.Editor
                     }
                     else
                     {
-                        _AssetExpireTime.floatValue = assetExpireTime;
+                        m_AssetExpireTime.floatValue = assetExpireTime;
                     }
                 }
 
-                int assetPriority = EditorGUILayout.DelayedIntField("Asset Priority", _AssetPriority.intValue);
-                if (assetPriority != _AssetPriority.intValue)
+                int assetPriority = EditorGUILayout.DelayedIntField("Asset Priority", m_AssetPriority.intValue);
+                if (assetPriority != m_AssetPriority.intValue)
                 {
                     if (EditorApplication.isPlaying)
                     {
@@ -156,12 +156,12 @@ namespace UnityGameFramework.Editor
                     }
                     else
                     {
-                        _AssetPriority.intValue = assetPriority;
+                        m_AssetPriority.intValue = assetPriority;
                     }
                 }
 
-                float resourceAutoReleaseInterval = EditorGUILayout.DelayedFloatField("Resource Auto Release Interval", _ResourceAutoReleaseInterval.floatValue);
-                if (resourceAutoReleaseInterval != _ResourceAutoReleaseInterval.floatValue)
+                float resourceAutoReleaseInterval = EditorGUILayout.DelayedFloatField("Resource Auto Release Interval", m_ResourceAutoReleaseInterval.floatValue);
+                if (resourceAutoReleaseInterval != m_ResourceAutoReleaseInterval.floatValue)
                 {
                     if (EditorApplication.isPlaying)
                     {
@@ -169,12 +169,12 @@ namespace UnityGameFramework.Editor
                     }
                     else
                     {
-                        _ResourceAutoReleaseInterval.floatValue = resourceAutoReleaseInterval;
+                        m_ResourceAutoReleaseInterval.floatValue = resourceAutoReleaseInterval;
                     }
                 }
 
-                int resourceCapacity = EditorGUILayout.DelayedIntField("Resource Capacity", _ResourceCapacity.intValue);
-                if (resourceCapacity != _ResourceCapacity.intValue)
+                int resourceCapacity = EditorGUILayout.DelayedIntField("Resource Capacity", m_ResourceCapacity.intValue);
+                if (resourceCapacity != m_ResourceCapacity.intValue)
                 {
                     if (EditorApplication.isPlaying)
                     {
@@ -182,12 +182,12 @@ namespace UnityGameFramework.Editor
                     }
                     else
                     {
-                        _ResourceCapacity.intValue = resourceCapacity;
+                        m_ResourceCapacity.intValue = resourceCapacity;
                     }
                 }
 
-                float resourceExpireTime = EditorGUILayout.DelayedFloatField("Resource Expire Time", _ResourceExpireTime.floatValue);
-                if (resourceExpireTime != _ResourceExpireTime.floatValue)
+                float resourceExpireTime = EditorGUILayout.DelayedFloatField("Resource Expire Time", m_ResourceExpireTime.floatValue);
+                if (resourceExpireTime != m_ResourceExpireTime.floatValue)
                 {
                     if (EditorApplication.isPlaying)
                     {
@@ -195,12 +195,12 @@ namespace UnityGameFramework.Editor
                     }
                     else
                     {
-                        _ResourceExpireTime.floatValue = resourceExpireTime;
+                        m_ResourceExpireTime.floatValue = resourceExpireTime;
                     }
                 }
 
-                int resourcePriority = EditorGUILayout.DelayedIntField("Resource Priority", _ResourcePriority.intValue);
-                if (resourcePriority != _ResourcePriority.intValue)
+                int resourcePriority = EditorGUILayout.DelayedIntField("Resource Priority", m_ResourcePriority.intValue);
+                if (resourcePriority != m_ResourcePriority.intValue)
                 {
                     if (EditorApplication.isPlaying)
                     {
@@ -208,14 +208,14 @@ namespace UnityGameFramework.Editor
                     }
                     else
                     {
-                        _ResourcePriority.intValue = resourcePriority;
+                        m_ResourcePriority.intValue = resourcePriority;
                     }
                 }
 
-                if (_ResourceModeIndex > 0)
+                if (m_ResourceModeIndex > 0)
                 {
-                    string updatePrefixUri = EditorGUILayout.DelayedTextField("Update Prefix Uri", _UpdatePrefixUri.stringValue);
-                    if (updatePrefixUri != _UpdatePrefixUri.stringValue)
+                    string updatePrefixUri = EditorGUILayout.DelayedTextField("Update Prefix Uri", m_UpdatePrefixUri.stringValue);
+                    if (updatePrefixUri != m_UpdatePrefixUri.stringValue)
                     {
                         if (EditorApplication.isPlaying)
                         {
@@ -223,12 +223,12 @@ namespace UnityGameFramework.Editor
                         }
                         else
                         {
-                            _UpdatePrefixUri.stringValue = updatePrefixUri;
+                            m_UpdatePrefixUri.stringValue = updatePrefixUri;
                         }
                     }
 
-                    int generateReadWriteVersionListLength = EditorGUILayout.DelayedIntField("Generate Read-Write Version List Length", _GenerateReadWriteVersionListLength.intValue);
-                    if (generateReadWriteVersionListLength != _GenerateReadWriteVersionListLength.intValue)
+                    int generateReadWriteVersionListLength = EditorGUILayout.DelayedIntField("Generate Read-Write Version List Length", m_GenerateReadWriteVersionListLength.intValue);
+                    if (generateReadWriteVersionListLength != m_GenerateReadWriteVersionListLength.intValue)
                     {
                         if (EditorApplication.isPlaying)
                         {
@@ -236,12 +236,12 @@ namespace UnityGameFramework.Editor
                         }
                         else
                         {
-                            _GenerateReadWriteVersionListLength.intValue = generateReadWriteVersionListLength;
+                            m_GenerateReadWriteVersionListLength.intValue = generateReadWriteVersionListLength;
                         }
                     }
 
-                    int updateRetryCount = EditorGUILayout.DelayedIntField("Update Retry Count", _UpdateRetryCount.intValue);
-                    if (updateRetryCount != _UpdateRetryCount.intValue)
+                    int updateRetryCount = EditorGUILayout.DelayedIntField("Update Retry Count", m_UpdateRetryCount.intValue);
+                    if (updateRetryCount != m_UpdateRetryCount.intValue)
                     {
                         if (EditorApplication.isPlaying)
                         {
@@ -249,7 +249,7 @@ namespace UnityGameFramework.Editor
                         }
                         else
                         {
-                            _UpdateRetryCount.intValue = updateRetryCount;
+                            m_UpdateRetryCount.intValue = updateRetryCount;
                         }
                     }
                 }
@@ -258,11 +258,11 @@ namespace UnityGameFramework.Editor
 
             EditorGUI.BeginDisabledGroup(EditorApplication.isPlayingOrWillChangePlaymode);
             {
-                EditorGUILayout.PropertyField(_InstanceRoot);
+                EditorGUILayout.PropertyField(m_InstanceRoot);
 
-                _ResourceHelperInfo.Draw();
-                _LoadResourceAgentHelperInfo.Draw();
-                _LoadResourceAgentHelperCount.intValue = EditorGUILayout.IntSlider("Load Resource Agent Helper Count", _LoadResourceAgentHelperCount.intValue, 1, 128);
+                m_ResourceHelperInfo.Draw();
+                m_LoadResourceAgentHelperInfo.Draw();
+                m_LoadResourceAgentHelperCount.intValue = EditorGUILayout.IntSlider("Load Resource Agent Helper Count", m_LoadResourceAgentHelperCount.intValue, 1, 128);
             }
             EditorGUI.EndDisabledGroup();
 
@@ -277,7 +277,7 @@ namespace UnityGameFramework.Editor
                 EditorGUILayout.LabelField("Asset Count", isEditorResourceMode ? "N/A" : t.AssetCount.ToString());
                 EditorGUILayout.LabelField("Resource Count", isEditorResourceMode ? "N/A" : t.ResourceCount.ToString());
                 EditorGUILayout.LabelField("Resource Group Count", isEditorResourceMode ? "N/A" : t.ResourceGroupCount.ToString());
-                if (_ResourceModeIndex > 0)
+                if (m_ResourceModeIndex > 0)
                 {
                     EditorGUILayout.LabelField("Applying Resource Pack Path", isEditorResourceMode ? "N/A" : t.ApplyingResourcePackPath ?? "<Unknwon>");
                     EditorGUILayout.LabelField("Apply Waiting Count", isEditorResourceMode ? "N/A" : t.ApplyWaitingCount.ToString());
@@ -350,28 +350,28 @@ namespace UnityGameFramework.Editor
 
         private void OnEnable()
         {
-            _ResourceMode = serializedObject.FindProperty("_ResourceMode");
-            _ReadWritePathType = serializedObject.FindProperty("_ReadWritePathType");
-            _MinUnloadUnusedAssetsInterval = serializedObject.FindProperty("_MinUnloadUnusedAssetsInterval");
-            _MaxUnloadUnusedAssetsInterval = serializedObject.FindProperty("_MaxUnloadUnusedAssetsInterval");
-            _AssetAutoReleaseInterval = serializedObject.FindProperty("_AssetAutoReleaseInterval");
-            _AssetCapacity = serializedObject.FindProperty("_AssetCapacity");
-            _AssetExpireTime = serializedObject.FindProperty("_AssetExpireTime");
-            _AssetPriority = serializedObject.FindProperty("_AssetPriority");
-            _ResourceAutoReleaseInterval = serializedObject.FindProperty("_ResourceAutoReleaseInterval");
-            _ResourceCapacity = serializedObject.FindProperty("_ResourceCapacity");
-            _ResourceExpireTime = serializedObject.FindProperty("_ResourceExpireTime");
-            _ResourcePriority = serializedObject.FindProperty("_ResourcePriority");
-            _UpdatePrefixUri = serializedObject.FindProperty("_UpdatePrefixUri");
-            _GenerateReadWriteVersionListLength = serializedObject.FindProperty("_GenerateReadWriteVersionListLength");
-            _UpdateRetryCount = serializedObject.FindProperty("_UpdateRetryCount");
-            _InstanceRoot = serializedObject.FindProperty("_InstanceRoot");
-            _LoadResourceAgentHelperCount = serializedObject.FindProperty("_LoadResourceAgentHelperCount");
+            m_ResourceMode = serializedObject.FindProperty("m_ResourceMode");
+            m_ReadWritePathType = serializedObject.FindProperty("m_ReadWritePathType");
+            m_MinUnloadUnusedAssetsInterval = serializedObject.FindProperty("m_MinUnloadUnusedAssetsInterval");
+            m_MaxUnloadUnusedAssetsInterval = serializedObject.FindProperty("m_MaxUnloadUnusedAssetsInterval");
+            m_AssetAutoReleaseInterval = serializedObject.FindProperty("m_AssetAutoReleaseInterval");
+            m_AssetCapacity = serializedObject.FindProperty("m_AssetCapacity");
+            m_AssetExpireTime = serializedObject.FindProperty("m_AssetExpireTime");
+            m_AssetPriority = serializedObject.FindProperty("m_AssetPriority");
+            m_ResourceAutoReleaseInterval = serializedObject.FindProperty("m_ResourceAutoReleaseInterval");
+            m_ResourceCapacity = serializedObject.FindProperty("m_ResourceCapacity");
+            m_ResourceExpireTime = serializedObject.FindProperty("m_ResourceExpireTime");
+            m_ResourcePriority = serializedObject.FindProperty("m_ResourcePriority");
+            m_UpdatePrefixUri = serializedObject.FindProperty("m_UpdatePrefixUri");
+            m_GenerateReadWriteVersionListLength = serializedObject.FindProperty("m_GenerateReadWriteVersionListLength");
+            m_UpdateRetryCount = serializedObject.FindProperty("m_UpdateRetryCount");
+            m_InstanceRoot = serializedObject.FindProperty("m_InstanceRoot");
+            m_LoadResourceAgentHelperCount = serializedObject.FindProperty("m_LoadResourceAgentHelperCount");
 
-            _EditorResourceModeFieldInfo = target.GetType().GetField("_EditorResourceMode", BindingFlags.NonPublic | BindingFlags.Instance);
+            m_EditorResourceModeFieldInfo = target.GetType().GetField("m_EditorResourceMode", BindingFlags.NonPublic | BindingFlags.Instance);
 
-            _ResourceHelperInfo.Init(serializedObject);
-            _LoadResourceAgentHelperInfo.Init(serializedObject);
+            m_ResourceHelperInfo.Init(serializedObject);
+            m_LoadResourceAgentHelperInfo.Init(serializedObject);
 
             RefreshModes();
             RefreshTypeNames();
@@ -384,13 +384,13 @@ namespace UnityGameFramework.Editor
 
         private void RefreshModes()
         {
-            _ResourceModeIndex = _ResourceMode.enumValueIndex > 0 ? _ResourceMode.enumValueIndex - 1 : 0;
+            m_ResourceModeIndex = m_ResourceMode.enumValueIndex > 0 ? m_ResourceMode.enumValueIndex - 1 : 0;
         }
 
         private void RefreshTypeNames()
         {
-            _ResourceHelperInfo.Refresh();
-            _LoadResourceAgentHelperInfo.Refresh();
+            m_ResourceHelperInfo.Refresh();
+            m_LoadResourceAgentHelperInfo.Refresh();
             serializedObject.ApplyModifiedProperties();
         }
     }

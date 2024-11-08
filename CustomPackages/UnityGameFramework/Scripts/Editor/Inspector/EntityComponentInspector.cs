@@ -15,13 +15,13 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(EntityComponent))]
     internal sealed class EntityComponentInspector : GameFrameworkInspector
     {
-        private SerializedProperty _EnableShowEntityUpdateEvent = null;
-        private SerializedProperty _EnableShowEntityDependencyAssetEvent = null;
-        private SerializedProperty _InstanceRoot = null;
-        private SerializedProperty _EntityGroups = null;
+        private SerializedProperty m_EnableShowEntityUpdateEvent = null;
+        private SerializedProperty m_EnableShowEntityDependencyAssetEvent = null;
+        private SerializedProperty m_InstanceRoot = null;
+        private SerializedProperty m_EntityGroups = null;
 
-        private HelperInfo<EntityHelperBase> _EntityHelperInfo = new HelperInfo<EntityHelperBase>("Entity");
-        private HelperInfo<EntityGroupHelperBase> _EntityGroupHelperInfo = new HelperInfo<EntityGroupHelperBase>("EntityGroup");
+        private HelperInfo<EntityHelperBase> m_EntityHelperInfo = new HelperInfo<EntityHelperBase>("Entity");
+        private HelperInfo<EntityGroupHelperBase> m_EntityGroupHelperInfo = new HelperInfo<EntityGroupHelperBase>("EntityGroup");
 
         public override void OnInspectorGUI()
         {
@@ -33,12 +33,12 @@ namespace UnityGameFramework.Editor
 
             EditorGUI.BeginDisabledGroup(EditorApplication.isPlayingOrWillChangePlaymode);
             {
-                EditorGUILayout.PropertyField(_EnableShowEntityUpdateEvent);
-                EditorGUILayout.PropertyField(_EnableShowEntityDependencyAssetEvent);
-                EditorGUILayout.PropertyField(_InstanceRoot);
-                _EntityHelperInfo.Draw();
-                _EntityGroupHelperInfo.Draw();
-                EditorGUILayout.PropertyField(_EntityGroups, true);
+                EditorGUILayout.PropertyField(m_EnableShowEntityUpdateEvent);
+                EditorGUILayout.PropertyField(m_EnableShowEntityDependencyAssetEvent);
+                EditorGUILayout.PropertyField(m_InstanceRoot);
+                m_EntityHelperInfo.Draw();
+                m_EntityGroupHelperInfo.Draw();
+                EditorGUILayout.PropertyField(m_EntityGroups, true);
             }
             EditorGUI.EndDisabledGroup();
 
@@ -67,21 +67,21 @@ namespace UnityGameFramework.Editor
 
         private void OnEnable()
         {
-            _EnableShowEntityUpdateEvent = serializedObject.FindProperty("_EnableShowEntityUpdateEvent");
-            _EnableShowEntityDependencyAssetEvent = serializedObject.FindProperty("_EnableShowEntityDependencyAssetEvent");
-            _InstanceRoot = serializedObject.FindProperty("_InstanceRoot");
-            _EntityGroups = serializedObject.FindProperty("_EntityGroups");
+            m_EnableShowEntityUpdateEvent = serializedObject.FindProperty("m_EnableShowEntityUpdateEvent");
+            m_EnableShowEntityDependencyAssetEvent = serializedObject.FindProperty("m_EnableShowEntityDependencyAssetEvent");
+            m_InstanceRoot = serializedObject.FindProperty("m_InstanceRoot");
+            m_EntityGroups = serializedObject.FindProperty("m_EntityGroups");
 
-            _EntityHelperInfo.Init(serializedObject);
-            _EntityGroupHelperInfo.Init(serializedObject);
+            m_EntityHelperInfo.Init(serializedObject);
+            m_EntityGroupHelperInfo.Init(serializedObject);
 
             RefreshTypeNames();
         }
 
         private void RefreshTypeNames()
         {
-            _EntityHelperInfo.Refresh();
-            _EntityGroupHelperInfo.Refresh();
+            m_EntityHelperInfo.Refresh();
+            m_EntityGroupHelperInfo.Refresh();
             serializedObject.ApplyModifiedProperties();
         }
     }

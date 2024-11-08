@@ -33,7 +33,13 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 获取资源应用开始事件编号。
         /// </summary>
-        public override int Id => EventId;
+        public override int Id
+        {
+            get
+            {
+                return EventId;
+            }
+        }
 
         /// <summary>
         /// 获取资源包路径。

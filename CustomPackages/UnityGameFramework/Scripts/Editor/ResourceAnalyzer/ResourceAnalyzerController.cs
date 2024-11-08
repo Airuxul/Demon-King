@@ -16,12 +16,12 @@ namespace UnityGameFramework.Editor.ResourceTools
 {
     public sealed partial class ResourceAnalyzerController
     {
-        private readonly ResourceCollection _ResourceCollection;
+        private readonly ResourceCollection m_ResourceCollection;
 
-        private readonly Dictionary<string, DependencyData> _DependencyDatas;
-        private readonly Dictionary<string, List<Asset>> _ScatteredAssets;
-        private readonly List<string[]> _CircularDependencyDatas;
-        private readonly HashSet<Stamp> _AnalyzedStamps;
+        private readonly Dictionary<string, DependencyData> m_DependencyDatas;
+        private readonly Dictionary<string, List<Asset>> m_ScatteredAssets;
+        private readonly List<string[]> m_CircularDependencyDatas;
+        private readonly HashSet<Stamp> m_AnalyzedStamps;
 
         public ResourceAnalyzerController()
             : this(null)
@@ -30,9 +30,9 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         public ResourceAnalyzerController(ResourceCollection resourceCollection)
         {
-            _ResourceCollection = resourceCollection != null ? resourceCollection : new ResourceCollection();
+            m_ResourceCollection = resourceCollection != null ? resourceCollection : new ResourceCollection();
 
-            _ResourceCollection.OnLoadingResource += delegate (int index, int count)
+            m_ResourceCollection.OnLoadingResource += delegate (int index, int count)
             {
                 if (OnLoadingResource != null)
                 {
@@ -40,7 +40,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 }
             };
 
-            _ResourceCollection.OnLoadingAsset += delegate (int index, int count)
+            m_ResourceCollection.OnLoadingAsset += delegate (int index, int count)
             {
                 if (OnLoadingAsset != null)
                 {
@@ -48,7 +48,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 }
             };
 
-            _ResourceCollection.OnLoadCompleted += delegate ()
+            m_ResourceCollection.OnLoadCompleted += delegate ()
             {
                 if (OnLoadCompleted != null)
                 {
@@ -56,10 +56,10 @@ namespace UnityGameFramework.Editor.ResourceTools
                 }
             };
 
-            _DependencyDatas = new Dictionary<string, DependencyData>(StringComparer.Ordinal);
-            _ScatteredAssets = new Dictionary<string, List<Asset>>(StringComparer.Ordinal);
-            _AnalyzedStamps = new HashSet<Stamp>();
-            _CircularDependencyDatas = new List<string[]>();
+            m_DependencyDatas = new Dictionary<string, DependencyData>(StringComparer.Ordinal);
+            m_ScatteredAssets = new Dictionary<string, List<Asset>>(StringComparer.Ordinal);
+            m_AnalyzedStamps = new HashSet<Stamp>();
+            m_CircularDependencyDatas = new List<string[]>();
         }
 
         public event GameFrameworkAction<int, int> OnLoadingResource = null;
@@ -74,28 +74,28 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         public void Clear()
         {
-            _ResourceCollection.Clear();
-            _DependencyDatas.Clear();
-            _ScatteredAssets.Clear();
-            _CircularDependencyDatas.Clear();
-            _AnalyzedStamps.Clear();
+            m_ResourceCollection.Clear();
+            m_DependencyDatas.Clear();
+            m_ScatteredAssets.Clear();
+            m_CircularDependencyDatas.Clear();
+            m_AnalyzedStamps.Clear();
         }
 
         public bool Prepare()
         {
-            _ResourceCollection.Clear();
-            return _ResourceCollection.Load();
+            m_ResourceCollection.Clear();
+            return m_ResourceCollection.Load();
         }
 
         public void Analyze()
         {
-            _DependencyDatas.Clear();
-            _ScatteredAssets.Clear();
-            _CircularDependencyDatas.Clear();
-            _AnalyzedStamps.Clear();
+            m_DependencyDatas.Clear();
+            m_ScatteredAssets.Clear();
+            m_CircularDependencyDatas.Clear();
+            m_AnalyzedStamps.Clear();
 
             HashSet<string> scriptAssetNames = GetFilteredAssetNames("t:Script");
-            Asset[] assets = _ResourceCollection.GetAssets();
+            Asset[] assets = m_ResourceCollection.GetAssets();
             int count = assets.Length;
             for (int i = 0; i < count; i++)
             {
@@ -114,15 +114,15 @@ namespace UnityGameFramework.Editor.ResourceTools
                 DependencyData dependencyData = new DependencyData();
                 AnalyzeAsset(assetName, assets[i], dependencyData, scriptAssetNames);
                 dependencyData.RefreshData();
-                _DependencyDatas.Add(assetName, dependencyData);
+                m_DependencyDatas.Add(assetName, dependencyData);
             }
 
-            foreach (List<Asset> scatteredAsset in _ScatteredAssets.Values)
+            foreach (List<Asset> scatteredAsset in m_ScatteredAssets.Values)
             {
                 scatteredAsset.Sort((a, b) => a.Name.CompareTo(b.Name));
             }
 
-            _CircularDependencyDatas.AddRange(new CircularDependencyChecker(_AnalyzedStamps.ToArray()).Check());
+            m_CircularDependencyDatas.AddRange(new CircularDependencyChecker(m_AnalyzedStamps.ToArray()).Check());
 
             if (OnAnalyzeCompleted != null)
             {
@@ -152,12 +152,12 @@ namespace UnityGameFramework.Editor.ResourceTools
                 }
 
                 Stamp stamp = new Stamp(hostAsset.Name, dependencyAssetName);
-                if (_AnalyzedStamps.Contains(stamp))
+                if (m_AnalyzedStamps.Contains(stamp))
                 {
                     continue;
                 }
 
-                _AnalyzedStamps.Add(stamp);
+                m_AnalyzedStamps.Add(stamp);
 
                 string guid = AssetDatabase.AssetPathToGUID(dependencyAssetName);
                 if (string.IsNullOrEmpty(guid))
@@ -166,7 +166,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                     continue;
                 }
 
-                Asset asset = _ResourceCollection.GetAsset(guid);
+                Asset asset = m_ResourceCollection.GetAsset(guid);
                 if (asset != null)
                 {
                     dependencyData.AddDependencyAsset(asset);
@@ -176,10 +176,10 @@ namespace UnityGameFramework.Editor.ResourceTools
                     dependencyData.AddScatteredDependencyAsset(dependencyAssetName);
 
                     List<Asset> scatteredAssets = null;
-                    if (!_ScatteredAssets.TryGetValue(dependencyAssetName, out scatteredAssets))
+                    if (!m_ScatteredAssets.TryGetValue(dependencyAssetName, out scatteredAssets))
                     {
                         scatteredAssets = new List<Asset>();
-                        _ScatteredAssets.Add(dependencyAssetName, scatteredAssets);
+                        m_ScatteredAssets.Add(dependencyAssetName, scatteredAssets);
                     }
 
                     scatteredAssets.Add(hostAsset);
@@ -191,7 +191,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         public Asset GetAsset(string assetName)
         {
-            return _ResourceCollection.GetAsset(AssetDatabase.AssetPathToGUID(assetName));
+            return m_ResourceCollection.GetAsset(AssetDatabase.AssetPathToGUID(assetName));
         }
 
         public string[] GetAssetNames()
@@ -202,7 +202,7 @@ namespace UnityGameFramework.Editor.ResourceTools
         public string[] GetAssetNames(AssetsOrder order, string filter)
         {
             HashSet<string> filteredAssetNames = GetFilteredAssetNames(filter);
-            IEnumerable<KeyValuePair<string, DependencyData>> filteredResult = _DependencyDatas.Where(pair => filteredAssetNames.Contains(pair.Key));
+            IEnumerable<KeyValuePair<string, DependencyData>> filteredResult = m_DependencyDatas.Where(pair => filteredAssetNames.Contains(pair.Key));
             IEnumerable<KeyValuePair<string, DependencyData>> orderedResult = null;
             switch (order)
             {
@@ -249,7 +249,7 @@ namespace UnityGameFramework.Editor.ResourceTools
         public DependencyData GetDependencyData(string assetName)
         {
             DependencyData dependencyData = null;
-            if (_DependencyDatas.TryGetValue(assetName, out dependencyData))
+            if (m_DependencyDatas.TryGetValue(assetName, out dependencyData))
             {
                 return dependencyData;
             }
@@ -265,7 +265,7 @@ namespace UnityGameFramework.Editor.ResourceTools
         public string[] GetScatteredAssetNames(ScatteredAssetsOrder order, string filter)
         {
             HashSet<string> filterAssetNames = GetFilteredAssetNames(filter);
-            IEnumerable<KeyValuePair<string, List<Asset>>> filteredResult = _ScatteredAssets.Where(pair => filterAssetNames.Contains(pair.Key) && pair.Value.Count > 1);
+            IEnumerable<KeyValuePair<string, List<Asset>>> filteredResult = m_ScatteredAssets.Where(pair => filterAssetNames.Contains(pair.Key) && pair.Value.Count > 1);
             IEnumerable<KeyValuePair<string, List<Asset>>> orderedResult = null;
             switch (order)
             {
@@ -296,7 +296,7 @@ namespace UnityGameFramework.Editor.ResourceTools
         public Asset[] GetHostAssets(string scatteredAssetName)
         {
             List<Asset> assets = null;
-            if (_ScatteredAssets.TryGetValue(scatteredAssetName, out assets))
+            if (m_ScatteredAssets.TryGetValue(scatteredAssetName, out assets))
             {
                 return assets.ToArray();
             }
@@ -306,7 +306,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         public string[][] GetCircularDependencyDatas()
         {
-            return _CircularDependencyDatas.ToArray();
+            return m_CircularDependencyDatas.ToArray();
         }
 
         private HashSet<string> GetFilteredAssetNames(string filter)

@@ -5,14 +5,14 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
+using GameFramework;
+using GameFramework.WebRequest;
+using System;
 #if UNITY_5_4_OR_NEWER
 using UnityEngine.Networking;
 #else
 using UnityEngine.Experimental.Networking;
 #endif
-using System;
-using GameFramework;
-using GameFramework.WebRequest;
 using Utility = GameFramework.Utility;
 
 namespace UnityGameFramework.Runtime
@@ -22,19 +22,25 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public class UnityWebRequestAgentHelper : WebRequestAgentHelperBase, IDisposable
     {
-        private UnityWebRequest _unityWebRequest;
-        private bool _disposed;
+        private UnityWebRequest m_UnityWebRequest = null;
+        private bool m_Disposed = false;
 
-        private EventHandler<WebRequestAgentHelperCompleteEventArgs> _webRequestAgentHelperCompleteEventHandler;
-        private EventHandler<WebRequestAgentHelperErrorEventArgs> _webRequestAgentHelperErrorEventHandler;
+        private EventHandler<WebRequestAgentHelperCompleteEventArgs> m_WebRequestAgentHelperCompleteEventHandler = null;
+        private EventHandler<WebRequestAgentHelperErrorEventArgs> m_WebRequestAgentHelperErrorEventHandler = null;
 
         /// <summary>
         /// Web 请求代理辅助器完成事件。
         /// </summary>
         public override event EventHandler<WebRequestAgentHelperCompleteEventArgs> WebRequestAgentHelperComplete
         {
-            add => _webRequestAgentHelperCompleteEventHandler += value;
-            remove => _webRequestAgentHelperCompleteEventHandler -= value;
+            add
+            {
+                m_WebRequestAgentHelperCompleteEventHandler += value;
+            }
+            remove
+            {
+                m_WebRequestAgentHelperCompleteEventHandler -= value;
+            }
         }
 
         /// <summary>
@@ -42,8 +48,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override event EventHandler<WebRequestAgentHelperErrorEventArgs> WebRequestAgentHelperError
         {
-            add => _webRequestAgentHelperErrorEventHandler += value;
-            remove => _webRequestAgentHelperErrorEventHandler -= value;
+            add
+            {
+                m_WebRequestAgentHelperErrorEventHandler += value;
+            }
+            remove
+            {
+                m_WebRequestAgentHelperErrorEventHandler -= value;
+            }
         }
 
         /// <summary>
@@ -53,7 +65,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public override void Request(string webRequestUri, object userData)
         {
-            if (_webRequestAgentHelperCompleteEventHandler == null || _webRequestAgentHelperErrorEventHandler == null)
+            if (m_WebRequestAgentHelperCompleteEventHandler == null || m_WebRequestAgentHelperErrorEventHandler == null)
             {
                 Log.Fatal("Web request agent helper handler is invalid.");
                 return;
@@ -62,17 +74,17 @@ namespace UnityGameFramework.Runtime
             WWWFormInfo wwwFormInfo = (WWWFormInfo)userData;
             if (wwwFormInfo.WWWForm == null)
             {
-                _unityWebRequest = UnityWebRequest.Get(webRequestUri);
+                m_UnityWebRequest = UnityWebRequest.Get(webRequestUri);
             }
             else
             {
-                _unityWebRequest = UnityWebRequest.Post(webRequestUri, wwwFormInfo.WWWForm);
+                m_UnityWebRequest = UnityWebRequest.Post(webRequestUri, wwwFormInfo.WWWForm);
             }
 
 #if UNITY_2017_2_OR_NEWER
-            _unityWebRequest.SendWebRequest();
+            m_UnityWebRequest.SendWebRequest();
 #else
-            _UnityWebRequest.Send();
+            m_UnityWebRequest.Send();
 #endif
         }
 
@@ -84,17 +96,17 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public override void Request(string webRequestUri, byte[] postData, object userData)
         {
-            if (_webRequestAgentHelperCompleteEventHandler == null || _webRequestAgentHelperErrorEventHandler == null)
+            if (m_WebRequestAgentHelperCompleteEventHandler == null || m_WebRequestAgentHelperErrorEventHandler == null)
             {
                 Log.Fatal("Web request agent helper handler is invalid.");
                 return;
             }
 
-            _unityWebRequest = UnityWebRequest.PostWwwForm(webRequestUri, Utility.Converter.GetString(postData));
+            m_UnityWebRequest = UnityWebRequest.PostWwwForm(webRequestUri, Utility.Converter.GetString(postData));
 #if UNITY_2017_2_OR_NEWER
-            _unityWebRequest.SendWebRequest();
+            m_UnityWebRequest.SendWebRequest();
 #else
-            _UnityWebRequest.Send();
+            m_UnityWebRequest.Send();
 #endif
         }
 
@@ -103,10 +115,10 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override void Reset()
         {
-            if (_unityWebRequest != null)
+            if (m_UnityWebRequest != null)
             {
-                _unityWebRequest.Dispose();
-                _unityWebRequest = null;
+                m_UnityWebRequest.Dispose();
+                m_UnityWebRequest = null;
             }
         }
 
@@ -125,48 +137,48 @@ namespace UnityGameFramework.Runtime
         /// <param name="disposing">释放资源标记。</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed)
+            if (m_Disposed)
             {
                 return;
             }
 
             if (disposing)
             {
-                if (_unityWebRequest != null)
+                if (m_UnityWebRequest != null)
                 {
-                    _unityWebRequest.Dispose();
-                    _unityWebRequest = null;
+                    m_UnityWebRequest.Dispose();
+                    m_UnityWebRequest = null;
                 }
             }
 
-            _disposed = true;
+            m_Disposed = true;
         }
 
         private void Update()
         {
-            if (_unityWebRequest == null || !_unityWebRequest.isDone)
+            if (m_UnityWebRequest == null || !m_UnityWebRequest.isDone)
             {
                 return;
             }
 
             bool isError = false;
 #if UNITY_2020_2_OR_NEWER
-            isError = _unityWebRequest.result != UnityWebRequest.Result.Success;
+            isError = m_UnityWebRequest.result != UnityWebRequest.Result.Success;
 #elif UNITY_2017_1_OR_NEWER
-            isError = _UnityWebRequest.isNetworkError || _UnityWebRequest.isHttpError;
+            isError = m_UnityWebRequest.isNetworkError || m_UnityWebRequest.isHttpError;
 #else
-            isError = _UnityWebRequest.isError;
+            isError = m_UnityWebRequest.isError;
 #endif
             if (isError)
             {
-                WebRequestAgentHelperErrorEventArgs webRequestAgentHelperErrorEventArgs = WebRequestAgentHelperErrorEventArgs.Create(_unityWebRequest.error);
-                _webRequestAgentHelperErrorEventHandler(this, webRequestAgentHelperErrorEventArgs);
+                WebRequestAgentHelperErrorEventArgs webRequestAgentHelperErrorEventArgs = WebRequestAgentHelperErrorEventArgs.Create(m_UnityWebRequest.error);
+                m_WebRequestAgentHelperErrorEventHandler(this, webRequestAgentHelperErrorEventArgs);
                 ReferencePool.Release(webRequestAgentHelperErrorEventArgs);
             }
-            else if (_unityWebRequest.downloadHandler.isDone)
+            else if (m_UnityWebRequest.downloadHandler.isDone)
             {
-                WebRequestAgentHelperCompleteEventArgs webRequestAgentHelperCompleteEventArgs = WebRequestAgentHelperCompleteEventArgs.Create(_unityWebRequest.downloadHandler.data);
-                _webRequestAgentHelperCompleteEventHandler(this, webRequestAgentHelperCompleteEventArgs);
+                WebRequestAgentHelperCompleteEventArgs webRequestAgentHelperCompleteEventArgs = WebRequestAgentHelperCompleteEventArgs.Create(m_UnityWebRequest.downloadHandler.data);
+                m_WebRequestAgentHelperCompleteEventHandler(this, webRequestAgentHelperCompleteEventArgs);
                 ReferencePool.Release(webRequestAgentHelperCompleteEventArgs);
             }
         }

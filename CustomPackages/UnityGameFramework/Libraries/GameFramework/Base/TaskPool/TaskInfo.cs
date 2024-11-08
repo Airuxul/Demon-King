@@ -15,13 +15,13 @@ namespace GameFramework
     [StructLayout(LayoutKind.Auto)]
     public struct TaskInfo
     {
-        private readonly bool _IsValid;
-        private readonly int _SerialId;
-        private readonly string _Tag;
-        private readonly int _Priority;
-        private readonly object _UserData;
-        private readonly TaskStatus _Status;
-        private readonly string _Description;
+        private readonly bool m_IsValid;
+        private readonly int m_SerialId;
+        private readonly string m_Tag;
+        private readonly int m_Priority;
+        private readonly object m_UserData;
+        private readonly TaskStatus m_Status;
+        private readonly string m_Description;
 
         /// <summary>
         /// 初始化任务信息的新实例。
@@ -34,13 +34,13 @@ namespace GameFramework
         /// <param name="description">任务描述。</param>
         public TaskInfo(int serialId, string tag, int priority, object userData, TaskStatus status, string description)
         {
-            _IsValid = true;
-            _SerialId = serialId;
-            _Tag = tag;
-            _Priority = priority;
-            _UserData = userData;
-            _Status = status;
-            _Description = description;
+            m_IsValid = true;
+            m_SerialId = serialId;
+            m_Tag = tag;
+            m_Priority = priority;
+            m_UserData = userData;
+            m_Status = status;
+            m_Description = description;
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace GameFramework
         {
             get
             {
-                return _IsValid;
+                return m_IsValid;
             }
         }
 
@@ -61,12 +61,12 @@ namespace GameFramework
         {
             get
             {
-                if (!_IsValid)
+                if (!m_IsValid)
                 {
                     throw new GameFrameworkException("Data is invalid.");
                 }
 
-                return _SerialId;
+                return m_SerialId;
             }
         }
 
@@ -77,12 +77,12 @@ namespace GameFramework
         {
             get
             {
-                if (!_IsValid)
+                if (!m_IsValid)
                 {
                     throw new GameFrameworkException("Data is invalid.");
                 }
 
-                return _Tag;
+                return m_Tag;
             }
         }
 
@@ -93,12 +93,12 @@ namespace GameFramework
         {
             get
             {
-                if (!_IsValid)
+                if (!m_IsValid)
                 {
                     throw new GameFrameworkException("Data is invalid.");
                 }
 
-                return _Priority;
+                return m_Priority;
             }
         }
 
@@ -109,12 +109,12 @@ namespace GameFramework
         {
             get
             {
-                if (!_IsValid)
+                if (!m_IsValid)
                 {
                     throw new GameFrameworkException("Data is invalid.");
                 }
 
-                return _UserData;
+                return m_UserData;
             }
         }
 
@@ -125,12 +125,12 @@ namespace GameFramework
         {
             get
             {
-                if (!_IsValid)
+                if (!m_IsValid)
                 {
                     throw new GameFrameworkException("Data is invalid.");
                 }
 
-                return _Status;
+                return m_Status;
             }
         }
 
@@ -141,12 +141,12 @@ namespace GameFramework
         {
             get
             {
-                if (!_IsValid)
+                if (!m_IsValid)
                 {
                     throw new GameFrameworkException("Data is invalid.");
                 }
 
-                return _Description;
+                return m_Description;
             }
         }
     }

@@ -18,9 +18,9 @@ namespace GameFramework.Resource
         private static readonly Resource[] EmptyResourceArray = new Resource[] { };
         private static readonly FileSystem[] EmptyFileSystemArray = new FileSystem[] { };
 
-        private readonly bool _IsValid;
-        private readonly Resource[] _Resources;
-        private readonly FileSystem[] _FileSystems;
+        private readonly bool m_IsValid;
+        private readonly Resource[] m_Resources;
+        private readonly FileSystem[] m_FileSystems;
 
         /// <summary>
         /// 初始化本地版本资源列表的新实例。
@@ -29,9 +29,9 @@ namespace GameFramework.Resource
         /// <param name="fileSystems">包含的文件系统集合。</param>
         public LocalVersionList(Resource[] resources, FileSystem[] fileSystems)
         {
-            _IsValid = true;
-            _Resources = resources ?? EmptyResourceArray;
-            _FileSystems = fileSystems ?? EmptyFileSystemArray;
+            m_IsValid = true;
+            m_Resources = resources ?? EmptyResourceArray;
+            m_FileSystems = fileSystems ?? EmptyFileSystemArray;
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return _IsValid;
+                return m_IsValid;
             }
         }
 
@@ -51,12 +51,12 @@ namespace GameFramework.Resource
         /// <returns>包含的资源集合。</returns>
         public Resource[] GetResources()
         {
-            if (!_IsValid)
+            if (!m_IsValid)
             {
                 throw new GameFrameworkException("Data is invalid.");
             }
 
-            return _Resources;
+            return m_Resources;
         }
 
         /// <summary>
@@ -65,12 +65,12 @@ namespace GameFramework.Resource
         /// <returns>包含的文件系统集合。</returns>
         public FileSystem[] GetFileSystems()
         {
-            if (!_IsValid)
+            if (!m_IsValid)
             {
                 throw new GameFrameworkException("Data is invalid.");
             }
 
-            return _FileSystems;
+            return m_FileSystems;
         }
     }
 }

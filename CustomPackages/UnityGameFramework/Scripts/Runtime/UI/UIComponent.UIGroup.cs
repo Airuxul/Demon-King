@@ -7,7 +7,6 @@
 
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -16,15 +15,27 @@ namespace UnityGameFramework.Runtime
         [Serializable]
         private sealed class UIGroup
         {
-            [FormerlySerializedAs("_Name")] [SerializeField]
-            private string name = null;
+            [SerializeField]
+            private string m_Name = null;
 
-            [FormerlySerializedAs("_Depth")] [SerializeField]
-            private int depth = 0;
+            [SerializeField]
+            private int m_Depth = 0;
 
-            public string Name => name;
+            public string Name
+            {
+                get
+                {
+                    return m_Name;
+                }
+            }
 
-            public int Depth => depth;
+            public int Depth
+            {
+                get
+                {
+                    return m_Depth;
+                }
+            }
         }
     }
 }

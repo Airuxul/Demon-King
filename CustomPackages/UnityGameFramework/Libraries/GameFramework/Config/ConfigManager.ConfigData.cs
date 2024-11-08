@@ -14,24 +14,24 @@ namespace GameFramework.Config
         [StructLayout(LayoutKind.Auto)]
         private struct ConfigData
         {
-            private readonly bool _BoolValue;
-            private readonly int _IntValue;
-            private readonly float _FloatValue;
-            private readonly string _StringValue;
+            private readonly bool m_BoolValue;
+            private readonly int m_IntValue;
+            private readonly float m_FloatValue;
+            private readonly string m_StringValue;
 
             public ConfigData(bool boolValue, int intValue, float floatValue, string stringValue)
             {
-                _BoolValue = boolValue;
-                _IntValue = intValue;
-                _FloatValue = floatValue;
-                _StringValue = stringValue;
+                m_BoolValue = boolValue;
+                m_IntValue = intValue;
+                m_FloatValue = floatValue;
+                m_StringValue = stringValue;
             }
 
             public bool BoolValue
             {
                 get
                 {
-                    return _BoolValue;
+                    return m_BoolValue;
                 }
             }
 
@@ -39,7 +39,7 @@ namespace GameFramework.Config
             {
                 get
                 {
-                    return _IntValue;
+                    return m_IntValue;
                 }
             }
 
@@ -47,7 +47,7 @@ namespace GameFramework.Config
             {
                 get
                 {
-                    return _FloatValue;
+                    return m_FloatValue;
                 }
             }
 
@@ -55,7 +55,7 @@ namespace GameFramework.Config
             {
                 get
                 {
-                    return _StringValue;
+                    return m_StringValue;
                 }
             }
         }

@@ -16,11 +16,11 @@ namespace GameFramework.Resource
         /// </summary>
         private sealed class ResourceGroupCollection : IResourceGroupCollection
         {
-            private readonly ResourceGroup[] _ResourceGroups;
-            private readonly Dictionary<ResourceName, ResourceInfo> _ResourceInfos;
-            private readonly HashSet<ResourceName> _ResourceNames;
-            private long _TotalLength;
-            private long _TotalCompressedLength;
+            private readonly ResourceGroup[] m_ResourceGroups;
+            private readonly Dictionary<ResourceName, ResourceInfo> m_ResourceInfos;
+            private readonly HashSet<ResourceName> m_ResourceNames;
+            private long m_TotalLength;
+            private long m_TotalCompressedLength;
 
             /// <summary>
             /// 初始化资源组集合的新实例。
@@ -61,28 +61,28 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException(Utility.Text.Format("Resource group index '{0}' is invalid.", lastIndex));
                 }
 
-                _ResourceGroups = resourceGroups;
-                _ResourceInfos = resourceInfos;
-                _ResourceNames = new HashSet<ResourceName>();
-                _TotalLength = 0L;
-                _TotalCompressedLength = 0L;
+                m_ResourceGroups = resourceGroups;
+                m_ResourceInfos = resourceInfos;
+                m_ResourceNames = new HashSet<ResourceName>();
+                m_TotalLength = 0L;
+                m_TotalCompressedLength = 0L;
 
                 List<ResourceName> cachedResourceNames = new List<ResourceName>();
-                foreach (ResourceGroup resourceGroup in _ResourceGroups)
+                foreach (ResourceGroup resourceGroup in m_ResourceGroups)
                 {
                     resourceGroup.InternalGetResourceNames(cachedResourceNames);
                     foreach (ResourceName resourceName in cachedResourceNames)
                     {
                         ResourceInfo resourceInfo = null;
-                        if (!_ResourceInfos.TryGetValue(resourceName, out resourceInfo))
+                        if (!m_ResourceInfos.TryGetValue(resourceName, out resourceInfo))
                         {
                             throw new GameFrameworkException(Utility.Text.Format("Resource info '{0}' is invalid.", resourceName.FullName));
                         }
 
-                        if (_ResourceNames.Add(resourceName))
+                        if (m_ResourceNames.Add(resourceName))
                         {
-                            _TotalLength += resourceInfo.Length;
-                            _TotalCompressedLength += resourceInfo.CompressedLength;
+                            m_TotalLength += resourceInfo.Length;
+                            m_TotalCompressedLength += resourceInfo.CompressedLength;
                         }
                     }
                 }
@@ -106,7 +106,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _ResourceNames.Count;
+                    return m_ResourceNames.Count;
                 }
             }
 
@@ -118,10 +118,10 @@ namespace GameFramework.Resource
                 get
                 {
                     int readyCount = 0;
-                    foreach (ResourceName resourceName in _ResourceNames)
+                    foreach (ResourceName resourceName in m_ResourceNames)
                     {
                         ResourceInfo resourceInfo = null;
-                        if (_ResourceInfos.TryGetValue(resourceName, out resourceInfo) && resourceInfo.Ready)
+                        if (m_ResourceInfos.TryGetValue(resourceName, out resourceInfo) && resourceInfo.Ready)
                         {
                             readyCount++;
                         }
@@ -138,7 +138,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _TotalLength;
+                    return m_TotalLength;
                 }
             }
 
@@ -149,7 +149,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _TotalCompressedLength;
+                    return m_TotalCompressedLength;
                 }
             }
 
@@ -161,10 +161,10 @@ namespace GameFramework.Resource
                 get
                 {
                     long readyLength = 0L;
-                    foreach (ResourceName resourceName in _ResourceNames)
+                    foreach (ResourceName resourceName in m_ResourceNames)
                     {
                         ResourceInfo resourceInfo = null;
-                        if (_ResourceInfos.TryGetValue(resourceName, out resourceInfo) && resourceInfo.Ready)
+                        if (m_ResourceInfos.TryGetValue(resourceName, out resourceInfo) && resourceInfo.Ready)
                         {
                             readyLength += resourceInfo.Length;
                         }
@@ -182,10 +182,10 @@ namespace GameFramework.Resource
                 get
                 {
                     long readyCompressedLength = 0L;
-                    foreach (ResourceName resourceName in _ResourceNames)
+                    foreach (ResourceName resourceName in m_ResourceNames)
                     {
                         ResourceInfo resourceInfo = null;
-                        if (_ResourceInfos.TryGetValue(resourceName, out resourceInfo) && resourceInfo.Ready)
+                        if (m_ResourceInfos.TryGetValue(resourceName, out resourceInfo) && resourceInfo.Ready)
                         {
                             readyCompressedLength += resourceInfo.CompressedLength;
                         }
@@ -202,7 +202,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _TotalLength > 0L ? (float)ReadyLength / _TotalLength : 1f;
+                    return m_TotalLength > 0L ? (float)ReadyLength / m_TotalLength : 1f;
                 }
             }
 
@@ -212,7 +212,7 @@ namespace GameFramework.Resource
             /// <returns>资源组包含的资源名称列表。</returns>
             public IResourceGroup[] GetResourceGroups()
             {
-                return _ResourceGroups;
+                return m_ResourceGroups;
             }
 
             /// <summary>
@@ -222,8 +222,8 @@ namespace GameFramework.Resource
             public string[] GetResourceNames()
             {
                 int index = 0;
-                string[] resourceNames = new string[_ResourceNames.Count];
-                foreach (ResourceName resourceName in _ResourceNames)
+                string[] resourceNames = new string[m_ResourceNames.Count];
+                foreach (ResourceName resourceName in m_ResourceNames)
                 {
                     resourceNames[index++] = resourceName.FullName;
                 }
@@ -243,7 +243,7 @@ namespace GameFramework.Resource
                 }
 
                 results.Clear();
-                foreach (ResourceName resourceName in _ResourceNames)
+                foreach (ResourceName resourceName in m_ResourceNames)
                 {
                     results.Add(resourceName.FullName);
                 }

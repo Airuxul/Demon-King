@@ -21,9 +21,9 @@ namespace GameFramework.Resource
         {
             private static readonly Dictionary<ResourceName, string> s_ResourceFullNames = new Dictionary<ResourceName, string>();
 
-            private readonly string _Name;
-            private readonly string _Variant;
-            private readonly string _Extension;
+            private readonly string m_Name;
+            private readonly string m_Variant;
+            private readonly string m_Extension;
 
             /// <summary>
             /// 初始化资源名称的新实例。
@@ -43,9 +43,9 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException("Resource extension is invalid.");
                 }
 
-                _Name = name;
-                _Variant = variant;
-                _Extension = extension;
+                m_Name = name;
+                m_Variant = variant;
+                m_Extension = extension;
             }
 
             /// <summary>
@@ -55,7 +55,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _Name;
+                    return m_Name;
                 }
             }
 
@@ -66,7 +66,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _Variant;
+                    return m_Variant;
                 }
             }
 
@@ -77,7 +77,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _Extension;
+                    return m_Extension;
                 }
             }
 
@@ -91,7 +91,7 @@ namespace GameFramework.Resource
                         return fullName;
                     }
 
-                    fullName = _Variant != null ? Utility.Text.Format("{0}.{1}.{2}", _Name, _Variant, _Extension) : Utility.Text.Format("{0}.{1}", _Name, _Extension);
+                    fullName = m_Variant != null ? Utility.Text.Format("{0}.{1}.{2}", m_Name, m_Variant, m_Extension) : Utility.Text.Format("{0}.{1}", m_Name, m_Extension);
                     s_ResourceFullNames.Add(this, fullName);
                     return fullName;
                 }
@@ -104,12 +104,12 @@ namespace GameFramework.Resource
 
             public override int GetHashCode()
             {
-                if (_Variant == null)
+                if (m_Variant == null)
                 {
-                    return _Name.GetHashCode() ^ _Extension.GetHashCode();
+                    return m_Name.GetHashCode() ^ m_Extension.GetHashCode();
                 }
 
-                return _Name.GetHashCode() ^ _Variant.GetHashCode() ^ _Extension.GetHashCode();
+                return m_Name.GetHashCode() ^ m_Variant.GetHashCode() ^ m_Extension.GetHashCode();
             }
 
             public override bool Equals(object obj)
@@ -119,7 +119,7 @@ namespace GameFramework.Resource
 
             public bool Equals(ResourceName value)
             {
-                return string.Equals(_Name, value._Name, StringComparison.Ordinal) && string.Equals(_Variant, value._Variant, StringComparison.Ordinal) && string.Equals(_Extension, value._Extension, StringComparison.Ordinal);
+                return string.Equals(m_Name, value.m_Name, StringComparison.Ordinal) && string.Equals(m_Variant, value.m_Variant, StringComparison.Ordinal) && string.Equals(m_Extension, value.m_Extension, StringComparison.Ordinal);
             }
 
             public static bool operator ==(ResourceName a, ResourceName b)
@@ -149,19 +149,19 @@ namespace GameFramework.Resource
 
             public int CompareTo(ResourceName resourceName)
             {
-                int result = string.CompareOrdinal(_Name, resourceName._Name);
+                int result = string.CompareOrdinal(m_Name, resourceName.m_Name);
                 if (result != 0)
                 {
                     return result;
                 }
 
-                result = string.CompareOrdinal(_Variant, resourceName._Variant);
+                result = string.CompareOrdinal(m_Variant, resourceName.m_Variant);
                 if (result != 0)
                 {
                     return result;
                 }
 
-                return string.CompareOrdinal(_Extension, resourceName._Extension);
+                return string.CompareOrdinal(m_Extension, resourceName.m_Extension);
             }
         }
     }

@@ -14,7 +14,7 @@ using UnityEngine;
 /// </summary>
 public static class UnityExtension
 {
-    private static readonly List<Transform> SCachedTransforms = new List<Transform>();
+    private static readonly List<Transform> s_CachedTransforms = new List<Transform>();
 
     /// <summary>
     /// 获取或增加组件。
@@ -68,13 +68,13 @@ public static class UnityExtension
     /// <param name="layer">目标层次的编号。</param>
     public static void SetLayerRecursively(this GameObject gameObject, int layer)
     {
-        gameObject.GetComponentsInChildren(true, SCachedTransforms);
-        for (int i = 0; i < SCachedTransforms.Count; i++)
+        gameObject.GetComponentsInChildren(true, s_CachedTransforms);
+        for (int i = 0; i < s_CachedTransforms.Count; i++)
         {
-            SCachedTransforms[i].gameObject.layer = layer;
+            s_CachedTransforms[i].gameObject.layer = layer;
         }
 
-        SCachedTransforms.Clear();
+        s_CachedTransforms.Clear();
     }
 
     /// <summary>

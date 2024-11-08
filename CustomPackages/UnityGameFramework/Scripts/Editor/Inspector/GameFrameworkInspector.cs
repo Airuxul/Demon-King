@@ -14,21 +14,21 @@ namespace UnityGameFramework.Editor
     /// </summary>
     public abstract class GameFrameworkInspector : UnityEditor.Editor
     {
-        private bool _IsCompiling = false;
+        private bool m_IsCompiling = false;
 
         /// <summary>
         /// 绘制事件。
         /// </summary>
         public override void OnInspectorGUI()
         {
-            if (_IsCompiling && !EditorApplication.isCompiling)
+            if (m_IsCompiling && !EditorApplication.isCompiling)
             {
-                _IsCompiling = false;
+                m_IsCompiling = false;
                 OnCompileComplete();
             }
-            else if (!_IsCompiling && EditorApplication.isCompiling)
+            else if (!m_IsCompiling && EditorApplication.isCompiling)
             {
-                _IsCompiling = true;
+                m_IsCompiling = true;
                 OnCompileStart();
             }
         }

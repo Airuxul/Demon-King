@@ -16,15 +16,15 @@ namespace GameFramework.Resource
             /// </summary>
             private sealed partial class CheckInfo
             {
-                private readonly ResourceName _ResourceName;
-                private CheckStatus _Status;
-                private bool _NeedRemove;
-                private bool _NeedMoveToDisk;
-                private bool _NeedMoveToFileSystem;
-                private RemoteVersionInfo _VersionInfo;
-                private LocalVersionInfo _ReadOnlyInfo;
-                private LocalVersionInfo _ReadWriteInfo;
-                private string _CachedFileSystemName;
+                private readonly ResourceName m_ResourceName;
+                private CheckStatus m_Status;
+                private bool m_NeedRemove;
+                private bool m_NeedMoveToDisk;
+                private bool m_NeedMoveToFileSystem;
+                private RemoteVersionInfo m_VersionInfo;
+                private LocalVersionInfo m_ReadOnlyInfo;
+                private LocalVersionInfo m_ReadWriteInfo;
+                private string m_CachedFileSystemName;
 
                 /// <summary>
                 /// 初始化资源检查信息的新实例。
@@ -32,15 +32,15 @@ namespace GameFramework.Resource
                 /// <param name="resourceName">资源名称。</param>
                 public CheckInfo(ResourceName resourceName)
                 {
-                    _ResourceName = resourceName;
-                    _Status = CheckStatus.Unknown;
-                    _NeedRemove = false;
-                    _NeedMoveToDisk = false;
-                    _NeedMoveToFileSystem = false;
-                    _VersionInfo = default(RemoteVersionInfo);
-                    _ReadOnlyInfo = default(LocalVersionInfo);
-                    _ReadWriteInfo = default(LocalVersionInfo);
-                    _CachedFileSystemName = null;
+                    m_ResourceName = resourceName;
+                    m_Status = CheckStatus.Unknown;
+                    m_NeedRemove = false;
+                    m_NeedMoveToDisk = false;
+                    m_NeedMoveToFileSystem = false;
+                    m_VersionInfo = default(RemoteVersionInfo);
+                    m_ReadOnlyInfo = default(LocalVersionInfo);
+                    m_ReadWriteInfo = default(LocalVersionInfo);
+                    m_CachedFileSystemName = null;
                 }
 
                 /// <summary>
@@ -50,7 +50,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _ResourceName;
+                        return m_ResourceName;
                     }
                 }
 
@@ -61,7 +61,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _Status;
+                        return m_Status;
                     }
                 }
 
@@ -72,7 +72,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _NeedRemove;
+                        return m_NeedRemove;
                     }
                 }
 
@@ -83,7 +83,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _NeedMoveToDisk;
+                        return m_NeedMoveToDisk;
                     }
                 }
 
@@ -94,7 +94,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _NeedMoveToFileSystem;
+                        return m_NeedMoveToFileSystem;
                     }
                 }
 
@@ -105,7 +105,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _VersionInfo.FileSystemName;
+                        return m_VersionInfo.FileSystemName;
                     }
                 }
 
@@ -116,7 +116,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _ReadWriteInfo.UseFileSystem;
+                        return m_ReadWriteInfo.UseFileSystem;
                     }
                 }
 
@@ -127,7 +127,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _ReadWriteInfo.FileSystemName;
+                        return m_ReadWriteInfo.FileSystemName;
                     }
                 }
 
@@ -138,7 +138,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _VersionInfo.LoadType;
+                        return m_VersionInfo.LoadType;
                     }
                 }
 
@@ -149,7 +149,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _VersionInfo.Length;
+                        return m_VersionInfo.Length;
                     }
                 }
 
@@ -160,7 +160,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _VersionInfo.HashCode;
+                        return m_VersionInfo.HashCode;
                     }
                 }
 
@@ -171,7 +171,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _VersionInfo.CompressedLength;
+                        return m_VersionInfo.CompressedLength;
                     }
                 }
 
@@ -182,7 +182,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _VersionInfo.CompressedHashCode;
+                        return m_VersionInfo.CompressedHashCode;
                     }
                 }
 
@@ -192,7 +192,7 @@ namespace GameFramework.Resource
                 /// <param name="fileSystemName">资源所在的文件系统名称。</param>
                 public void SetCachedFileSystemName(string fileSystemName)
                 {
-                    _CachedFileSystemName = fileSystemName;
+                    m_CachedFileSystemName = fileSystemName;
                 }
 
                 /// <summary>
@@ -205,13 +205,13 @@ namespace GameFramework.Resource
                 /// <param name="compressedHashCode">压缩后哈希值。</param>
                 public void SetVersionInfo(LoadType loadType, int length, int hashCode, int compressedLength, int compressedHashCode)
                 {
-                    if (_VersionInfo.Exist)
+                    if (m_VersionInfo.Exist)
                     {
-                        throw new GameFrameworkException(Utility.Text.Format("You must set version info of '{0}' only once.", _ResourceName.FullName));
+                        throw new GameFrameworkException(Utility.Text.Format("You must set version info of '{0}' only once.", m_ResourceName.FullName));
                     }
 
-                    _VersionInfo = new RemoteVersionInfo(_CachedFileSystemName, loadType, length, hashCode, compressedLength, compressedHashCode);
-                    _CachedFileSystemName = null;
+                    m_VersionInfo = new RemoteVersionInfo(m_CachedFileSystemName, loadType, length, hashCode, compressedLength, compressedHashCode);
+                    m_CachedFileSystemName = null;
                 }
 
                 /// <summary>
@@ -222,13 +222,13 @@ namespace GameFramework.Resource
                 /// <param name="hashCode">资源哈希值。</param>
                 public void SetReadOnlyInfo(LoadType loadType, int length, int hashCode)
                 {
-                    if (_ReadOnlyInfo.Exist)
+                    if (m_ReadOnlyInfo.Exist)
                     {
-                        throw new GameFrameworkException(Utility.Text.Format("You must set read-only info of '{0}' only once.", _ResourceName.FullName));
+                        throw new GameFrameworkException(Utility.Text.Format("You must set read-only info of '{0}' only once.", m_ResourceName.FullName));
                     }
 
-                    _ReadOnlyInfo = new LocalVersionInfo(_CachedFileSystemName, loadType, length, hashCode);
-                    _CachedFileSystemName = null;
+                    m_ReadOnlyInfo = new LocalVersionInfo(m_CachedFileSystemName, loadType, length, hashCode);
+                    m_CachedFileSystemName = null;
                 }
 
                 /// <summary>
@@ -239,13 +239,13 @@ namespace GameFramework.Resource
                 /// <param name="hashCode">资源哈希值。</param>
                 public void SetReadWriteInfo(LoadType loadType, int length, int hashCode)
                 {
-                    if (_ReadWriteInfo.Exist)
+                    if (m_ReadWriteInfo.Exist)
                     {
-                        throw new GameFrameworkException(Utility.Text.Format("You must set read-write info of '{0}' only once.", _ResourceName.FullName));
+                        throw new GameFrameworkException(Utility.Text.Format("You must set read-write info of '{0}' only once.", m_ResourceName.FullName));
                     }
 
-                    _ReadWriteInfo = new LocalVersionInfo(_CachedFileSystemName, loadType, length, hashCode);
-                    _CachedFileSystemName = null;
+                    m_ReadWriteInfo = new LocalVersionInfo(m_CachedFileSystemName, loadType, length, hashCode);
+                    m_CachedFileSystemName = null;
                 }
 
                 /// <summary>
@@ -255,37 +255,37 @@ namespace GameFramework.Resource
                 /// <param name="ignoreOtherVariant">是否忽略处理其它变体的资源，若不忽略则移除。</param>
                 public void RefreshStatus(string currentVariant, bool ignoreOtherVariant)
                 {
-                    if (!_VersionInfo.Exist)
+                    if (!m_VersionInfo.Exist)
                     {
-                        _Status = CheckStatus.Disuse;
-                        _NeedRemove = _ReadWriteInfo.Exist;
+                        m_Status = CheckStatus.Disuse;
+                        m_NeedRemove = m_ReadWriteInfo.Exist;
                         return;
                     }
 
-                    if (_ResourceName.Variant == null || _ResourceName.Variant == currentVariant)
+                    if (m_ResourceName.Variant == null || m_ResourceName.Variant == currentVariant)
                     {
-                        if (_ReadOnlyInfo.Exist && _ReadOnlyInfo.FileSystemName == _VersionInfo.FileSystemName && _ReadOnlyInfo.LoadType == _VersionInfo.LoadType && _ReadOnlyInfo.Length == _VersionInfo.Length && _ReadOnlyInfo.HashCode == _VersionInfo.HashCode)
+                        if (m_ReadOnlyInfo.Exist && m_ReadOnlyInfo.FileSystemName == m_VersionInfo.FileSystemName && m_ReadOnlyInfo.LoadType == m_VersionInfo.LoadType && m_ReadOnlyInfo.Length == m_VersionInfo.Length && m_ReadOnlyInfo.HashCode == m_VersionInfo.HashCode)
                         {
-                            _Status = CheckStatus.StorageInReadOnly;
-                            _NeedRemove = _ReadWriteInfo.Exist;
+                            m_Status = CheckStatus.StorageInReadOnly;
+                            m_NeedRemove = m_ReadWriteInfo.Exist;
                         }
-                        else if (_ReadWriteInfo.Exist && _ReadWriteInfo.LoadType == _VersionInfo.LoadType && _ReadWriteInfo.Length == _VersionInfo.Length && _ReadWriteInfo.HashCode == _VersionInfo.HashCode)
+                        else if (m_ReadWriteInfo.Exist && m_ReadWriteInfo.LoadType == m_VersionInfo.LoadType && m_ReadWriteInfo.Length == m_VersionInfo.Length && m_ReadWriteInfo.HashCode == m_VersionInfo.HashCode)
                         {
-                            bool differentFileSystem = _ReadWriteInfo.FileSystemName != _VersionInfo.FileSystemName;
-                            _Status = CheckStatus.StorageInReadWrite;
-                            _NeedMoveToDisk = _ReadWriteInfo.UseFileSystem && differentFileSystem;
-                            _NeedMoveToFileSystem = _VersionInfo.UseFileSystem && differentFileSystem;
+                            bool differentFileSystem = m_ReadWriteInfo.FileSystemName != m_VersionInfo.FileSystemName;
+                            m_Status = CheckStatus.StorageInReadWrite;
+                            m_NeedMoveToDisk = m_ReadWriteInfo.UseFileSystem && differentFileSystem;
+                            m_NeedMoveToFileSystem = m_VersionInfo.UseFileSystem && differentFileSystem;
                         }
                         else
                         {
-                            _Status = CheckStatus.Update;
-                            _NeedRemove = _ReadWriteInfo.Exist;
+                            m_Status = CheckStatus.Update;
+                            m_NeedRemove = m_ReadWriteInfo.Exist;
                         }
                     }
                     else
                     {
-                        _Status = CheckStatus.Unavailable;
-                        _NeedRemove = !ignoreOtherVariant && _ReadWriteInfo.Exist;
+                        m_Status = CheckStatus.Unavailable;
+                        m_NeedRemove = !ignoreOtherVariant && m_ReadWriteInfo.Exist;
                     }
                 }
             }

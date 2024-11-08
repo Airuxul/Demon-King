@@ -16,12 +16,12 @@ namespace GameFramework.ObjectPool
     [StructLayout(LayoutKind.Auto)]
     public struct ObjectInfo
     {
-        private readonly string _Name;
-        private readonly bool _Locked;
-        private readonly bool _CustomCanReleaseFlag;
-        private readonly int _Priority;
-        private readonly DateTime _LastUseTime;
-        private readonly int _SpawnCount;
+        private readonly string m_Name;
+        private readonly bool m_Locked;
+        private readonly bool m_CustomCanReleaseFlag;
+        private readonly int m_Priority;
+        private readonly DateTime m_LastUseTime;
+        private readonly int m_SpawnCount;
 
         /// <summary>
         /// 初始化对象信息的新实例。
@@ -34,12 +34,12 @@ namespace GameFramework.ObjectPool
         /// <param name="spawnCount">对象的获取计数。</param>
         public ObjectInfo(string name, bool locked, bool customCanReleaseFlag, int priority, DateTime lastUseTime, int spawnCount)
         {
-            _Name = name;
-            _Locked = locked;
-            _CustomCanReleaseFlag = customCanReleaseFlag;
-            _Priority = priority;
-            _LastUseTime = lastUseTime;
-            _SpawnCount = spawnCount;
+            m_Name = name;
+            m_Locked = locked;
+            m_CustomCanReleaseFlag = customCanReleaseFlag;
+            m_Priority = priority;
+            m_LastUseTime = lastUseTime;
+            m_SpawnCount = spawnCount;
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace GameFramework.ObjectPool
         {
             get
             {
-                return _Name;
+                return m_Name;
             }
         }
 
@@ -60,7 +60,7 @@ namespace GameFramework.ObjectPool
         {
             get
             {
-                return _Locked;
+                return m_Locked;
             }
         }
 
@@ -71,7 +71,7 @@ namespace GameFramework.ObjectPool
         {
             get
             {
-                return _CustomCanReleaseFlag;
+                return m_CustomCanReleaseFlag;
             }
         }
 
@@ -82,7 +82,7 @@ namespace GameFramework.ObjectPool
         {
             get
             {
-                return _Priority;
+                return m_Priority;
             }
         }
 
@@ -93,7 +93,7 @@ namespace GameFramework.ObjectPool
         {
             get
             {
-                return _LastUseTime;
+                return m_LastUseTime;
             }
         }
 
@@ -104,7 +104,7 @@ namespace GameFramework.ObjectPool
         {
             get
             {
-                return _SpawnCount > 0;
+                return m_SpawnCount > 0;
             }
         }
 
@@ -115,7 +115,7 @@ namespace GameFramework.ObjectPool
         {
             get
             {
-                return _SpawnCount;
+                return m_SpawnCount;
             }
         }
     }

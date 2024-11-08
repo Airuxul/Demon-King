@@ -18,11 +18,11 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(WebRequestComponent))]
     internal sealed class WebRequestComponentInspector : GameFrameworkInspector
     {
-        private SerializedProperty _InstanceRoot = null;
-        private SerializedProperty _WebRequestAgentHelperCount = null;
-        private SerializedProperty _Timeout = null;
+        private SerializedProperty m_InstanceRoot = null;
+        private SerializedProperty m_WebRequestAgentHelperCount = null;
+        private SerializedProperty m_Timeout = null;
 
-        private HelperInfo<WebRequestAgentHelperBase> _WebRequestAgentHelperInfo = new HelperInfo<WebRequestAgentHelperBase>("WebRequestAgent");
+        private HelperInfo<WebRequestAgentHelperBase> m_WebRequestAgentHelperInfo = new HelperInfo<WebRequestAgentHelperBase>("WebRequestAgent");
 
         public override void OnInspectorGUI()
         {
@@ -34,16 +34,16 @@ namespace UnityGameFramework.Editor
 
             EditorGUI.BeginDisabledGroup(EditorApplication.isPlayingOrWillChangePlaymode);
             {
-                EditorGUILayout.PropertyField(_InstanceRoot);
+                EditorGUILayout.PropertyField(m_InstanceRoot);
 
-                _WebRequestAgentHelperInfo.Draw();
+                m_WebRequestAgentHelperInfo.Draw();
 
-                _WebRequestAgentHelperCount.intValue = EditorGUILayout.IntSlider("Web Request Agent Helper Count", _WebRequestAgentHelperCount.intValue, 1, 16);
+                m_WebRequestAgentHelperCount.intValue = EditorGUILayout.IntSlider("Web Request Agent Helper Count", m_WebRequestAgentHelperCount.intValue, 1, 16);
             }
             EditorGUI.EndDisabledGroup();
 
-            float timeout = EditorGUILayout.Slider("Timeout", _Timeout.floatValue, 0f, 120f);
-            if (timeout != _Timeout.floatValue)
+            float timeout = EditorGUILayout.Slider("Timeout", m_Timeout.floatValue, 0f, 120f);
+            if (timeout != m_Timeout.floatValue)
             {
                 if (EditorApplication.isPlaying)
                 {
@@ -51,7 +51,7 @@ namespace UnityGameFramework.Editor
                 }
                 else
                 {
-                    _Timeout.floatValue = timeout;
+                    m_Timeout.floatValue = timeout;
                 }
             }
 
@@ -118,11 +118,11 @@ namespace UnityGameFramework.Editor
 
         private void OnEnable()
         {
-            _InstanceRoot = serializedObject.FindProperty("_InstanceRoot");
-            _WebRequestAgentHelperCount = serializedObject.FindProperty("_WebRequestAgentHelperCount");
-            _Timeout = serializedObject.FindProperty("_Timeout");
+            m_InstanceRoot = serializedObject.FindProperty("m_InstanceRoot");
+            m_WebRequestAgentHelperCount = serializedObject.FindProperty("m_WebRequestAgentHelperCount");
+            m_Timeout = serializedObject.FindProperty("m_Timeout");
 
-            _WebRequestAgentHelperInfo.Init(serializedObject);
+            m_WebRequestAgentHelperInfo.Init(serializedObject);
 
             RefreshTypeNames();
         }
@@ -134,7 +134,7 @@ namespace UnityGameFramework.Editor
 
         private void RefreshTypeNames()
         {
-            _WebRequestAgentHelperInfo.Refresh();
+            m_WebRequestAgentHelperInfo.Refresh();
             serializedObject.ApplyModifiedProperties();
         }
     }

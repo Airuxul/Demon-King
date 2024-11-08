@@ -20,24 +20,24 @@ namespace UnityGameFramework.Runtime
     {
         private sealed class DownloadHandler : DownloadHandlerScript
         {
-            private readonly UnityWebRequestDownloadAgentHelper _owner;
+            private readonly UnityWebRequestDownloadAgentHelper m_Owner;
 
             public DownloadHandler(UnityWebRequestDownloadAgentHelper owner)
-                : base(owner._cachedBytes)
+                : base(owner.m_CachedBytes)
             {
-                _owner = owner;
+                m_Owner = owner;
             }
 
             protected override bool ReceiveData(byte[] data, int dataLength)
             {
-                if (_owner != null && _owner._unityWebRequest != null && dataLength > 0)
+                if (m_Owner != null && m_Owner.m_UnityWebRequest != null && dataLength > 0)
                 {
                     DownloadAgentHelperUpdateBytesEventArgs downloadAgentHelperUpdateBytesEventArgs = DownloadAgentHelperUpdateBytesEventArgs.Create(data, 0, dataLength);
-                    _owner._downloadAgentHelperUpdateBytesEventHandler(this, downloadAgentHelperUpdateBytesEventArgs);
+                    m_Owner.m_DownloadAgentHelperUpdateBytesEventHandler(this, downloadAgentHelperUpdateBytesEventArgs);
                     ReferencePool.Release(downloadAgentHelperUpdateBytesEventArgs);
 
                     DownloadAgentHelperUpdateLengthEventArgs downloadAgentHelperUpdateLengthEventArgs = DownloadAgentHelperUpdateLengthEventArgs.Create(dataLength);
-                    _owner._downloadAgentHelperUpdateLengthEventHandler(this, downloadAgentHelperUpdateLengthEventArgs);
+                    m_Owner.m_DownloadAgentHelperUpdateLengthEventHandler(this, downloadAgentHelperUpdateLengthEventArgs);
                     ReferencePool.Release(downloadAgentHelperUpdateLengthEventArgs);
                 }
 

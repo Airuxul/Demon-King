@@ -16,11 +16,11 @@ namespace GameFramework.Resource
             /// </summary>
             private struct VerifyInfo
             {
-                private readonly ResourceName _ResourceName;
-                private readonly string _FileSystemName;
-                private readonly LoadType _LoadType;
-                private readonly int _Length;
-                private readonly int _HashCode;
+                private readonly ResourceName m_ResourceName;
+                private readonly string m_FileSystemName;
+                private readonly LoadType m_LoadType;
+                private readonly int m_Length;
+                private readonly int m_HashCode;
 
                 /// <summary>
                 /// 初始化资源校验信息的新实例。
@@ -32,11 +32,11 @@ namespace GameFramework.Resource
                 /// <param name="hashCode">资源哈希值。</param>
                 public VerifyInfo(ResourceName resourceName, string fileSystemName, LoadType loadType, int length, int hashCode)
                 {
-                    _ResourceName = resourceName;
-                    _FileSystemName = fileSystemName;
-                    _LoadType = loadType;
-                    _Length = length;
-                    _HashCode = hashCode;
+                    m_ResourceName = resourceName;
+                    m_FileSystemName = fileSystemName;
+                    m_LoadType = loadType;
+                    m_Length = length;
+                    m_HashCode = hashCode;
                 }
 
                 /// <summary>
@@ -46,7 +46,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _ResourceName;
+                        return m_ResourceName;
                     }
                 }
 
@@ -57,7 +57,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return !string.IsNullOrEmpty(_FileSystemName);
+                        return !string.IsNullOrEmpty(m_FileSystemName);
                     }
                 }
 
@@ -68,7 +68,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _FileSystemName;
+                        return m_FileSystemName;
                     }
                 }
 
@@ -79,7 +79,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _LoadType;
+                        return m_LoadType;
                     }
                 }
 
@@ -90,7 +90,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _Length;
+                        return m_Length;
                     }
                 }
 
@@ -101,7 +101,7 @@ namespace GameFramework.Resource
                 {
                     get
                     {
-                        return _HashCode;
+                        return m_HashCode;
                     }
                 }
             }

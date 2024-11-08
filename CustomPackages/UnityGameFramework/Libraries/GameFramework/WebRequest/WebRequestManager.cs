@@ -15,22 +15,22 @@ namespace GameFramework.WebRequest
     /// </summary>
     internal sealed partial class WebRequestManager : GameFrameworkModule, IWebRequestManager
     {
-        private readonly TaskPool<WebRequestTask> _TaskPool;
-        private float _Timeout;
-        private EventHandler<WebRequestStartEventArgs> _WebRequestStartEventHandler;
-        private EventHandler<WebRequestSuccessEventArgs> _WebRequestSuccessEventHandler;
-        private EventHandler<WebRequestFailureEventArgs> _WebRequestFailureEventHandler;
+        private readonly TaskPool<WebRequestTask> m_TaskPool;
+        private float m_Timeout;
+        private EventHandler<WebRequestStartEventArgs> m_WebRequestStartEventHandler;
+        private EventHandler<WebRequestSuccessEventArgs> m_WebRequestSuccessEventHandler;
+        private EventHandler<WebRequestFailureEventArgs> m_WebRequestFailureEventHandler;
 
         /// <summary>
         /// 初始化 Web 请求管理器的新实例。
         /// </summary>
         public WebRequestManager()
         {
-            _TaskPool = new TaskPool<WebRequestTask>();
-            _Timeout = 30f;
-            _WebRequestStartEventHandler = null;
-            _WebRequestSuccessEventHandler = null;
-            _WebRequestFailureEventHandler = null;
+            m_TaskPool = new TaskPool<WebRequestTask>();
+            m_Timeout = 30f;
+            m_WebRequestStartEventHandler = null;
+            m_WebRequestSuccessEventHandler = null;
+            m_WebRequestFailureEventHandler = null;
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace GameFramework.WebRequest
         {
             get
             {
-                return _TaskPool.TotalAgentCount;
+                return m_TaskPool.TotalAgentCount;
             }
         }
 
@@ -51,7 +51,7 @@ namespace GameFramework.WebRequest
         {
             get
             {
-                return _TaskPool.FreeAgentCount;
+                return m_TaskPool.FreeAgentCount;
             }
         }
 
@@ -62,7 +62,7 @@ namespace GameFramework.WebRequest
         {
             get
             {
-                return _TaskPool.WorkingAgentCount;
+                return m_TaskPool.WorkingAgentCount;
             }
         }
 
@@ -73,7 +73,7 @@ namespace GameFramework.WebRequest
         {
             get
             {
-                return _TaskPool.WaitingTaskCount;
+                return m_TaskPool.WaitingTaskCount;
             }
         }
 
@@ -84,11 +84,11 @@ namespace GameFramework.WebRequest
         {
             get
             {
-                return _Timeout;
+                return m_Timeout;
             }
             set
             {
-                _Timeout = value;
+                m_Timeout = value;
             }
         }
 
@@ -99,11 +99,11 @@ namespace GameFramework.WebRequest
         {
             add
             {
-                _WebRequestStartEventHandler += value;
+                m_WebRequestStartEventHandler += value;
             }
             remove
             {
-                _WebRequestStartEventHandler -= value;
+                m_WebRequestStartEventHandler -= value;
             }
         }
 
@@ -114,11 +114,11 @@ namespace GameFramework.WebRequest
         {
             add
             {
-                _WebRequestSuccessEventHandler += value;
+                m_WebRequestSuccessEventHandler += value;
             }
             remove
             {
-                _WebRequestSuccessEventHandler -= value;
+                m_WebRequestSuccessEventHandler -= value;
             }
         }
 
@@ -129,11 +129,11 @@ namespace GameFramework.WebRequest
         {
             add
             {
-                _WebRequestFailureEventHandler += value;
+                m_WebRequestFailureEventHandler += value;
             }
             remove
             {
-                _WebRequestFailureEventHandler -= value;
+                m_WebRequestFailureEventHandler -= value;
             }
         }
 
@@ -144,7 +144,7 @@ namespace GameFramework.WebRequest
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
         internal override void Update(float elapseSeconds, float realElapseSeconds)
         {
-            _TaskPool.Update(elapseSeconds, realElapseSeconds);
+            m_TaskPool.Update(elapseSeconds, realElapseSeconds);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace GameFramework.WebRequest
         /// </summary>
         internal override void Shutdown()
         {
-            _TaskPool.Shutdown();
+            m_TaskPool.Shutdown();
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace GameFramework.WebRequest
             agent.WebRequestAgentSuccess += OnWebRequestAgentSuccess;
             agent.WebRequestAgentFailure += OnWebRequestAgentFailure;
 
-            _TaskPool.AddAgent(agent);
+            m_TaskPool.AddAgent(agent);
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace GameFramework.WebRequest
         /// <returns>Web 请求任务的信息。</returns>
         public TaskInfo GetWebRequestInfo(int serialId)
         {
-            return _TaskPool.GetTaskInfo(serialId);
+            return m_TaskPool.GetTaskInfo(serialId);
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace GameFramework.WebRequest
         /// <returns>Web 请求任务的信息。</returns>
         public TaskInfo[] GetWebRequestInfos(string tag)
         {
-            return _TaskPool.GetTaskInfos(tag);
+            return m_TaskPool.GetTaskInfos(tag);
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace GameFramework.WebRequest
         /// <param name="results">Web 请求任务的信息。</param>
         public void GetAllWebRequestInfos(string tag, List<TaskInfo> results)
         {
-            _TaskPool.GetTaskInfos(tag, results);
+            m_TaskPool.GetTaskInfos(tag, results);
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace GameFramework.WebRequest
         /// <returns>所有 Web 请求任务的信息。</returns>
         public TaskInfo[] GetAllWebRequestInfos()
         {
-            return _TaskPool.GetAllTaskInfos();
+            return m_TaskPool.GetAllTaskInfos();
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace GameFramework.WebRequest
         /// <param name="results">所有 Web 请求任务的信息。</param>
         public void GetAllWebRequestInfos(List<TaskInfo> results)
         {
-            _TaskPool.GetAllTaskInfos(results);
+            m_TaskPool.GetAllTaskInfos(results);
         }
 
         /// <summary>
@@ -416,8 +416,8 @@ namespace GameFramework.WebRequest
                 throw new GameFrameworkException("You must add web request agent first.");
             }
 
-            WebRequestTask webRequestTask = WebRequestTask.Create(webRequestUri, postData, tag, priority, _Timeout, userData);
-            _TaskPool.AddTask(webRequestTask);
+            WebRequestTask webRequestTask = WebRequestTask.Create(webRequestUri, postData, tag, priority, m_Timeout, userData);
+            m_TaskPool.AddTask(webRequestTask);
             return webRequestTask.SerialId;
         }
 
@@ -428,7 +428,7 @@ namespace GameFramework.WebRequest
         /// <returns>是否移除 Web 请求任务成功。</returns>
         public bool RemoveWebRequest(int serialId)
         {
-            return _TaskPool.RemoveTask(serialId);
+            return m_TaskPool.RemoveTask(serialId);
         }
 
         /// <summary>
@@ -438,7 +438,7 @@ namespace GameFramework.WebRequest
         /// <returns>移除 Web 请求任务的数量。</returns>
         public int RemoveWebRequests(string tag)
         {
-            return _TaskPool.RemoveTasks(tag);
+            return m_TaskPool.RemoveTasks(tag);
         }
 
         /// <summary>
@@ -447,35 +447,35 @@ namespace GameFramework.WebRequest
         /// <returns>移除 Web 请求任务的数量。</returns>
         public int RemoveAllWebRequests()
         {
-            return _TaskPool.RemoveAllTasks();
+            return m_TaskPool.RemoveAllTasks();
         }
 
         private void OnWebRequestAgentStart(WebRequestAgent sender)
         {
-            if (_WebRequestStartEventHandler != null)
+            if (m_WebRequestStartEventHandler != null)
             {
                 WebRequestStartEventArgs webRequestStartEventArgs = WebRequestStartEventArgs.Create(sender.Task.SerialId, sender.Task.WebRequestUri, sender.Task.UserData);
-                _WebRequestStartEventHandler(this, webRequestStartEventArgs);
+                m_WebRequestStartEventHandler(this, webRequestStartEventArgs);
                 ReferencePool.Release(webRequestStartEventArgs);
             }
         }
 
         private void OnWebRequestAgentSuccess(WebRequestAgent sender, byte[] webResponseBytes)
         {
-            if (_WebRequestSuccessEventHandler != null)
+            if (m_WebRequestSuccessEventHandler != null)
             {
                 WebRequestSuccessEventArgs webRequestSuccessEventArgs = WebRequestSuccessEventArgs.Create(sender.Task.SerialId, sender.Task.WebRequestUri, webResponseBytes, sender.Task.UserData);
-                _WebRequestSuccessEventHandler(this, webRequestSuccessEventArgs);
+                m_WebRequestSuccessEventHandler(this, webRequestSuccessEventArgs);
                 ReferencePool.Release(webRequestSuccessEventArgs);
             }
         }
 
         private void OnWebRequestAgentFailure(WebRequestAgent sender, string errorMessage)
         {
-            if (_WebRequestFailureEventHandler != null)
+            if (m_WebRequestFailureEventHandler != null)
             {
                 WebRequestFailureEventArgs webRequestFailureEventArgs = WebRequestFailureEventArgs.Create(sender.Task.SerialId, sender.Task.WebRequestUri, errorMessage, sender.Task.UserData);
-                _WebRequestFailureEventHandler(this, webRequestFailureEventArgs);
+                m_WebRequestFailureEventHandler(this, webRequestFailureEventArgs);
                 ReferencePool.Release(webRequestFailureEventArgs);
             }
         }

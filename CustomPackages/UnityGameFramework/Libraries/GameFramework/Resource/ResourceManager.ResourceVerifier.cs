@@ -21,13 +21,13 @@ namespace GameFramework.Resource
         {
             private const int CachedHashBytesLength = 4;
 
-            private readonly ResourceManager _ResourceManager;
-            private readonly List<VerifyInfo> _VerifyInfos;
-            private readonly byte[] _CachedHashBytes;
-            private bool _LoadReadWriteVersionListComplete;
-            private int _VerifyResourceLengthPerFrame;
-            private int _VerifyResourceIndex;
-            private bool _FailureFlag;
+            private readonly ResourceManager m_ResourceManager;
+            private readonly List<VerifyInfo> m_VerifyInfos;
+            private readonly byte[] m_CachedHashBytes;
+            private bool m_LoadReadWriteVersionListComplete;
+            private int m_VerifyResourceLengthPerFrame;
+            private int m_VerifyResourceIndex;
+            private bool m_FailureFlag;
 
             public GameFrameworkAction<int, long> ResourceVerifyStart;
             public GameFrameworkAction<ResourceName, int> ResourceVerifySuccess;
@@ -40,13 +40,13 @@ namespace GameFramework.Resource
             /// <param name="resourceManager">资源管理器。</param>
             public ResourceVerifier(ResourceManager resourceManager)
             {
-                _ResourceManager = resourceManager;
-                _VerifyInfos = new List<VerifyInfo>();
-                _CachedHashBytes = new byte[CachedHashBytesLength];
-                _LoadReadWriteVersionListComplete = false;
-                _VerifyResourceLengthPerFrame = 0;
-                _VerifyResourceIndex = 0;
-                _FailureFlag = false;
+                m_ResourceManager = resourceManager;
+                m_VerifyInfos = new List<VerifyInfo>();
+                m_CachedHashBytes = new byte[CachedHashBytesLength];
+                m_LoadReadWriteVersionListComplete = false;
+                m_VerifyResourceLengthPerFrame = 0;
+                m_VerifyResourceIndex = 0;
+                m_FailureFlag = false;
 
                 ResourceVerifyStart = null;
                 ResourceVerifySuccess = null;
@@ -61,19 +61,19 @@ namespace GameFramework.Resource
             /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
             public void Update(float elapseSeconds, float realElapseSeconds)
             {
-                if (!_LoadReadWriteVersionListComplete)
+                if (!m_LoadReadWriteVersionListComplete)
                 {
                     return;
                 }
 
                 int length = 0;
-                while (_VerifyResourceIndex < _VerifyInfos.Count)
+                while (m_VerifyResourceIndex < m_VerifyInfos.Count)
                 {
-                    VerifyInfo verifyInfo = _VerifyInfos[_VerifyResourceIndex];
+                    VerifyInfo verifyInfo = m_VerifyInfos[m_VerifyResourceIndex];
                     length += verifyInfo.Length;
                     if (VerifyResource(verifyInfo))
                     {
-                        _VerifyResourceIndex++;
+                        m_VerifyResourceIndex++;
                         if (ResourceVerifySuccess != null)
                         {
                             ResourceVerifySuccess(verifyInfo.ResourceName, verifyInfo.Length);
@@ -81,29 +81,29 @@ namespace GameFramework.Resource
                     }
                     else
                     {
-                        _FailureFlag = true;
-                        _VerifyInfos.RemoveAt(_VerifyResourceIndex);
+                        m_FailureFlag = true;
+                        m_VerifyInfos.RemoveAt(m_VerifyResourceIndex);
                         if (ResourceVerifyFailure != null)
                         {
                             ResourceVerifyFailure(verifyInfo.ResourceName);
                         }
                     }
 
-                    if (length >= _VerifyResourceLengthPerFrame)
+                    if (length >= m_VerifyResourceLengthPerFrame)
                     {
                         return;
                     }
                 }
 
-                _LoadReadWriteVersionListComplete = false;
-                if (_FailureFlag)
+                m_LoadReadWriteVersionListComplete = false;
+                if (m_FailureFlag)
                 {
                     GenerateReadWriteVersionList();
                 }
 
                 if (ResourceVerifyComplete != null)
                 {
-                    ResourceVerifyComplete(!_FailureFlag);
+                    ResourceVerifyComplete(!m_FailureFlag);
                 }
             }
 
@@ -112,11 +112,11 @@ namespace GameFramework.Resource
             /// </summary>
             public void Shutdown()
             {
-                _VerifyInfos.Clear();
-                _LoadReadWriteVersionListComplete = false;
-                _VerifyResourceLengthPerFrame = 0;
-                _VerifyResourceIndex = 0;
-                _FailureFlag = false;
+                m_VerifyInfos.Clear();
+                m_LoadReadWriteVersionListComplete = false;
+                m_VerifyResourceLengthPerFrame = 0;
+                m_VerifyResourceIndex = 0;
+                m_FailureFlag = false;
             }
 
             /// <summary>
@@ -130,25 +130,25 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException("Verify resource count per frame is invalid.");
                 }
 
-                if (_ResourceManager._ResourceHelper == null)
+                if (m_ResourceManager.m_ResourceHelper == null)
                 {
                     throw new GameFrameworkException("Resource helper is invalid.");
                 }
 
-                if (string.IsNullOrEmpty(_ResourceManager._ReadWritePath))
+                if (string.IsNullOrEmpty(m_ResourceManager.m_ReadWritePath))
                 {
                     throw new GameFrameworkException("Read-write path is invalid.");
                 }
 
-                _VerifyResourceLengthPerFrame = verifyResourceLengthPerFrame;
-                _ResourceManager._ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(_ResourceManager._ReadWritePath, LocalVersionListFileName)), new LoadBytesCallbacks(OnLoadReadWriteVersionListSuccess, OnLoadReadWriteVersionListFailure), null);
+                m_VerifyResourceLengthPerFrame = verifyResourceLengthPerFrame;
+                m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadWritePath, LocalVersionListFileName)), new LoadBytesCallbacks(OnLoadReadWriteVersionListSuccess, OnLoadReadWriteVersionListFailure), null);
             }
 
             private bool VerifyResource(VerifyInfo verifyInfo)
             {
                 if (verifyInfo.UseFileSystem)
                 {
-                    IFileSystem fileSystem = _ResourceManager.GetFileSystem(verifyInfo.FileSystemName, false);
+                    IFileSystem fileSystem = m_ResourceManager.GetFileSystem(verifyInfo.FileSystemName, false);
                     string fileName = verifyInfo.ResourceName.FullName;
                     FileSystem.FileInfo fileInfo = fileSystem.GetFileInfo(fileName);
                     if (!fileInfo.IsValid)
@@ -159,28 +159,28 @@ namespace GameFramework.Resource
                     int length = fileInfo.Length;
                     if (length == verifyInfo.Length)
                     {
-                        _ResourceManager.PrepareCachedStream();
-                        fileSystem.ReadFile(fileName, _ResourceManager._CachedStream);
-                        _ResourceManager._CachedStream.Position = 0L;
+                        m_ResourceManager.PrepareCachedStream();
+                        fileSystem.ReadFile(fileName, m_ResourceManager.m_CachedStream);
+                        m_ResourceManager.m_CachedStream.Position = 0L;
                         int hashCode = 0;
                         if (verifyInfo.LoadType == LoadType.LoadFromMemoryAndQuickDecrypt || verifyInfo.LoadType == LoadType.LoadFromMemoryAndDecrypt
                             || verifyInfo.LoadType == LoadType.LoadFromBinaryAndQuickDecrypt || verifyInfo.LoadType == LoadType.LoadFromBinaryAndDecrypt)
                         {
-                            Utility.Converter.GetBytes(verifyInfo.HashCode, _CachedHashBytes);
+                            Utility.Converter.GetBytes(verifyInfo.HashCode, m_CachedHashBytes);
                             if (verifyInfo.LoadType == LoadType.LoadFromMemoryAndQuickDecrypt || verifyInfo.LoadType == LoadType.LoadFromBinaryAndQuickDecrypt)
                             {
-                                hashCode = Utility.Verifier.GetCrc32(_ResourceManager._CachedStream, _CachedHashBytes, Utility.Encryption.QuickEncryptLength);
+                                hashCode = Utility.Verifier.GetCrc32(m_ResourceManager.m_CachedStream, m_CachedHashBytes, Utility.Encryption.QuickEncryptLength);
                             }
                             else if (verifyInfo.LoadType == LoadType.LoadFromMemoryAndDecrypt || verifyInfo.LoadType == LoadType.LoadFromBinaryAndDecrypt)
                             {
-                                hashCode = Utility.Verifier.GetCrc32(_ResourceManager._CachedStream, _CachedHashBytes, length);
+                                hashCode = Utility.Verifier.GetCrc32(m_ResourceManager.m_CachedStream, m_CachedHashBytes, length);
                             }
 
-                            Array.Clear(_CachedHashBytes, 0, CachedHashBytesLength);
+                            Array.Clear(m_CachedHashBytes, 0, CachedHashBytesLength);
                         }
                         else
                         {
-                            hashCode = Utility.Verifier.GetCrc32(_ResourceManager._CachedStream);
+                            hashCode = Utility.Verifier.GetCrc32(m_ResourceManager.m_CachedStream);
                         }
 
                         if (hashCode == verifyInfo.HashCode)
@@ -194,7 +194,7 @@ namespace GameFramework.Resource
                 }
                 else
                 {
-                    string resourcePath = Utility.Path.GetRegularPath(Path.Combine(_ResourceManager.ReadWritePath, verifyInfo.ResourceName.FullName));
+                    string resourcePath = Utility.Path.GetRegularPath(Path.Combine(m_ResourceManager.ReadWritePath, verifyInfo.ResourceName.FullName));
                     if (!File.Exists(resourcePath))
                     {
                         return false;
@@ -209,17 +209,17 @@ namespace GameFramework.Resource
                             if (verifyInfo.LoadType == LoadType.LoadFromMemoryAndQuickDecrypt || verifyInfo.LoadType == LoadType.LoadFromMemoryAndDecrypt
                                 || verifyInfo.LoadType == LoadType.LoadFromBinaryAndQuickDecrypt || verifyInfo.LoadType == LoadType.LoadFromBinaryAndDecrypt)
                             {
-                                Utility.Converter.GetBytes(verifyInfo.HashCode, _CachedHashBytes);
+                                Utility.Converter.GetBytes(verifyInfo.HashCode, m_CachedHashBytes);
                                 if (verifyInfo.LoadType == LoadType.LoadFromMemoryAndQuickDecrypt || verifyInfo.LoadType == LoadType.LoadFromBinaryAndQuickDecrypt)
                                 {
-                                    hashCode = Utility.Verifier.GetCrc32(fileStream, _CachedHashBytes, Utility.Encryption.QuickEncryptLength);
+                                    hashCode = Utility.Verifier.GetCrc32(fileStream, m_CachedHashBytes, Utility.Encryption.QuickEncryptLength);
                                 }
                                 else if (verifyInfo.LoadType == LoadType.LoadFromMemoryAndDecrypt || verifyInfo.LoadType == LoadType.LoadFromBinaryAndDecrypt)
                                 {
-                                    hashCode = Utility.Verifier.GetCrc32(fileStream, _CachedHashBytes, length);
+                                    hashCode = Utility.Verifier.GetCrc32(fileStream, m_CachedHashBytes, length);
                                 }
 
-                                Array.Clear(_CachedHashBytes, 0, CachedHashBytesLength);
+                                Array.Clear(m_CachedHashBytes, 0, CachedHashBytesLength);
                             }
                             else
                             {
@@ -240,18 +240,18 @@ namespace GameFramework.Resource
 
             private void GenerateReadWriteVersionList()
             {
-                string readWriteVersionListFileName = Utility.Path.GetRegularPath(Path.Combine(_ResourceManager._ReadWritePath, LocalVersionListFileName));
+                string readWriteVersionListFileName = Utility.Path.GetRegularPath(Path.Combine(m_ResourceManager.m_ReadWritePath, LocalVersionListFileName));
                 string readWriteVersionListTempFileName = Utility.Text.Format("{0}.{1}", readWriteVersionListFileName, TempExtension);
                 SortedDictionary<string, List<int>> cachedFileSystemsForGenerateReadWriteVersionList = new SortedDictionary<string, List<int>>(StringComparer.Ordinal);
                 FileStream fileStream = null;
                 try
                 {
                     fileStream = new FileStream(readWriteVersionListTempFileName, FileMode.Create, FileAccess.Write);
-                    LocalVersionList.Resource[] resources = _VerifyInfos.Count > 0 ? new LocalVersionList.Resource[_VerifyInfos.Count] : null;
+                    LocalVersionList.Resource[] resources = m_VerifyInfos.Count > 0 ? new LocalVersionList.Resource[m_VerifyInfos.Count] : null;
                     if (resources != null)
                     {
                         int index = 0;
-                        foreach (VerifyInfo i in _VerifyInfos)
+                        foreach (VerifyInfo i in m_VerifyInfos)
                         {
                             resources[index] = new LocalVersionList.Resource(i.ResourceName.Name, i.ResourceName.Variant, i.ResourceName.Extension, (byte)i.LoadType, i.Length, i.HashCode);
                             if (i.UseFileSystem)
@@ -282,7 +282,7 @@ namespace GameFramework.Resource
                     }
 
                     LocalVersionList versionList = new LocalVersionList(resources, fileSystems);
-                    if (!_ResourceManager._ReadWriteVersionListSerializer.Serialize(fileStream, versionList))
+                    if (!m_ResourceManager.m_ReadWriteVersionListSerializer.Serialize(fileStream, versionList))
                     {
                         throw new GameFrameworkException("Serialize read-write version list failure.");
                     }
@@ -323,7 +323,7 @@ namespace GameFramework.Resource
                 try
                 {
                     memoryStream = new MemoryStream(bytes, false);
-                    LocalVersionList versionList = _ResourceManager._ReadWriteVersionListSerializer.Deserialize(memoryStream);
+                    LocalVersionList versionList = m_ResourceManager.m_ReadWriteVersionListSerializer.Deserialize(memoryStream);
                     if (!versionList.IsValid)
                     {
                         throw new GameFrameworkException("Deserialize read write version list failure.");
@@ -349,13 +349,13 @@ namespace GameFramework.Resource
                         string fileSystemName = null;
                         resourceInFileSystemNames.TryGetValue(resourceName, out fileSystemName);
                         totalLength += resource.Length;
-                        _VerifyInfos.Add(new VerifyInfo(resourceName, fileSystemName, (LoadType)resource.LoadType, resource.Length, resource.HashCode));
+                        m_VerifyInfos.Add(new VerifyInfo(resourceName, fileSystemName, (LoadType)resource.LoadType, resource.Length, resource.HashCode));
                     }
 
-                    _LoadReadWriteVersionListComplete = true;
+                    m_LoadReadWriteVersionListComplete = true;
                     if (ResourceVerifyStart != null)
                     {
-                        ResourceVerifyStart(_VerifyInfos.Count, totalLength);
+                        ResourceVerifyStart(m_VerifyInfos.Count, totalLength);
                     }
                 }
                 catch (Exception exception)

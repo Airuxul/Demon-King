@@ -15,22 +15,22 @@ namespace GameFramework.Network
         private sealed class ReceiveState : IDisposable
         {
             private const int DefaultBufferLength = 1024 * 64;
-            private MemoryStream _Stream;
-            private IPacketHeader _PacketHeader;
-            private bool _Disposed;
+            private MemoryStream m_Stream;
+            private IPacketHeader m_PacketHeader;
+            private bool m_Disposed;
 
             public ReceiveState()
             {
-                _Stream = new MemoryStream(DefaultBufferLength);
-                _PacketHeader = null;
-                _Disposed = false;
+                m_Stream = new MemoryStream(DefaultBufferLength);
+                m_PacketHeader = null;
+                m_Disposed = false;
             }
 
             public MemoryStream Stream
             {
                 get
                 {
-                    return _Stream;
+                    return m_Stream;
                 }
             }
 
@@ -38,7 +38,7 @@ namespace GameFramework.Network
             {
                 get
                 {
-                    return _PacketHeader;
+                    return m_PacketHeader;
                 }
             }
 
@@ -65,21 +65,21 @@ namespace GameFramework.Network
 
             private void Dispose(bool disposing)
             {
-                if (_Disposed)
+                if (m_Disposed)
                 {
                     return;
                 }
 
                 if (disposing)
                 {
-                    if (_Stream != null)
+                    if (m_Stream != null)
                     {
-                        _Stream.Dispose();
-                        _Stream = null;
+                        m_Stream.Dispose();
+                        m_Stream = null;
                     }
                 }
 
-                _Disposed = true;
+                m_Disposed = true;
             }
 
             private void Reset(int targetLength, IPacketHeader packetHeader)
@@ -89,9 +89,9 @@ namespace GameFramework.Network
                     throw new GameFrameworkException("Target length is invalid.");
                 }
 
-                _Stream.Position = 0L;
-                _Stream.SetLength(targetLength);
-                _PacketHeader = packetHeader;
+                m_Stream.Position = 0L;
+                m_Stream.SetLength(targetLength);
+                m_PacketHeader = packetHeader;
             }
         }
     }

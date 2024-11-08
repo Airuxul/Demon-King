@@ -16,18 +16,18 @@ namespace GameFramework.Config
     /// </summary>
     internal sealed partial class ConfigManager : GameFrameworkModule, IConfigManager
     {
-        private readonly Dictionary<string, ConfigData> _ConfigDatas;
-        private readonly DataProvider<IConfigManager> _DataProvider;
-        private IConfigHelper _ConfigHelper;
+        private readonly Dictionary<string, ConfigData> m_ConfigDatas;
+        private readonly DataProvider<IConfigManager> m_DataProvider;
+        private IConfigHelper m_ConfigHelper;
 
         /// <summary>
         /// 初始化全局配置管理器的新实例。
         /// </summary>
         public ConfigManager()
         {
-            _ConfigDatas = new Dictionary<string, ConfigData>(StringComparer.Ordinal);
-            _DataProvider = new DataProvider<IConfigManager>(this);
-            _ConfigHelper = null;
+            m_ConfigDatas = new Dictionary<string, ConfigData>(StringComparer.Ordinal);
+            m_DataProvider = new DataProvider<IConfigManager>(this);
+            m_ConfigHelper = null;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace GameFramework.Config
         {
             get
             {
-                return _ConfigDatas.Count;
+                return m_ConfigDatas.Count;
             }
         }
 
@@ -59,11 +59,11 @@ namespace GameFramework.Config
         {
             add
             {
-                _DataProvider.ReadDataSuccess += value;
+                m_DataProvider.ReadDataSuccess += value;
             }
             remove
             {
-                _DataProvider.ReadDataSuccess -= value;
+                m_DataProvider.ReadDataSuccess -= value;
             }
         }
 
@@ -74,11 +74,11 @@ namespace GameFramework.Config
         {
             add
             {
-                _DataProvider.ReadDataFailure += value;
+                m_DataProvider.ReadDataFailure += value;
             }
             remove
             {
-                _DataProvider.ReadDataFailure -= value;
+                m_DataProvider.ReadDataFailure -= value;
             }
         }
 
@@ -89,11 +89,11 @@ namespace GameFramework.Config
         {
             add
             {
-                _DataProvider.ReadDataUpdate += value;
+                m_DataProvider.ReadDataUpdate += value;
             }
             remove
             {
-                _DataProvider.ReadDataUpdate -= value;
+                m_DataProvider.ReadDataUpdate -= value;
             }
         }
 
@@ -104,11 +104,11 @@ namespace GameFramework.Config
         {
             add
             {
-                _DataProvider.ReadDataDependencyAsset += value;
+                m_DataProvider.ReadDataDependencyAsset += value;
             }
             remove
             {
-                _DataProvider.ReadDataDependencyAsset -= value;
+                m_DataProvider.ReadDataDependencyAsset -= value;
             }
         }
 
@@ -134,7 +134,7 @@ namespace GameFramework.Config
         /// <param name="resourceManager">资源管理器。</param>
         public void SetResourceManager(IResourceManager resourceManager)
         {
-            _DataProvider.SetResourceManager(resourceManager);
+            m_DataProvider.SetResourceManager(resourceManager);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace GameFramework.Config
         /// <param name="dataProviderHelper">全局配置数据提供者辅助器。</param>
         public void SetDataProviderHelper(IDataProviderHelper<IConfigManager> dataProviderHelper)
         {
-            _DataProvider.SetDataProviderHelper(dataProviderHelper);
+            m_DataProvider.SetDataProviderHelper(dataProviderHelper);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace GameFramework.Config
                 throw new GameFrameworkException("Config helper is invalid.");
             }
 
-            _ConfigHelper = configHelper;
+            m_ConfigHelper = configHelper;
         }
 
         /// <summary>
@@ -183,7 +183,7 @@ namespace GameFramework.Config
         /// <param name="configAssetName">全局配置资源名称。</param>
         public void ReadData(string configAssetName)
         {
-            _DataProvider.ReadData(configAssetName);
+            m_DataProvider.ReadData(configAssetName);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace GameFramework.Config
         /// <param name="priority">加载全局配置资源的优先级。</param>
         public void ReadData(string configAssetName, int priority)
         {
-            _DataProvider.ReadData(configAssetName, priority);
+            m_DataProvider.ReadData(configAssetName, priority);
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace GameFramework.Config
         /// <param name="userData">用户自定义数据。</param>
         public void ReadData(string configAssetName, object userData)
         {
-            _DataProvider.ReadData(configAssetName, userData);
+            m_DataProvider.ReadData(configAssetName, userData);
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace GameFramework.Config
         /// <param name="userData">用户自定义数据。</param>
         public void ReadData(string configAssetName, int priority, object userData)
         {
-            _DataProvider.ReadData(configAssetName, priority, userData);
+            m_DataProvider.ReadData(configAssetName, priority, userData);
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace GameFramework.Config
         /// <returns>是否解析全局配置成功。</returns>
         public bool ParseData(string configString)
         {
-            return _DataProvider.ParseData(configString);
+            return m_DataProvider.ParseData(configString);
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace GameFramework.Config
         /// <returns>是否解析全局配置成功。</returns>
         public bool ParseData(string configString, object userData)
         {
-            return _DataProvider.ParseData(configString, userData);
+            return m_DataProvider.ParseData(configString, userData);
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace GameFramework.Config
         /// <returns>是否解析全局配置成功。</returns>
         public bool ParseData(byte[] configBytes)
         {
-            return _DataProvider.ParseData(configBytes);
+            return m_DataProvider.ParseData(configBytes);
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace GameFramework.Config
         /// <returns>是否解析全局配置成功。</returns>
         public bool ParseData(byte[] configBytes, object userData)
         {
-            return _DataProvider.ParseData(configBytes, userData);
+            return m_DataProvider.ParseData(configBytes, userData);
         }
 
         /// <summary>
@@ -268,7 +268,7 @@ namespace GameFramework.Config
         /// <returns>是否解析全局配置成功。</returns>
         public bool ParseData(byte[] configBytes, int startIndex, int length)
         {
-            return _DataProvider.ParseData(configBytes, startIndex, length);
+            return m_DataProvider.ParseData(configBytes, startIndex, length);
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace GameFramework.Config
         /// <returns>是否解析全局配置成功。</returns>
         public bool ParseData(byte[] configBytes, int startIndex, int length, object userData)
         {
-            return _DataProvider.ParseData(configBytes, startIndex, length, userData);
+            return m_DataProvider.ParseData(configBytes, startIndex, length, userData);
         }
 
         /// <summary>
@@ -442,7 +442,7 @@ namespace GameFramework.Config
                 return false;
             }
 
-            _ConfigDatas.Add(configName, new ConfigData(boolValue, intValue, floatValue, stringValue));
+            m_ConfigDatas.Add(configName, new ConfigData(boolValue, intValue, floatValue, stringValue));
             return true;
         }
 
@@ -457,7 +457,7 @@ namespace GameFramework.Config
                 return false;
             }
 
-            return _ConfigDatas.Remove(configName);
+            return m_ConfigDatas.Remove(configName);
         }
 
         /// <summary>
@@ -465,7 +465,7 @@ namespace GameFramework.Config
         /// </summary>
         public void RemoveAllConfigs()
         {
-            _ConfigDatas.Clear();
+            m_ConfigDatas.Clear();
         }
 
         private ConfigData? GetConfigData(string configName)
@@ -476,7 +476,7 @@ namespace GameFramework.Config
             }
 
             ConfigData configData = default(ConfigData);
-            if (_ConfigDatas.TryGetValue(configName, out configData))
+            if (m_ConfigDatas.TryGetValue(configName, out configData))
             {
                 return configData;
             }

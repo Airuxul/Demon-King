@@ -15,8 +15,8 @@ namespace GameFramework.DataTable
     /// </summary>
     public abstract class DataTableBase : IDataProvider<DataTableBase>
     {
-        private readonly string _Name;
-        private readonly DataProvider<DataTableBase> _DataProvider;
+        private readonly string m_Name;
+        private readonly DataProvider<DataTableBase> m_DataProvider;
 
         /// <summary>
         /// 初始化数据表基类的新实例。
@@ -32,8 +32,8 @@ namespace GameFramework.DataTable
         /// <param name="name">数据表名称。</param>
         public DataTableBase(string name)
         {
-            _Name = name ?? string.Empty;
-            _DataProvider = new DataProvider<DataTableBase>(this);
+            m_Name = name ?? string.Empty;
+            m_DataProvider = new DataProvider<DataTableBase>(this);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace GameFramework.DataTable
         {
             get
             {
-                return _Name;
+                return m_Name;
             }
         }
 
@@ -54,7 +54,7 @@ namespace GameFramework.DataTable
         {
             get
             {
-                return new TypeNamePair(Type, _Name).ToString();
+                return new TypeNamePair(Type, m_Name).ToString();
             }
         }
 
@@ -81,11 +81,11 @@ namespace GameFramework.DataTable
         {
             add
             {
-                _DataProvider.ReadDataSuccess += value;
+                m_DataProvider.ReadDataSuccess += value;
             }
             remove
             {
-                _DataProvider.ReadDataSuccess -= value;
+                m_DataProvider.ReadDataSuccess -= value;
             }
         }
 
@@ -96,11 +96,11 @@ namespace GameFramework.DataTable
         {
             add
             {
-                _DataProvider.ReadDataFailure += value;
+                m_DataProvider.ReadDataFailure += value;
             }
             remove
             {
-                _DataProvider.ReadDataFailure -= value;
+                m_DataProvider.ReadDataFailure -= value;
             }
         }
 
@@ -111,11 +111,11 @@ namespace GameFramework.DataTable
         {
             add
             {
-                _DataProvider.ReadDataUpdate += value;
+                m_DataProvider.ReadDataUpdate += value;
             }
             remove
             {
-                _DataProvider.ReadDataUpdate -= value;
+                m_DataProvider.ReadDataUpdate -= value;
             }
         }
 
@@ -126,11 +126,11 @@ namespace GameFramework.DataTable
         {
             add
             {
-                _DataProvider.ReadDataDependencyAsset += value;
+                m_DataProvider.ReadDataDependencyAsset += value;
             }
             remove
             {
-                _DataProvider.ReadDataDependencyAsset -= value;
+                m_DataProvider.ReadDataDependencyAsset -= value;
             }
         }
 
@@ -140,7 +140,7 @@ namespace GameFramework.DataTable
         /// <param name="dataTableAssetName">数据表资源名称。</param>
         public void ReadData(string dataTableAssetName)
         {
-            _DataProvider.ReadData(dataTableAssetName);
+            m_DataProvider.ReadData(dataTableAssetName);
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace GameFramework.DataTable
         /// <param name="priority">加载数据表资源的优先级。</param>
         public void ReadData(string dataTableAssetName, int priority)
         {
-            _DataProvider.ReadData(dataTableAssetName, priority);
+            m_DataProvider.ReadData(dataTableAssetName, priority);
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace GameFramework.DataTable
         /// <param name="userData">用户自定义数据。</param>
         public void ReadData(string dataTableAssetName, object userData)
         {
-            _DataProvider.ReadData(dataTableAssetName, userData);
+            m_DataProvider.ReadData(dataTableAssetName, userData);
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace GameFramework.DataTable
         /// <param name="userData">用户自定义数据。</param>
         public void ReadData(string dataTableAssetName, int priority, object userData)
         {
-            _DataProvider.ReadData(dataTableAssetName, priority, userData);
+            m_DataProvider.ReadData(dataTableAssetName, priority, userData);
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace GameFramework.DataTable
         /// <returns>是否解析数据表成功。</returns>
         public bool ParseData(string dataTableString)
         {
-            return _DataProvider.ParseData(dataTableString);
+            return m_DataProvider.ParseData(dataTableString);
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace GameFramework.DataTable
         /// <returns>是否解析数据表成功。</returns>
         public bool ParseData(string dataTableString, object userData)
         {
-            return _DataProvider.ParseData(dataTableString, userData);
+            return m_DataProvider.ParseData(dataTableString, userData);
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace GameFramework.DataTable
         /// <returns>是否解析数据表成功。</returns>
         public bool ParseData(byte[] dataTableBytes)
         {
-            return _DataProvider.ParseData(dataTableBytes);
+            return m_DataProvider.ParseData(dataTableBytes);
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace GameFramework.DataTable
         /// <returns>是否解析数据表成功。</returns>
         public bool ParseData(byte[] dataTableBytes, object userData)
         {
-            return _DataProvider.ParseData(dataTableBytes, userData);
+            return m_DataProvider.ParseData(dataTableBytes, userData);
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace GameFramework.DataTable
         /// <returns>是否解析数据表成功。</returns>
         public bool ParseData(byte[] dataTableBytes, int startIndex, int length)
         {
-            return _DataProvider.ParseData(dataTableBytes, startIndex, length);
+            return m_DataProvider.ParseData(dataTableBytes, startIndex, length);
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace GameFramework.DataTable
         /// <returns>是否解析数据表成功。</returns>
         public bool ParseData(byte[] dataTableBytes, int startIndex, int length, object userData)
         {
-            return _DataProvider.ParseData(dataTableBytes, startIndex, length, userData);
+            return m_DataProvider.ParseData(dataTableBytes, startIndex, length, userData);
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace GameFramework.DataTable
         /// <param name="resourceManager">资源管理器。</param>
         internal void SetResourceManager(IResourceManager resourceManager)
         {
-            _DataProvider.SetResourceManager(resourceManager);
+            m_DataProvider.SetResourceManager(resourceManager);
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace GameFramework.DataTable
         /// <param name="dataProviderHelper">数据提供者辅助器。</param>
         internal void SetDataProviderHelper(IDataProviderHelper<DataTableBase> dataProviderHelper)
         {
-            _DataProvider.SetDataProviderHelper(dataProviderHelper);
+            m_DataProvider.SetDataProviderHelper(dataProviderHelper);
         }
 
         /// <summary>

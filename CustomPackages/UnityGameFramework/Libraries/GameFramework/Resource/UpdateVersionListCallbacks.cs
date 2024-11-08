@@ -12,8 +12,8 @@ namespace GameFramework.Resource
     /// </summary>
     public sealed class UpdateVersionListCallbacks
     {
-        private readonly UpdateVersionListSuccessCallback _UpdateVersionListSuccessCallback;
-        private readonly UpdateVersionListFailureCallback _UpdateVersionListFailureCallback;
+        private readonly UpdateVersionListSuccessCallback m_UpdateVersionListSuccessCallback;
+        private readonly UpdateVersionListFailureCallback m_UpdateVersionListFailureCallback;
 
         /// <summary>
         /// 初始化版本资源列表更新回调函数集的新实例。
@@ -36,8 +36,8 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException("Update version list success callback is invalid.");
             }
 
-            _UpdateVersionListSuccessCallback = updateVersionListSuccessCallback;
-            _UpdateVersionListFailureCallback = updateVersionListFailureCallback;
+            m_UpdateVersionListSuccessCallback = updateVersionListSuccessCallback;
+            m_UpdateVersionListFailureCallback = updateVersionListFailureCallback;
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return _UpdateVersionListSuccessCallback;
+                return m_UpdateVersionListSuccessCallback;
             }
         }
 
@@ -58,7 +58,7 @@ namespace GameFramework.Resource
         {
             get
             {
-                return _UpdateVersionListFailureCallback;
+                return m_UpdateVersionListFailureCallback;
             }
         }
     }

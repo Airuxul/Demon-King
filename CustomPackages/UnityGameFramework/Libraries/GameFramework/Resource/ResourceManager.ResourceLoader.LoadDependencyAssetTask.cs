@@ -13,11 +13,11 @@ namespace GameFramework.Resource
         {
             private sealed class LoadDependencyAssetTask : LoadResourceTaskBase
             {
-                private LoadResourceTaskBase _MainTask;
+                private LoadResourceTaskBase m_MainTask;
 
                 public LoadDependencyAssetTask()
                 {
-                    _MainTask = null;
+                    m_MainTask = null;
                 }
 
                 public override bool IsScene
@@ -32,27 +32,27 @@ namespace GameFramework.Resource
                 {
                     LoadDependencyAssetTask loadDependencyAssetTask = ReferencePool.Acquire<LoadDependencyAssetTask>();
                     loadDependencyAssetTask.Initialize(assetName, null, priority, resourceInfo, dependencyAssetNames, userData);
-                    loadDependencyAssetTask._MainTask = mainTask;
-                    loadDependencyAssetTask._MainTask.TotalDependencyAssetCount++;
+                    loadDependencyAssetTask.m_MainTask = mainTask;
+                    loadDependencyAssetTask.m_MainTask.TotalDependencyAssetCount++;
                     return loadDependencyAssetTask;
                 }
 
                 public override void Clear()
                 {
                     base.Clear();
-                    _MainTask = null;
+                    m_MainTask = null;
                 }
 
                 public override void OnLoadAssetSuccess(LoadResourceAgent agent, object asset, float duration)
                 {
                     base.OnLoadAssetSuccess(agent, asset, duration);
-                    _MainTask.OnLoadDependencyAsset(agent, AssetName, asset);
+                    m_MainTask.OnLoadDependencyAsset(agent, AssetName, asset);
                 }
 
                 public override void OnLoadAssetFailure(LoadResourceAgent agent, LoadResourceStatus status, string errorMessage)
                 {
                     base.OnLoadAssetFailure(agent, status, errorMessage);
-                    _MainTask.OnLoadAssetFailure(agent, LoadResourceStatus.DependencyError, Utility.Text.Format("Can not load dependency asset '{0}', internal status '{1}', internal error message '{2}'.", AssetName, status, errorMessage));
+                    m_MainTask.OnLoadAssetFailure(agent, LoadResourceStatus.DependencyError, Utility.Text.Format("Can not load dependency asset '{0}', internal status '{1}', internal error message '{2}'.", AssetName, status, errorMessage));
                 }
             }
         }

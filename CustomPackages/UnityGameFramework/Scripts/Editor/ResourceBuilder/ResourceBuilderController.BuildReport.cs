@@ -22,25 +22,25 @@ namespace UnityGameFramework.Editor.ResourceTools
             private const string BuildReportName = "BuildReport.xml";
             private const string BuildLogName = "BuildLog.txt";
 
-            private string _BuildReportName = null;
-            private string _BuildLogName = null;
-            private string _ProductName = null;
-            private string _CompanyName = null;
-            private string _GameIdentifier = null;
-            private string _GameFrameworkVersion = null;
-            private string _UnityVersion = null;
-            private string _ApplicableGameVersion = null;
-            private int _InternalResourceVersion = 0;
-            private Platform _Platforms = Platform.Undefined;
-            private AssetBundleCompressionType _AssetBundleCompression;
-            private string _CompressionHelperTypeName;
-            private bool _AdditionalCompressionSelected = false;
-            private bool _ForceRebuildAssetBundleSelected = false;
-            private string _BuildEventHandlerTypeName;
-            private string _OutputDirectory;
-            private BuildAssetBundleOptions _BuildAssetBundleOptions = BuildAssetBundleOptions.None;
-            private StringBuilder _LogBuilder = null;
-            private SortedDictionary<string, ResourceData> _ResourceDatas = null;
+            private string m_BuildReportName = null;
+            private string m_BuildLogName = null;
+            private string m_ProductName = null;
+            private string m_CompanyName = null;
+            private string m_GameIdentifier = null;
+            private string m_GameFrameworkVersion = null;
+            private string m_UnityVersion = null;
+            private string m_ApplicableGameVersion = null;
+            private int m_InternalResourceVersion = 0;
+            private Platform m_Platforms = Platform.Undefined;
+            private AssetBundleCompressionType m_AssetBundleCompression;
+            private string m_CompressionHelperTypeName;
+            private bool m_AdditionalCompressionSelected = false;
+            private bool m_ForceRebuildAssetBundleSelected = false;
+            private string m_BuildEventHandlerTypeName;
+            private string m_OutputDirectory;
+            private BuildAssetBundleOptions m_BuildAssetBundleOptions = BuildAssetBundleOptions.None;
+            private StringBuilder m_LogBuilder = null;
+            private SortedDictionary<string, ResourceData> m_ResourceDatas = null;
 
             public void Initialize(string buildReportPath, string productName, string companyName, string gameIdentifier, string gameFrameworkVersion, string unityVersion, string applicableGameVersion, int internalResourceVersion,
                 Platform platforms, AssetBundleCompressionType assetBundleCompression, string compressionHelperTypeName, bool additionalCompressionSelected, bool forceRebuildAssetBundleSelected, string buildEventHandlerTypeName, string outputDirectory, BuildAssetBundleOptions buildAssetBundleOptions, SortedDictionary<string, ResourceData> resourceDatas)
@@ -50,25 +50,25 @@ namespace UnityGameFramework.Editor.ResourceTools
                     throw new GameFrameworkException("Build report path is invalid.");
                 }
 
-                _BuildReportName = Utility.Path.GetRegularPath(Path.Combine(buildReportPath, BuildReportName));
-                _BuildLogName = Utility.Path.GetRegularPath(Path.Combine(buildReportPath, BuildLogName));
-                _ProductName = productName;
-                _CompanyName = companyName;
-                _GameIdentifier = gameIdentifier;
-                _GameFrameworkVersion = gameFrameworkVersion;
-                _UnityVersion = unityVersion;
-                _ApplicableGameVersion = applicableGameVersion;
-                _InternalResourceVersion = internalResourceVersion;
-                _Platforms = platforms;
-                _AssetBundleCompression = assetBundleCompression;
-                _CompressionHelperTypeName = compressionHelperTypeName;
-                _AdditionalCompressionSelected = additionalCompressionSelected;
-                _ForceRebuildAssetBundleSelected = forceRebuildAssetBundleSelected;
-                _BuildEventHandlerTypeName = buildEventHandlerTypeName;
-                _OutputDirectory = outputDirectory;
-                _BuildAssetBundleOptions = buildAssetBundleOptions;
-                _LogBuilder = new StringBuilder();
-                _ResourceDatas = resourceDatas;
+                m_BuildReportName = Utility.Path.GetRegularPath(Path.Combine(buildReportPath, BuildReportName));
+                m_BuildLogName = Utility.Path.GetRegularPath(Path.Combine(buildReportPath, BuildLogName));
+                m_ProductName = productName;
+                m_CompanyName = companyName;
+                m_GameIdentifier = gameIdentifier;
+                m_GameFrameworkVersion = gameFrameworkVersion;
+                m_UnityVersion = unityVersion;
+                m_ApplicableGameVersion = applicableGameVersion;
+                m_InternalResourceVersion = internalResourceVersion;
+                m_Platforms = platforms;
+                m_AssetBundleCompression = assetBundleCompression;
+                m_CompressionHelperTypeName = compressionHelperTypeName;
+                m_AdditionalCompressionSelected = additionalCompressionSelected;
+                m_ForceRebuildAssetBundleSelected = forceRebuildAssetBundleSelected;
+                m_BuildEventHandlerTypeName = buildEventHandlerTypeName;
+                m_OutputDirectory = outputDirectory;
+                m_BuildAssetBundleOptions = buildAssetBundleOptions;
+                m_LogBuilder = new StringBuilder();
+                m_ResourceDatas = resourceDatas;
             }
 
             public void LogInfo(string format, params object[] args)
@@ -109,57 +109,57 @@ namespace UnityGameFramework.Editor.ResourceTools
                 xmlBuildReport.AppendChild(xmlSummary);
 
                 xmlElement = xmlDocument.CreateElement("ProductName");
-                xmlElement.InnerText = _ProductName;
+                xmlElement.InnerText = m_ProductName;
                 xmlSummary.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("CompanyName");
-                xmlElement.InnerText = _CompanyName;
+                xmlElement.InnerText = m_CompanyName;
                 xmlSummary.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("GameIdentifier");
-                xmlElement.InnerText = _GameIdentifier;
+                xmlElement.InnerText = m_GameIdentifier;
                 xmlSummary.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("GameFrameworkVersion");
-                xmlElement.InnerText = _GameFrameworkVersion;
+                xmlElement.InnerText = m_GameFrameworkVersion;
                 xmlSummary.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("UnityVersion");
-                xmlElement.InnerText = _UnityVersion;
+                xmlElement.InnerText = m_UnityVersion;
                 xmlSummary.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("ApplicableGameVersion");
-                xmlElement.InnerText = _ApplicableGameVersion;
+                xmlElement.InnerText = m_ApplicableGameVersion;
                 xmlSummary.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("InternalResourceVersion");
-                xmlElement.InnerText = _InternalResourceVersion.ToString();
+                xmlElement.InnerText = m_InternalResourceVersion.ToString();
                 xmlSummary.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("Platforms");
-                xmlElement.InnerText = _Platforms.ToString();
+                xmlElement.InnerText = m_Platforms.ToString();
                 xmlSummary.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("AssetBundleCompression");
-                xmlElement.InnerText = _AssetBundleCompression.ToString();
+                xmlElement.InnerText = m_AssetBundleCompression.ToString();
                 xmlSummary.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("CompressionHelperTypeName");
-                xmlElement.InnerText = _CompressionHelperTypeName;
+                xmlElement.InnerText = m_CompressionHelperTypeName;
                 xmlSummary.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("AdditionalCompressionSelected");
-                xmlElement.InnerText = _AdditionalCompressionSelected.ToString();
+                xmlElement.InnerText = m_AdditionalCompressionSelected.ToString();
                 xmlSummary.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("ForceRebuildAssetBundleSelected");
-                xmlElement.InnerText = _ForceRebuildAssetBundleSelected.ToString();
+                xmlElement.InnerText = m_ForceRebuildAssetBundleSelected.ToString();
                 xmlSummary.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("BuildEventHandlerTypeName");
-                xmlElement.InnerText = _BuildEventHandlerTypeName;
+                xmlElement.InnerText = m_BuildEventHandlerTypeName;
                 xmlSummary.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("OutputDirectory");
-                xmlElement.InnerText = _OutputDirectory;
+                xmlElement.InnerText = m_OutputDirectory;
                 xmlSummary.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("BuildAssetBundleOptions");
-                xmlElement.InnerText = _BuildAssetBundleOptions.ToString();
+                xmlElement.InnerText = m_BuildAssetBundleOptions.ToString();
                 xmlSummary.AppendChild(xmlElement);
 
                 XmlElement xmlResources = xmlDocument.CreateElement("Resources");
                 xmlAttribute = xmlDocument.CreateAttribute("Count");
-                xmlAttribute.Value = _ResourceDatas.Count.ToString();
+                xmlAttribute.Value = m_ResourceDatas.Count.ToString();
                 xmlResources.Attributes.SetNamedItem(xmlAttribute);
                 xmlBuildReport.AppendChild(xmlResources);
-                foreach (ResourceData resourceData in _ResourceDatas.Values)
+                foreach (ResourceData resourceData in m_ResourceDatas.Values)
                 {
                     XmlElement xmlResource = xmlDocument.CreateElement("Resource");
                     xmlAttribute = xmlDocument.CreateAttribute("Name");
@@ -261,15 +261,15 @@ namespace UnityGameFramework.Editor.ResourceTools
                     }
                 }
 
-                xmlDocument.Save(_BuildReportName);
-                File.WriteAllText(_BuildLogName, _LogBuilder.ToString());
+                xmlDocument.Save(m_BuildReportName);
+                File.WriteAllText(m_BuildLogName, m_LogBuilder.ToString());
             }
 
             private void LogInternal(string type, string format, object[] args)
             {
-                _LogBuilder.AppendFormat("[{0:HH:mm:ss.fff}][{1}] ", DateTime.UtcNow.ToLocalTime(), type);
-                _LogBuilder.AppendFormat(format, args);
-                _LogBuilder.AppendLine();
+                m_LogBuilder.AppendFormat("[{0:HH:mm:ss.fff}][{1}] ", DateTime.UtcNow.ToLocalTime(), type);
+                m_LogBuilder.AppendFormat(format, args);
+                m_LogBuilder.AppendLine();
             }
         }
     }

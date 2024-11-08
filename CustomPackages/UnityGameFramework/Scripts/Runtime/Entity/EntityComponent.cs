@@ -12,7 +12,6 @@ using GameFramework.Resource;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -25,44 +24,56 @@ namespace UnityGameFramework.Runtime
     {
         private const int DefaultPriority = 0;
 
-        private IEntityManager _entityManager = null;
-        private EventComponent _eventComponent = null;
+        private IEntityManager m_EntityManager = null;
+        private EventComponent m_EventComponent = null;
 
-        private readonly List<IEntity> _internalEntityResults = new List<IEntity>();
+        private readonly List<IEntity> m_InternalEntityResults = new List<IEntity>();
 
-        [FormerlySerializedAs("_EnableShowEntityUpdateEvent")] [SerializeField]
-        private bool enableShowEntityUpdateEvent = false;
+        [SerializeField]
+        private bool m_EnableShowEntityUpdateEvent = false;
 
-        [FormerlySerializedAs("_EnableShowEntityDependencyAssetEvent")] [SerializeField]
-        private bool enableShowEntityDependencyAssetEvent = false;
+        [SerializeField]
+        private bool m_EnableShowEntityDependencyAssetEvent = false;
 
-        [FormerlySerializedAs("_InstanceRoot")] [SerializeField]
-        private Transform instanceRoot = null;
+        [SerializeField]
+        private Transform m_InstanceRoot = null;
 
-        [FormerlySerializedAs("_EntityHelperTypeName")] [SerializeField]
-        private string entityHelperTypeName = "UnityGameFramework.Runtime.DefaultEntityHelper";
+        [SerializeField]
+        private string m_EntityHelperTypeName = "UnityGameFramework.Runtime.DefaultEntityHelper";
 
-        [FormerlySerializedAs("_CustomEntityHelper")] [SerializeField]
-        private EntityHelperBase customEntityHelper = null;
+        [SerializeField]
+        private EntityHelperBase m_CustomEntityHelper = null;
 
-        [FormerlySerializedAs("_EntityGroupHelperTypeName")] [SerializeField]
-        private string entityGroupHelperTypeName = "UnityGameFramework.Runtime.DefaultEntityGroupHelper";
+        [SerializeField]
+        private string m_EntityGroupHelperTypeName = "UnityGameFramework.Runtime.DefaultEntityGroupHelper";
 
-        [FormerlySerializedAs("_CustomEntityGroupHelper")] [SerializeField]
-        private EntityGroupHelperBase customEntityGroupHelper = null;
+        [SerializeField]
+        private EntityGroupHelperBase m_CustomEntityGroupHelper = null;
 
-        [FormerlySerializedAs("_EntityGroups")] [SerializeField]
-        private EntityGroup[] entityGroups = null;
+        [SerializeField]
+        private EntityGroup[] m_EntityGroups = null;
 
         /// <summary>
         /// 获取实体数量。
         /// </summary>
-        public int EntityCount => _entityManager.EntityCount;
+        public int EntityCount
+        {
+            get
+            {
+                return m_EntityManager.EntityCount;
+            }
+        }
 
         /// <summary>
         /// 获取实体组数量。
         /// </summary>
-        public int EntityGroupCount => _entityManager.EntityGroupCount;
+        public int EntityGroupCount
+        {
+            get
+            {
+                return m_EntityManager.EntityGroupCount;
+            }
+        }
 
         /// <summary>
         /// 游戏框架组件初始化。
@@ -71,27 +82,27 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            _entityManager = GameFrameworkEntry.GetModule<IEntityManager>();
-            if (_entityManager == null)
+            m_EntityManager = GameFrameworkEntry.GetModule<IEntityManager>();
+            if (m_EntityManager == null)
             {
                 Log.Fatal("Entity manager is invalid.");
                 return;
             }
 
-            _entityManager.ShowEntitySuccess += OnShowEntitySuccess;
-            _entityManager.ShowEntityFailure += OnShowEntityFailure;
+            m_EntityManager.ShowEntitySuccess += OnShowEntitySuccess;
+            m_EntityManager.ShowEntityFailure += OnShowEntityFailure;
 
-            if (enableShowEntityUpdateEvent)
+            if (m_EnableShowEntityUpdateEvent)
             {
-                _entityManager.ShowEntityUpdate += OnShowEntityUpdate;
+                m_EntityManager.ShowEntityUpdate += OnShowEntityUpdate;
             }
 
-            if (enableShowEntityDependencyAssetEvent)
+            if (m_EnableShowEntityDependencyAssetEvent)
             {
-                _entityManager.ShowEntityDependencyAsset += OnShowEntityDependencyAsset;
+                m_EntityManager.ShowEntityDependencyAsset += OnShowEntityDependencyAsset;
             }
 
-            _entityManager.HideEntityComplete += OnHideEntityComplete;
+            m_EntityManager.HideEntityComplete += OnHideEntityComplete;
         }
 
         private void Start()
@@ -103,8 +114,8 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            _eventComponent = GameEntry.GetComponent<EventComponent>();
-            if (_eventComponent == null)
+            m_EventComponent = GameEntry.GetComponent<EventComponent>();
+            if (m_EventComponent == null)
             {
                 Log.Fatal("Event component is invalid.");
                 return;
@@ -112,16 +123,16 @@ namespace UnityGameFramework.Runtime
 
             if (baseComponent.EditorResourceMode)
             {
-                _entityManager.SetResourceManager(baseComponent.EditorResourceHelper);
+                m_EntityManager.SetResourceManager(baseComponent.EditorResourceHelper);
             }
             else
             {
-                _entityManager.SetResourceManager(GameFrameworkEntry.GetModule<IResourceManager>());
+                m_EntityManager.SetResourceManager(GameFrameworkEntry.GetModule<IResourceManager>());
             }
 
-            _entityManager.SetObjectPoolManager(GameFrameworkEntry.GetModule<IObjectPoolManager>());
+            m_EntityManager.SetObjectPoolManager(GameFrameworkEntry.GetModule<IObjectPoolManager>());
 
-            EntityHelperBase entityHelper = Helper.CreateHelper(entityHelperTypeName, customEntityHelper);
+            EntityHelperBase entityHelper = Helper.CreateHelper(m_EntityHelperTypeName, m_CustomEntityHelper);
             if (entityHelper == null)
             {
                 Log.Error("Can not create entity helper.");
@@ -133,20 +144,20 @@ namespace UnityGameFramework.Runtime
             transform.SetParent(this.transform);
             transform.localScale = Vector3.one;
 
-            _entityManager.SetEntityHelper(entityHelper);
+            m_EntityManager.SetEntityHelper(entityHelper);
 
-            if (instanceRoot == null)
+            if (m_InstanceRoot == null)
             {
-                instanceRoot = new GameObject("Entity Instances").transform;
-                instanceRoot.SetParent(gameObject.transform);
-                instanceRoot.localScale = Vector3.one;
+                m_InstanceRoot = new GameObject("Entity Instances").transform;
+                m_InstanceRoot.SetParent(gameObject.transform);
+                m_InstanceRoot.localScale = Vector3.one;
             }
 
-            for (int i = 0; i < entityGroups.Length; i++)
+            for (int i = 0; i < m_EntityGroups.Length; i++)
             {
-                if (!AddEntityGroup(entityGroups[i].Name, entityGroups[i].InstanceAutoReleaseInterval, entityGroups[i].InstanceCapacity, entityGroups[i].InstanceExpireTime, entityGroups[i].InstancePriority))
+                if (!AddEntityGroup(m_EntityGroups[i].Name, m_EntityGroups[i].InstanceAutoReleaseInterval, m_EntityGroups[i].InstanceCapacity, m_EntityGroups[i].InstanceExpireTime, m_EntityGroups[i].InstancePriority))
                 {
-                    Log.Warning("Add entity group '{0}' failure.", entityGroups[i].Name);
+                    Log.Warning("Add entity group '{0}' failure.", m_EntityGroups[i].Name);
                     continue;
                 }
             }
@@ -159,7 +170,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在实体组。</returns>
         public bool HasEntityGroup(string entityGroupName)
         {
-            return _entityManager.HasEntityGroup(entityGroupName);
+            return m_EntityManager.HasEntityGroup(entityGroupName);
         }
 
         /// <summary>
@@ -169,7 +180,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的实体组。</returns>
         public IEntityGroup GetEntityGroup(string entityGroupName)
         {
-            return _entityManager.GetEntityGroup(entityGroupName);
+            return m_EntityManager.GetEntityGroup(entityGroupName);
         }
 
         /// <summary>
@@ -178,7 +189,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>所有实体组。</returns>
         public IEntityGroup[] GetAllEntityGroups()
         {
-            return _entityManager.GetAllEntityGroups();
+            return m_EntityManager.GetAllEntityGroups();
         }
 
         /// <summary>
@@ -187,7 +198,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">所有实体组。</param>
         public void GetAllEntityGroups(List<IEntityGroup> results)
         {
-            _entityManager.GetAllEntityGroups(results);
+            m_EntityManager.GetAllEntityGroups(results);
         }
 
         /// <summary>
@@ -201,12 +212,12 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否增加实体组成功。</returns>
         public bool AddEntityGroup(string entityGroupName, float instanceAutoReleaseInterval, int instanceCapacity, float instanceExpireTime, int instancePriority)
         {
-            if (_entityManager.HasEntityGroup(entityGroupName))
+            if (m_EntityManager.HasEntityGroup(entityGroupName))
             {
                 return false;
             }
 
-            EntityGroupHelperBase entityGroupHelper = Helper.CreateHelper(entityGroupHelperTypeName, customEntityGroupHelper, EntityGroupCount);
+            EntityGroupHelperBase entityGroupHelper = Helper.CreateHelper(m_EntityGroupHelperTypeName, m_CustomEntityGroupHelper, EntityGroupCount);
             if (entityGroupHelper == null)
             {
                 Log.Error("Can not create entity group helper.");
@@ -215,10 +226,10 @@ namespace UnityGameFramework.Runtime
 
             entityGroupHelper.name = Utility.Text.Format("Entity Group - {0}", entityGroupName);
             Transform transform = entityGroupHelper.transform;
-            transform.SetParent(instanceRoot);
+            transform.SetParent(m_InstanceRoot);
             transform.localScale = Vector3.one;
 
-            return _entityManager.AddEntityGroup(entityGroupName, instanceAutoReleaseInterval, instanceCapacity, instanceExpireTime, instancePriority, entityGroupHelper);
+            return m_EntityManager.AddEntityGroup(entityGroupName, instanceAutoReleaseInterval, instanceCapacity, instanceExpireTime, instancePriority, entityGroupHelper);
         }
 
         /// <summary>
@@ -228,7 +239,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在实体。</returns>
         public bool HasEntity(int entityId)
         {
-            return _entityManager.HasEntity(entityId);
+            return m_EntityManager.HasEntity(entityId);
         }
 
         /// <summary>
@@ -238,7 +249,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在实体。</returns>
         public bool HasEntity(string entityAssetName)
         {
-            return _entityManager.HasEntity(entityAssetName);
+            return m_EntityManager.HasEntity(entityAssetName);
         }
 
         /// <summary>
@@ -248,7 +259,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>实体。</returns>
         public Entity GetEntity(int entityId)
         {
-            return (Entity)_entityManager.GetEntity(entityId);
+            return (Entity)m_EntityManager.GetEntity(entityId);
         }
 
         /// <summary>
@@ -258,7 +269,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的实体。</returns>
         public Entity GetEntity(string entityAssetName)
         {
-            return (Entity)_entityManager.GetEntity(entityAssetName);
+            return (Entity)m_EntityManager.GetEntity(entityAssetName);
         }
 
         /// <summary>
@@ -268,7 +279,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的实体。</returns>
         public Entity[] GetEntities(string entityAssetName)
         {
-            IEntity[] entities = _entityManager.GetEntities(entityAssetName);
+            IEntity[] entities = m_EntityManager.GetEntities(entityAssetName);
             Entity[] entityImpls = new Entity[entities.Length];
             for (int i = 0; i < entities.Length; i++)
             {
@@ -292,8 +303,8 @@ namespace UnityGameFramework.Runtime
             }
 
             results.Clear();
-            _entityManager.GetEntities(entityAssetName, _internalEntityResults);
-            foreach (IEntity entity in _internalEntityResults)
+            m_EntityManager.GetEntities(entityAssetName, m_InternalEntityResults);
+            foreach (IEntity entity in m_InternalEntityResults)
             {
                 results.Add((Entity)entity);
             }
@@ -305,7 +316,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>所有已加载的实体。</returns>
         public Entity[] GetAllLoadedEntities()
         {
-            IEntity[] entities = _entityManager.GetAllLoadedEntities();
+            IEntity[] entities = m_EntityManager.GetAllLoadedEntities();
             Entity[] entityImpls = new Entity[entities.Length];
             for (int i = 0; i < entities.Length; i++)
             {
@@ -328,8 +339,8 @@ namespace UnityGameFramework.Runtime
             }
 
             results.Clear();
-            _entityManager.GetAllLoadedEntities(_internalEntityResults);
-            foreach (IEntity entity in _internalEntityResults)
+            m_EntityManager.GetAllLoadedEntities(m_InternalEntityResults);
+            foreach (IEntity entity in m_InternalEntityResults)
             {
                 results.Add((Entity)entity);
             }
@@ -341,7 +352,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>所有正在加载实体的编号。</returns>
         public int[] GetAllLoadingEntityIds()
         {
-            return _entityManager.GetAllLoadingEntityIds();
+            return m_EntityManager.GetAllLoadingEntityIds();
         }
 
         /// <summary>
@@ -350,7 +361,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">所有正在加载实体的编号。</param>
         public void GetAllLoadingEntityIds(List<int> results)
         {
-            _entityManager.GetAllLoadingEntityIds(results);
+            m_EntityManager.GetAllLoadingEntityIds(results);
         }
 
         /// <summary>
@@ -360,7 +371,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否正在加载实体。</returns>
         public bool IsLoadingEntity(int entityId)
         {
-            return _entityManager.IsLoadingEntity(entityId);
+            return m_EntityManager.IsLoadingEntity(entityId);
         }
 
         /// <summary>
@@ -370,7 +381,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>实体是否合法。</returns>
         public bool IsValidEntity(Entity entity)
         {
-            return _entityManager.IsValidEntity(entity);
+            return m_EntityManager.IsValidEntity(entity);
         }
 
         /// <summary>
@@ -480,7 +491,7 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            _entityManager.ShowEntity(entityId, entityAssetName, entityGroupName, priority, ShowEntityInfo.Create(entityLogicType, userData));
+            m_EntityManager.ShowEntity(entityId, entityAssetName, entityGroupName, priority, ShowEntityInfo.Create(entityLogicType, userData));
         }
 
         /// <summary>
@@ -489,7 +500,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="entityId">实体编号。</param>
         public void HideEntity(int entityId)
         {
-            _entityManager.HideEntity(entityId);
+            m_EntityManager.HideEntity(entityId);
         }
 
         /// <summary>
@@ -499,7 +510,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void HideEntity(int entityId, object userData)
         {
-            _entityManager.HideEntity(entityId, userData);
+            m_EntityManager.HideEntity(entityId, userData);
         }
 
         /// <summary>
@@ -508,7 +519,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="entity">实体。</param>
         public void HideEntity(Entity entity)
         {
-            _entityManager.HideEntity(entity);
+            m_EntityManager.HideEntity(entity);
         }
 
         /// <summary>
@@ -518,7 +529,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void HideEntity(Entity entity, object userData)
         {
-            _entityManager.HideEntity(entity, userData);
+            m_EntityManager.HideEntity(entity, userData);
         }
 
         /// <summary>
@@ -526,7 +537,7 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public void HideAllLoadedEntities()
         {
-            _entityManager.HideAllLoadedEntities();
+            m_EntityManager.HideAllLoadedEntities();
         }
 
         /// <summary>
@@ -535,7 +546,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void HideAllLoadedEntities(object userData)
         {
-            _entityManager.HideAllLoadedEntities(userData);
+            m_EntityManager.HideAllLoadedEntities(userData);
         }
 
         /// <summary>
@@ -543,7 +554,7 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public void HideAllLoadingEntities()
         {
-            _entityManager.HideAllLoadingEntities();
+            m_EntityManager.HideAllLoadingEntities();
         }
 
         /// <summary>
@@ -553,7 +564,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>子实体的父实体。</returns>
         public Entity GetParentEntity(int childEntityId)
         {
-            return (Entity)_entityManager.GetParentEntity(childEntityId);
+            return (Entity)m_EntityManager.GetParentEntity(childEntityId);
         }
 
         /// <summary>
@@ -563,7 +574,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>子实体的父实体。</returns>
         public Entity GetParentEntity(Entity childEntity)
         {
-            return (Entity)_entityManager.GetParentEntity(childEntity);
+            return (Entity)m_EntityManager.GetParentEntity(childEntity);
         }
 
         /// <summary>
@@ -573,7 +584,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>子实体数量。</returns>
         public int GetChildEntityCount(int parentEntityId)
         {
-            return _entityManager.GetChildEntityCount(parentEntityId);
+            return m_EntityManager.GetChildEntityCount(parentEntityId);
         }
 
         /// <summary>
@@ -583,7 +594,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>子实体。</returns>
         public Entity GetChildEntity(int parentEntityId)
         {
-            return (Entity)_entityManager.GetChildEntity(parentEntityId);
+            return (Entity)m_EntityManager.GetChildEntity(parentEntityId);
         }
 
         /// <summary>
@@ -593,7 +604,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>子实体。</returns>
         public Entity GetChildEntity(IEntity parentEntity)
         {
-            return (Entity)_entityManager.GetChildEntity(parentEntity);
+            return (Entity)m_EntityManager.GetChildEntity(parentEntity);
         }
 
         /// <summary>
@@ -603,7 +614,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>所有子实体。</returns>
         public Entity[] GetChildEntities(int parentEntityId)
         {
-            IEntity[] entities = _entityManager.GetChildEntities(parentEntityId);
+            IEntity[] entities = m_EntityManager.GetChildEntities(parentEntityId);
             Entity[] entityImpls = new Entity[entities.Length];
             for (int i = 0; i < entities.Length; i++)
             {
@@ -627,8 +638,8 @@ namespace UnityGameFramework.Runtime
             }
 
             results.Clear();
-            _entityManager.GetChildEntities(parentEntityId, _internalEntityResults);
-            foreach (IEntity entity in _internalEntityResults)
+            m_EntityManager.GetChildEntities(parentEntityId, m_InternalEntityResults);
+            foreach (IEntity entity in m_InternalEntityResults)
             {
                 results.Add((Entity)entity);
             }
@@ -641,7 +652,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>所有子实体。</returns>
         public Entity[] GetChildEntities(Entity parentEntity)
         {
-            IEntity[] entities = _entityManager.GetChildEntities(parentEntity);
+            IEntity[] entities = m_EntityManager.GetChildEntities(parentEntity);
             Entity[] entityImpls = new Entity[entities.Length];
             for (int i = 0; i < entities.Length; i++)
             {
@@ -665,8 +676,8 @@ namespace UnityGameFramework.Runtime
             }
 
             results.Clear();
-            _entityManager.GetChildEntities(parentEntity, _internalEntityResults);
-            foreach (IEntity entity in _internalEntityResults)
+            m_EntityManager.GetChildEntities(parentEntity, m_InternalEntityResults);
+            foreach (IEntity entity in m_InternalEntityResults)
             {
                 results.Add((Entity)entity);
             }
@@ -981,7 +992,7 @@ namespace UnityGameFramework.Runtime
                 parentTransform = parentEntity.Logic.CachedTransform;
             }
 
-            _entityManager.AttachEntity(childEntity, parentEntity, AttachEntityInfo.Create(parentTransform, userData));
+            m_EntityManager.AttachEntity(childEntity, parentEntity, AttachEntityInfo.Create(parentTransform, userData));
         }
 
         /// <summary>
@@ -990,7 +1001,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="childEntityId">要解除的子实体的实体编号。</param>
         public void DetachEntity(int childEntityId)
         {
-            _entityManager.DetachEntity(childEntityId);
+            m_EntityManager.DetachEntity(childEntityId);
         }
 
         /// <summary>
@@ -1000,7 +1011,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void DetachEntity(int childEntityId, object userData)
         {
-            _entityManager.DetachEntity(childEntityId, userData);
+            m_EntityManager.DetachEntity(childEntityId, userData);
         }
 
         /// <summary>
@@ -1009,7 +1020,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="childEntity">要解除的子实体。</param>
         public void DetachEntity(Entity childEntity)
         {
-            _entityManager.DetachEntity(childEntity);
+            m_EntityManager.DetachEntity(childEntity);
         }
 
         /// <summary>
@@ -1019,7 +1030,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void DetachEntity(Entity childEntity, object userData)
         {
-            _entityManager.DetachEntity(childEntity, userData);
+            m_EntityManager.DetachEntity(childEntity, userData);
         }
 
         /// <summary>
@@ -1028,7 +1039,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="parentEntityId">被解除的父实体的实体编号。</param>
         public void DetachChildEntities(int parentEntityId)
         {
-            _entityManager.DetachChildEntities(parentEntityId);
+            m_EntityManager.DetachChildEntities(parentEntityId);
         }
 
         /// <summary>
@@ -1038,7 +1049,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void DetachChildEntities(int parentEntityId, object userData)
         {
-            _entityManager.DetachChildEntities(parentEntityId, userData);
+            m_EntityManager.DetachChildEntities(parentEntityId, userData);
         }
 
         /// <summary>
@@ -1047,7 +1058,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="parentEntity">被解除的父实体。</param>
         public void DetachChildEntities(Entity parentEntity)
         {
-            _entityManager.DetachChildEntities(parentEntity);
+            m_EntityManager.DetachChildEntities(parentEntity);
         }
 
         /// <summary>
@@ -1057,7 +1068,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void DetachChildEntities(Entity parentEntity, object userData)
         {
-            _entityManager.DetachChildEntities(parentEntity, userData);
+            m_EntityManager.DetachChildEntities(parentEntity, userData);
         }
 
         /// <summary>
@@ -1108,28 +1119,28 @@ namespace UnityGameFramework.Runtime
 
         private void OnShowEntitySuccess(object sender, GameFramework.Entity.ShowEntitySuccessEventArgs e)
         {
-            _eventComponent.Fire(this, ShowEntitySuccessEventArgs.Create(e));
+            m_EventComponent.Fire(this, ShowEntitySuccessEventArgs.Create(e));
         }
 
         private void OnShowEntityFailure(object sender, GameFramework.Entity.ShowEntityFailureEventArgs e)
         {
             Log.Warning("Show entity failure, entity id '{0}', asset name '{1}', entity group name '{2}', error message '{3}'.", e.EntityId, e.EntityAssetName, e.EntityGroupName, e.ErrorMessage);
-            _eventComponent.Fire(this, ShowEntityFailureEventArgs.Create(e));
+            m_EventComponent.Fire(this, ShowEntityFailureEventArgs.Create(e));
         }
 
         private void OnShowEntityUpdate(object sender, GameFramework.Entity.ShowEntityUpdateEventArgs e)
         {
-            _eventComponent.Fire(this, ShowEntityUpdateEventArgs.Create(e));
+            m_EventComponent.Fire(this, ShowEntityUpdateEventArgs.Create(e));
         }
 
         private void OnShowEntityDependencyAsset(object sender, GameFramework.Entity.ShowEntityDependencyAssetEventArgs e)
         {
-            _eventComponent.Fire(this, ShowEntityDependencyAssetEventArgs.Create(e));
+            m_EventComponent.Fire(this, ShowEntityDependencyAssetEventArgs.Create(e));
         }
 
         private void OnHideEntityComplete(object sender, GameFramework.Entity.HideEntityCompleteEventArgs e)
         {
-            _eventComponent.Fire(this, HideEntityCompleteEventArgs.Create(e));
+            m_EventComponent.Fire(this, HideEntityCompleteEventArgs.Create(e));
         }
     }
 }

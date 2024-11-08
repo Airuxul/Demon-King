@@ -20,7 +20,7 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(ObjectPoolComponent))]
     internal sealed class ObjectPoolComponentInspector : GameFrameworkInspector
     {
-        private readonly HashSet<string> _OpenedItems = new HashSet<string>();
+        private readonly HashSet<string> m_OpenedItems = new HashSet<string>();
 
         public override void OnInspectorGUI()
         {
@@ -54,17 +54,17 @@ namespace UnityGameFramework.Editor
 
         private void DrawObjectPool(ObjectPoolBase objectPool)
         {
-            bool lastState = _OpenedItems.Contains(objectPool.FullName);
+            bool lastState = m_OpenedItems.Contains(objectPool.FullName);
             bool currentState = EditorGUILayout.Foldout(lastState, objectPool.FullName);
             if (currentState != lastState)
             {
                 if (currentState)
                 {
-                    _OpenedItems.Add(objectPool.FullName);
+                    m_OpenedItems.Add(objectPool.FullName);
                 }
                 else
                 {
-                    _OpenedItems.Remove(objectPool.FullName);
+                    m_OpenedItems.Remove(objectPool.FullName);
                 }
             }
 

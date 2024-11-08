@@ -9,7 +9,6 @@ using GameFramework;
 using GameFramework.Debugger;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -35,69 +34,72 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         internal static readonly float DefaultWindowScale = 1f;
 
-        private static readonly TextEditor STextEditor = new TextEditor();
-        private IDebuggerManager _debuggerManager = null;
-        private Rect _dragRect = new Rect(0f, 0f, float.MaxValue, 25f);
-        private Rect _iconRect = DefaultIconRect;
-        private Rect _windowRect = DefaultWindowRect;
-        private float _windowScale = DefaultWindowScale;
+        private static readonly TextEditor s_TextEditor = new TextEditor();
+        private IDebuggerManager m_DebuggerManager = null;
+        private Rect m_DragRect = new Rect(0f, 0f, float.MaxValue, 25f);
+        private Rect m_IconRect = DefaultIconRect;
+        private Rect m_WindowRect = DefaultWindowRect;
+        private float m_WindowScale = DefaultWindowScale;
 
-        [FormerlySerializedAs("_Skin")] [SerializeField]
-        private GUISkin skin = null;
+        [SerializeField]
+        private GUISkin m_Skin = null;
 
-        [FormerlySerializedAs("_ActiveWindow")] [SerializeField]
-        private DebuggerActiveWindowType activeWindow = DebuggerActiveWindowType.AlwaysOpen;
+        [SerializeField]
+        private DebuggerActiveWindowType m_ActiveWindow = DebuggerActiveWindowType.AlwaysOpen;
 
-        [FormerlySerializedAs("_ShowFullWindow")] [SerializeField]
-        private bool showFullWindow = false;
+        [SerializeField]
+        private bool m_ShowFullWindow = false;
 
-        [FormerlySerializedAs("_ConsoleWindow")] [SerializeField]
-        private ConsoleWindow consoleWindow = new ConsoleWindow();
+        [SerializeField]
+        private ConsoleWindow m_ConsoleWindow = new ConsoleWindow();
 
-        private SystemInformationWindow _systemInformationWindow = new SystemInformationWindow();
-        private EnvironmentInformationWindow _environmentInformationWindow = new EnvironmentInformationWindow();
-        private ScreenInformationWindow _screenInformationWindow = new ScreenInformationWindow();
-        private GraphicsInformationWindow _graphicsInformationWindow = new GraphicsInformationWindow();
-        private InputSummaryInformationWindow _inputSummaryInformationWindow = new InputSummaryInformationWindow();
-        private InputTouchInformationWindow _inputTouchInformationWindow = new InputTouchInformationWindow();
-        private InputLocationInformationWindow _inputLocationInformationWindow = new InputLocationInformationWindow();
-        private InputAccelerationInformationWindow _inputAccelerationInformationWindow = new InputAccelerationInformationWindow();
-        private InputGyroscopeInformationWindow _inputGyroscopeInformationWindow = new InputGyroscopeInformationWindow();
-        private InputCompassInformationWindow _inputCompassInformationWindow = new InputCompassInformationWindow();
-        private PathInformationWindow _pathInformationWindow = new PathInformationWindow();
-        private SceneInformationWindow _sceneInformationWindow = new SceneInformationWindow();
-        private TimeInformationWindow _timeInformationWindow = new TimeInformationWindow();
-        private QualityInformationWindow _qualityInformationWindow = new QualityInformationWindow();
-        private ProfilerInformationWindow _profilerInformationWindow = new ProfilerInformationWindow();
-        private WebPlayerInformationWindow _webPlayerInformationWindow = new WebPlayerInformationWindow();
-        private RuntimeMemorySummaryWindow _runtimeMemorySummaryWindow = new RuntimeMemorySummaryWindow();
-        private RuntimeMemoryInformationWindow<Object> _runtimeMemoryAllInformationWindow = new RuntimeMemoryInformationWindow<Object>();
-        private RuntimeMemoryInformationWindow<Texture> _runtimeMemoryTextureInformationWindow = new RuntimeMemoryInformationWindow<Texture>();
-        private RuntimeMemoryInformationWindow<Mesh> _runtimeMemoryMeshInformationWindow = new RuntimeMemoryInformationWindow<Mesh>();
-        private RuntimeMemoryInformationWindow<Material> _runtimeMemoryMaterialInformationWindow = new RuntimeMemoryInformationWindow<Material>();
-        private RuntimeMemoryInformationWindow<Shader> _runtimeMemoryShaderInformationWindow = new RuntimeMemoryInformationWindow<Shader>();
-        private RuntimeMemoryInformationWindow<AnimationClip> _runtimeMemoryAnimationClipInformationWindow = new RuntimeMemoryInformationWindow<AnimationClip>();
-        private RuntimeMemoryInformationWindow<AudioClip> _runtimeMemoryAudioClipInformationWindow = new RuntimeMemoryInformationWindow<AudioClip>();
-        private RuntimeMemoryInformationWindow<Font> _runtimeMemoryFontInformationWindow = new RuntimeMemoryInformationWindow<Font>();
-        private RuntimeMemoryInformationWindow<TextAsset> _runtimeMemoryTextAssetInformationWindow = new RuntimeMemoryInformationWindow<TextAsset>();
-        private RuntimeMemoryInformationWindow<ScriptableObject> _runtimeMemoryScriptableObjectInformationWindow = new RuntimeMemoryInformationWindow<ScriptableObject>();
-        private ObjectPoolInformationWindow _objectPoolInformationWindow = new ObjectPoolInformationWindow();
-        private ReferencePoolInformationWindow _referencePoolInformationWindow = new ReferencePoolInformationWindow();
-        private NetworkInformationWindow _networkInformationWindow = new NetworkInformationWindow();
-        private SettingsWindow _settingsWindow = new SettingsWindow();
-        private OperationsWindow _operationsWindow = new OperationsWindow();
+        private SystemInformationWindow m_SystemInformationWindow = new SystemInformationWindow();
+        private EnvironmentInformationWindow m_EnvironmentInformationWindow = new EnvironmentInformationWindow();
+        private ScreenInformationWindow m_ScreenInformationWindow = new ScreenInformationWindow();
+        private GraphicsInformationWindow m_GraphicsInformationWindow = new GraphicsInformationWindow();
+        private InputSummaryInformationWindow m_InputSummaryInformationWindow = new InputSummaryInformationWindow();
+        private InputTouchInformationWindow m_InputTouchInformationWindow = new InputTouchInformationWindow();
+        private InputLocationInformationWindow m_InputLocationInformationWindow = new InputLocationInformationWindow();
+        private InputAccelerationInformationWindow m_InputAccelerationInformationWindow = new InputAccelerationInformationWindow();
+        private InputGyroscopeInformationWindow m_InputGyroscopeInformationWindow = new InputGyroscopeInformationWindow();
+        private InputCompassInformationWindow m_InputCompassInformationWindow = new InputCompassInformationWindow();
+        private PathInformationWindow m_PathInformationWindow = new PathInformationWindow();
+        private SceneInformationWindow m_SceneInformationWindow = new SceneInformationWindow();
+        private TimeInformationWindow m_TimeInformationWindow = new TimeInformationWindow();
+        private QualityInformationWindow m_QualityInformationWindow = new QualityInformationWindow();
+        private ProfilerInformationWindow m_ProfilerInformationWindow = new ProfilerInformationWindow();
+        private WebPlayerInformationWindow m_WebPlayerInformationWindow = new WebPlayerInformationWindow();
+        private RuntimeMemorySummaryWindow m_RuntimeMemorySummaryWindow = new RuntimeMemorySummaryWindow();
+        private RuntimeMemoryInformationWindow<Object> m_RuntimeMemoryAllInformationWindow = new RuntimeMemoryInformationWindow<Object>();
+        private RuntimeMemoryInformationWindow<Texture> m_RuntimeMemoryTextureInformationWindow = new RuntimeMemoryInformationWindow<Texture>();
+        private RuntimeMemoryInformationWindow<Mesh> m_RuntimeMemoryMeshInformationWindow = new RuntimeMemoryInformationWindow<Mesh>();
+        private RuntimeMemoryInformationWindow<Material> m_RuntimeMemoryMaterialInformationWindow = new RuntimeMemoryInformationWindow<Material>();
+        private RuntimeMemoryInformationWindow<Shader> m_RuntimeMemoryShaderInformationWindow = new RuntimeMemoryInformationWindow<Shader>();
+        private RuntimeMemoryInformationWindow<AnimationClip> m_RuntimeMemoryAnimationClipInformationWindow = new RuntimeMemoryInformationWindow<AnimationClip>();
+        private RuntimeMemoryInformationWindow<AudioClip> m_RuntimeMemoryAudioClipInformationWindow = new RuntimeMemoryInformationWindow<AudioClip>();
+        private RuntimeMemoryInformationWindow<Font> m_RuntimeMemoryFontInformationWindow = new RuntimeMemoryInformationWindow<Font>();
+        private RuntimeMemoryInformationWindow<TextAsset> m_RuntimeMemoryTextAssetInformationWindow = new RuntimeMemoryInformationWindow<TextAsset>();
+        private RuntimeMemoryInformationWindow<ScriptableObject> m_RuntimeMemoryScriptableObjectInformationWindow = new RuntimeMemoryInformationWindow<ScriptableObject>();
+        private ObjectPoolInformationWindow m_ObjectPoolInformationWindow = new ObjectPoolInformationWindow();
+        private ReferencePoolInformationWindow m_ReferencePoolInformationWindow = new ReferencePoolInformationWindow();
+        private NetworkInformationWindow m_NetworkInformationWindow = new NetworkInformationWindow();
+        private SettingsWindow m_SettingsWindow = new SettingsWindow();
+        private OperationsWindow m_OperationsWindow = new OperationsWindow();
 
-        private FpsCounter _fpsCounter = null;
+        private FpsCounter m_FpsCounter = null;
 
         /// <summary>
         /// 获取或设置调试器窗口是否激活。
         /// </summary>
         public bool ActiveWindow
         {
-            get => _debuggerManager.ActiveWindow;
+            get
+            {
+                return m_DebuggerManager.ActiveWindow;
+            }
             set
             {
-                _debuggerManager.ActiveWindow = value;
+                m_DebuggerManager.ActiveWindow = value;
                 enabled = value;
             }
         }
@@ -107,8 +109,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public bool ShowFullWindow
         {
-            get => showFullWindow;
-            set => showFullWindow = value;
+            get
+            {
+                return m_ShowFullWindow;
+            }
+            set
+            {
+                m_ShowFullWindow = value;
+            }
         }
 
         /// <summary>
@@ -116,8 +124,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public Rect IconRect
         {
-            get => _iconRect;
-            set => _iconRect = value;
+            get
+            {
+                return m_IconRect;
+            }
+            set
+            {
+                m_IconRect = value;
+            }
         }
 
         /// <summary>
@@ -125,8 +139,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public Rect WindowRect
         {
-            get => _windowRect;
-            set => _windowRect = value;
+            get
+            {
+                return m_WindowRect;
+            }
+            set
+            {
+                m_WindowRect = value;
+            }
         }
 
         /// <summary>
@@ -134,8 +154,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public float WindowScale
         {
-            get => _windowScale;
-            set => _windowScale = value;
+            get
+            {
+                return m_WindowScale;
+            }
+            set
+            {
+                m_WindowScale = value;
+            }
         }
 
         /// <summary>
@@ -145,53 +171,53 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            _debuggerManager = GameFrameworkEntry.GetModule<IDebuggerManager>();
-            if (_debuggerManager == null)
+            m_DebuggerManager = GameFrameworkEntry.GetModule<IDebuggerManager>();
+            if (m_DebuggerManager == null)
             {
                 Log.Fatal("Debugger manager is invalid.");
                 return;
             }
 
-            _fpsCounter = new FpsCounter(0.5f);
+            m_FpsCounter = new FpsCounter(0.5f);
         }
 
         private void Start()
         {
-            RegisterDebuggerWindow("Console", consoleWindow);
-            RegisterDebuggerWindow("Information/System", _systemInformationWindow);
-            RegisterDebuggerWindow("Information/Environment", _environmentInformationWindow);
-            RegisterDebuggerWindow("Information/Screen", _screenInformationWindow);
-            RegisterDebuggerWindow("Information/Graphics", _graphicsInformationWindow);
-            RegisterDebuggerWindow("Information/Input/Summary", _inputSummaryInformationWindow);
-            RegisterDebuggerWindow("Information/Input/Touch", _inputTouchInformationWindow);
-            RegisterDebuggerWindow("Information/Input/Location", _inputLocationInformationWindow);
-            RegisterDebuggerWindow("Information/Input/Acceleration", _inputAccelerationInformationWindow);
-            RegisterDebuggerWindow("Information/Input/Gyroscope", _inputGyroscopeInformationWindow);
-            RegisterDebuggerWindow("Information/Input/Compass", _inputCompassInformationWindow);
-            RegisterDebuggerWindow("Information/Other/Scene", _sceneInformationWindow);
-            RegisterDebuggerWindow("Information/Other/Path", _pathInformationWindow);
-            RegisterDebuggerWindow("Information/Other/Time", _timeInformationWindow);
-            RegisterDebuggerWindow("Information/Other/Quality", _qualityInformationWindow);
-            RegisterDebuggerWindow("Information/Other/Web Player", _webPlayerInformationWindow);
-            RegisterDebuggerWindow("Profiler/Summary", _profilerInformationWindow);
-            RegisterDebuggerWindow("Profiler/Memory/Summary", _runtimeMemorySummaryWindow);
-            RegisterDebuggerWindow("Profiler/Memory/All", _runtimeMemoryAllInformationWindow);
-            RegisterDebuggerWindow("Profiler/Memory/Texture", _runtimeMemoryTextureInformationWindow);
-            RegisterDebuggerWindow("Profiler/Memory/Mesh", _runtimeMemoryMeshInformationWindow);
-            RegisterDebuggerWindow("Profiler/Memory/Material", _runtimeMemoryMaterialInformationWindow);
-            RegisterDebuggerWindow("Profiler/Memory/Shader", _runtimeMemoryShaderInformationWindow);
-            RegisterDebuggerWindow("Profiler/Memory/AnimationClip", _runtimeMemoryAnimationClipInformationWindow);
-            RegisterDebuggerWindow("Profiler/Memory/AudioClip", _runtimeMemoryAudioClipInformationWindow);
-            RegisterDebuggerWindow("Profiler/Memory/Font", _runtimeMemoryFontInformationWindow);
-            RegisterDebuggerWindow("Profiler/Memory/TextAsset", _runtimeMemoryTextAssetInformationWindow);
-            RegisterDebuggerWindow("Profiler/Memory/ScriptableObject", _runtimeMemoryScriptableObjectInformationWindow);
-            RegisterDebuggerWindow("Profiler/Object Pool", _objectPoolInformationWindow);
-            RegisterDebuggerWindow("Profiler/Reference Pool", _referencePoolInformationWindow);
-            RegisterDebuggerWindow("Profiler/Network", _networkInformationWindow);
-            RegisterDebuggerWindow("Other/Settings", _settingsWindow);
-            RegisterDebuggerWindow("Other/Operations", _operationsWindow);
+            RegisterDebuggerWindow("Console", m_ConsoleWindow);
+            RegisterDebuggerWindow("Information/System", m_SystemInformationWindow);
+            RegisterDebuggerWindow("Information/Environment", m_EnvironmentInformationWindow);
+            RegisterDebuggerWindow("Information/Screen", m_ScreenInformationWindow);
+            RegisterDebuggerWindow("Information/Graphics", m_GraphicsInformationWindow);
+            RegisterDebuggerWindow("Information/Input/Summary", m_InputSummaryInformationWindow);
+            RegisterDebuggerWindow("Information/Input/Touch", m_InputTouchInformationWindow);
+            RegisterDebuggerWindow("Information/Input/Location", m_InputLocationInformationWindow);
+            RegisterDebuggerWindow("Information/Input/Acceleration", m_InputAccelerationInformationWindow);
+            RegisterDebuggerWindow("Information/Input/Gyroscope", m_InputGyroscopeInformationWindow);
+            RegisterDebuggerWindow("Information/Input/Compass", m_InputCompassInformationWindow);
+            RegisterDebuggerWindow("Information/Other/Scene", m_SceneInformationWindow);
+            RegisterDebuggerWindow("Information/Other/Path", m_PathInformationWindow);
+            RegisterDebuggerWindow("Information/Other/Time", m_TimeInformationWindow);
+            RegisterDebuggerWindow("Information/Other/Quality", m_QualityInformationWindow);
+            RegisterDebuggerWindow("Information/Other/Web Player", m_WebPlayerInformationWindow);
+            RegisterDebuggerWindow("Profiler/Summary", m_ProfilerInformationWindow);
+            RegisterDebuggerWindow("Profiler/Memory/Summary", m_RuntimeMemorySummaryWindow);
+            RegisterDebuggerWindow("Profiler/Memory/All", m_RuntimeMemoryAllInformationWindow);
+            RegisterDebuggerWindow("Profiler/Memory/Texture", m_RuntimeMemoryTextureInformationWindow);
+            RegisterDebuggerWindow("Profiler/Memory/Mesh", m_RuntimeMemoryMeshInformationWindow);
+            RegisterDebuggerWindow("Profiler/Memory/Material", m_RuntimeMemoryMaterialInformationWindow);
+            RegisterDebuggerWindow("Profiler/Memory/Shader", m_RuntimeMemoryShaderInformationWindow);
+            RegisterDebuggerWindow("Profiler/Memory/AnimationClip", m_RuntimeMemoryAnimationClipInformationWindow);
+            RegisterDebuggerWindow("Profiler/Memory/AudioClip", m_RuntimeMemoryAudioClipInformationWindow);
+            RegisterDebuggerWindow("Profiler/Memory/Font", m_RuntimeMemoryFontInformationWindow);
+            RegisterDebuggerWindow("Profiler/Memory/TextAsset", m_RuntimeMemoryTextAssetInformationWindow);
+            RegisterDebuggerWindow("Profiler/Memory/ScriptableObject", m_RuntimeMemoryScriptableObjectInformationWindow);
+            RegisterDebuggerWindow("Profiler/Object Pool", m_ObjectPoolInformationWindow);
+            RegisterDebuggerWindow("Profiler/Reference Pool", m_ReferencePoolInformationWindow);
+            RegisterDebuggerWindow("Profiler/Network", m_NetworkInformationWindow);
+            RegisterDebuggerWindow("Other/Settings", m_SettingsWindow);
+            RegisterDebuggerWindow("Other/Operations", m_OperationsWindow);
 
-            switch (activeWindow)
+            switch (m_ActiveWindow)
             {
                 case DebuggerActiveWindowType.AlwaysOpen:
                     ActiveWindow = true;
@@ -213,12 +239,12 @@ namespace UnityGameFramework.Runtime
 
         private void Update()
         {
-            _fpsCounter.Update(Time.deltaTime, Time.unscaledDeltaTime);
+            m_FpsCounter.Update(Time.deltaTime, Time.unscaledDeltaTime);
         }
 
         private void OnGUI()
         {
-            if (_debuggerManager == null || !_debuggerManager.ActiveWindow)
+            if (m_DebuggerManager == null || !m_DebuggerManager.ActiveWindow)
             {
                 return;
             }
@@ -226,16 +252,16 @@ namespace UnityGameFramework.Runtime
             GUISkin cachedGuiSkin = GUI.skin;
             Matrix4x4 cachedMatrix = GUI.matrix;
 
-            GUI.skin = skin;
-            GUI.matrix = Matrix4x4.Scale(new Vector3(_windowScale, _windowScale, 1f));
+            GUI.skin = m_Skin;
+            GUI.matrix = Matrix4x4.Scale(new Vector3(m_WindowScale, m_WindowScale, 1f));
 
-            if (showFullWindow)
+            if (m_ShowFullWindow)
             {
-                _windowRect = GUILayout.Window(0, _windowRect, DrawWindow, "<b>GAME FRAMEWORK DEBUGGER</b>");
+                m_WindowRect = GUILayout.Window(0, m_WindowRect, DrawWindow, "<b>GAME FRAMEWORK DEBUGGER</b>");
             }
             else
             {
-                _iconRect = GUILayout.Window(0, _iconRect, DrawDebuggerWindowIcon, "<b>DEBUGGER</b>");
+                m_IconRect = GUILayout.Window(0, m_IconRect, DrawDebuggerWindowIcon, "<b>DEBUGGER</b>");
             }
 
             GUI.matrix = cachedMatrix;
@@ -250,7 +276,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="args">初始化调试器窗口参数。</param>
         public void RegisterDebuggerWindow(string path, IDebuggerWindow debuggerWindow, params object[] args)
         {
-            _debuggerManager.RegisterDebuggerWindow(path, debuggerWindow, args);
+            m_DebuggerManager.RegisterDebuggerWindow(path, debuggerWindow, args);
         }
 
         /// <summary>
@@ -260,7 +286,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否解除注册调试器窗口成功。</returns>
         public bool UnregisterDebuggerWindow(string path)
         {
-            return _debuggerManager.UnregisterDebuggerWindow(path);
+            return m_DebuggerManager.UnregisterDebuggerWindow(path);
         }
 
         /// <summary>
@@ -270,7 +296,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的调试器窗口。</returns>
         public IDebuggerWindow GetDebuggerWindow(string path)
         {
-            return _debuggerManager.GetDebuggerWindow(path);
+            return m_DebuggerManager.GetDebuggerWindow(path);
         }
 
         /// <summary>
@@ -280,7 +306,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否成功选中调试器窗口。</returns>
         public bool SelectDebuggerWindow(string path)
         {
-            return _debuggerManager.SelectDebuggerWindow(path);
+            return m_DebuggerManager.SelectDebuggerWindow(path);
         }
 
         /// <summary>
@@ -299,7 +325,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">要获取的日志。</param>
         public void GetRecentLogs(List<LogNode> results)
         {
-            consoleWindow.GetRecentLogs(results);
+            m_ConsoleWindow.GetRecentLogs(results);
         }
 
         /// <summary>
@@ -309,13 +335,13 @@ namespace UnityGameFramework.Runtime
         /// <param name="count">要获取最近日志的数量。</param>
         public void GetRecentLogs(List<LogNode> results, int count)
         {
-            consoleWindow.GetRecentLogs(results, count);
+            m_ConsoleWindow.GetRecentLogs(results, count);
         }
 
         private void DrawWindow(int windowId)
         {
-            GUI.DragWindow(_dragRect);
-            DrawDebuggerWindowGroup(_debuggerManager.DebuggerWindowRoot);
+            GUI.DragWindow(m_DragRect);
+            DrawDebuggerWindowGroup(m_DebuggerManager.DebuggerWindowRoot);
         }
 
         private void DrawDebuggerWindowGroup(IDebuggerWindowGroup debuggerWindowGroup)
@@ -332,7 +358,7 @@ namespace UnityGameFramework.Runtime
                 names.Add(Utility.Text.Format("<b>{0}</b>", debuggerWindowNames[i]));
             }
 
-            if (debuggerWindowGroup == _debuggerManager.DebuggerWindowRoot)
+            if (debuggerWindowGroup == m_DebuggerManager.DebuggerWindowRoot)
             {
                 names.Add("<b>Close</b>");
             }
@@ -340,7 +366,7 @@ namespace UnityGameFramework.Runtime
             int toolbarIndex = GUILayout.Toolbar(debuggerWindowGroup.SelectedIndex, names.ToArray(), GUILayout.Height(30f), GUILayout.MaxWidth(Screen.width));
             if (toolbarIndex >= debuggerWindowGroup.DebuggerWindowCount)
             {
-                showFullWindow = false;
+                m_ShowFullWindow = false;
                 return;
             }
 
@@ -367,40 +393,40 @@ namespace UnityGameFramework.Runtime
 
         private void DrawDebuggerWindowIcon(int windowId)
         {
-            GUI.DragWindow(_dragRect);
+            GUI.DragWindow(m_DragRect);
             GUILayout.Space(5);
             Color32 color = Color.white;
-            consoleWindow.RefreshCount();
-            if (consoleWindow.FatalCount > 0)
+            m_ConsoleWindow.RefreshCount();
+            if (m_ConsoleWindow.FatalCount > 0)
             {
-                color = consoleWindow.GetLogStringColor(LogType.Exception);
+                color = m_ConsoleWindow.GetLogStringColor(LogType.Exception);
             }
-            else if (consoleWindow.ErrorCount > 0)
+            else if (m_ConsoleWindow.ErrorCount > 0)
             {
-                color = consoleWindow.GetLogStringColor(LogType.Error);
+                color = m_ConsoleWindow.GetLogStringColor(LogType.Error);
             }
-            else if (consoleWindow.WarningCount > 0)
+            else if (m_ConsoleWindow.WarningCount > 0)
             {
-                color = consoleWindow.GetLogStringColor(LogType.Warning);
+                color = m_ConsoleWindow.GetLogStringColor(LogType.Warning);
             }
             else
             {
-                color = consoleWindow.GetLogStringColor(LogType.Log);
+                color = m_ConsoleWindow.GetLogStringColor(LogType.Log);
             }
 
-            string title = Utility.Text.Format("<color=#{0:x2}{1:x2}{2:x2}{3:x2}><b>FPS: {4:F2}</b></color>", color.r, color.g, color.b, color.a, _fpsCounter.CurrentFps);
+            string title = Utility.Text.Format("<color=#{0:x2}{1:x2}{2:x2}{3:x2}><b>FPS: {4:F2}</b></color>", color.r, color.g, color.b, color.a, m_FpsCounter.CurrentFps);
             if (GUILayout.Button(title, GUILayout.Width(100f), GUILayout.Height(40f)))
             {
-                showFullWindow = true;
+                m_ShowFullWindow = true;
             }
         }
 
         private static void CopyToClipboard(string content)
         {
-            STextEditor.text = content;
-            STextEditor.OnFocus();
-            STextEditor.Copy();
-            STextEditor.text = string.Empty;
+            s_TextEditor.text = content;
+            s_TextEditor.OnFocus();
+            s_TextEditor.Copy();
+            s_TextEditor.text = string.Empty;
         }
     }
 }

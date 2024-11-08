@@ -15,11 +15,11 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(DataTableComponent))]
     internal sealed class DataTableComponentInspector : GameFrameworkInspector
     {
-        private SerializedProperty _EnableLoadDataTableUpdateEvent = null;
-        private SerializedProperty _EnableLoadDataTableDependencyAssetEvent = null;
-        private SerializedProperty _CachedBytesSize = null;
+        private SerializedProperty m_EnableLoadDataTableUpdateEvent = null;
+        private SerializedProperty m_EnableLoadDataTableDependencyAssetEvent = null;
+        private SerializedProperty m_CachedBytesSize = null;
 
-        private HelperInfo<DataTableHelperBase> _DataTableHelperInfo = new HelperInfo<DataTableHelperBase>("DataTable");
+        private HelperInfo<DataTableHelperBase> m_DataTableHelperInfo = new HelperInfo<DataTableHelperBase>("DataTable");
 
         public override void OnInspectorGUI()
         {
@@ -31,10 +31,10 @@ namespace UnityGameFramework.Editor
 
             EditorGUI.BeginDisabledGroup(EditorApplication.isPlayingOrWillChangePlaymode);
             {
-                EditorGUILayout.PropertyField(_EnableLoadDataTableUpdateEvent);
-                EditorGUILayout.PropertyField(_EnableLoadDataTableDependencyAssetEvent);
-                _DataTableHelperInfo.Draw();
-                EditorGUILayout.PropertyField(_CachedBytesSize);
+                EditorGUILayout.PropertyField(m_EnableLoadDataTableUpdateEvent);
+                EditorGUILayout.PropertyField(m_EnableLoadDataTableDependencyAssetEvent);
+                m_DataTableHelperInfo.Draw();
+                EditorGUILayout.PropertyField(m_CachedBytesSize);
             }
             EditorGUI.EndDisabledGroup();
 
@@ -64,11 +64,11 @@ namespace UnityGameFramework.Editor
 
         private void OnEnable()
         {
-            _EnableLoadDataTableUpdateEvent = serializedObject.FindProperty("_EnableLoadDataTableUpdateEvent");
-            _EnableLoadDataTableDependencyAssetEvent = serializedObject.FindProperty("_EnableLoadDataTableDependencyAssetEvent");
-            _CachedBytesSize = serializedObject.FindProperty("_CachedBytesSize");
+            m_EnableLoadDataTableUpdateEvent = serializedObject.FindProperty("m_EnableLoadDataTableUpdateEvent");
+            m_EnableLoadDataTableDependencyAssetEvent = serializedObject.FindProperty("m_EnableLoadDataTableDependencyAssetEvent");
+            m_CachedBytesSize = serializedObject.FindProperty("m_CachedBytesSize");
 
-            _DataTableHelperInfo.Init(serializedObject);
+            m_DataTableHelperInfo.Init(serializedObject);
 
             RefreshTypeNames();
         }
@@ -80,7 +80,7 @@ namespace UnityGameFramework.Editor
 
         private void RefreshTypeNames()
         {
-            _DataTableHelperInfo.Refresh();
+            m_DataTableHelperInfo.Refresh();
             serializedObject.ApplyModifiedProperties();
         }
     }

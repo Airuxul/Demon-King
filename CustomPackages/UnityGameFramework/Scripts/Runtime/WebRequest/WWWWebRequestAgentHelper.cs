@@ -19,11 +19,11 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public class WWWWebRequestAgentHelper : WebRequestAgentHelperBase, IDisposable
     {
-        private WWW _WWW = null;
-        private bool _Disposed = false;
+        private WWW m_WWW = null;
+        private bool m_Disposed = false;
 
-        private EventHandler<WebRequestAgentHelperCompleteEventArgs> _WebRequestAgentHelperCompleteEventHandler = null;
-        private EventHandler<WebRequestAgentHelperErrorEventArgs> _WebRequestAgentHelperErrorEventHandler = null;
+        private EventHandler<WebRequestAgentHelperCompleteEventArgs> m_WebRequestAgentHelperCompleteEventHandler = null;
+        private EventHandler<WebRequestAgentHelperErrorEventArgs> m_WebRequestAgentHelperErrorEventHandler = null;
 
         /// <summary>
         /// Web 请求代理辅助器完成事件。
@@ -32,11 +32,11 @@ namespace UnityGameFramework.Runtime
         {
             add
             {
-                _WebRequestAgentHelperCompleteEventHandler += value;
+                m_WebRequestAgentHelperCompleteEventHandler += value;
             }
             remove
             {
-                _WebRequestAgentHelperCompleteEventHandler -= value;
+                m_WebRequestAgentHelperCompleteEventHandler -= value;
             }
         }
 
@@ -47,11 +47,11 @@ namespace UnityGameFramework.Runtime
         {
             add
             {
-                _WebRequestAgentHelperErrorEventHandler += value;
+                m_WebRequestAgentHelperErrorEventHandler += value;
             }
             remove
             {
-                _WebRequestAgentHelperErrorEventHandler -= value;
+                m_WebRequestAgentHelperErrorEventHandler -= value;
             }
         }
 
@@ -62,7 +62,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public override void Request(string webRequestUri, object userData)
         {
-            if (_WebRequestAgentHelperCompleteEventHandler == null || _WebRequestAgentHelperErrorEventHandler == null)
+            if (m_WebRequestAgentHelperCompleteEventHandler == null || m_WebRequestAgentHelperErrorEventHandler == null)
             {
                 Log.Fatal("Web request agent helper handler is invalid.");
                 return;
@@ -71,11 +71,11 @@ namespace UnityGameFramework.Runtime
             WWWFormInfo wwwFormInfo = (WWWFormInfo)userData;
             if (wwwFormInfo.WWWForm == null)
             {
-                _WWW = new WWW(webRequestUri);
+                m_WWW = new WWW(webRequestUri);
             }
             else
             {
-                _WWW = new WWW(webRequestUri, wwwFormInfo.WWWForm);
+                m_WWW = new WWW(webRequestUri, wwwFormInfo.WWWForm);
             }
         }
 
@@ -87,13 +87,13 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public override void Request(string webRequestUri, byte[] postData, object userData)
         {
-            if (_WebRequestAgentHelperCompleteEventHandler == null || _WebRequestAgentHelperErrorEventHandler == null)
+            if (m_WebRequestAgentHelperCompleteEventHandler == null || m_WebRequestAgentHelperErrorEventHandler == null)
             {
                 Log.Fatal("Web request agent helper handler is invalid.");
                 return;
             }
 
-            _WWW = new WWW(webRequestUri, postData);
+            m_WWW = new WWW(webRequestUri, postData);
         }
 
         /// <summary>
@@ -101,10 +101,10 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override void Reset()
         {
-            if (_WWW != null)
+            if (m_WWW != null)
             {
-                _WWW.Dispose();
-                _WWW = null;
+                m_WWW.Dispose();
+                m_WWW = null;
             }
         }
 
@@ -123,40 +123,40 @@ namespace UnityGameFramework.Runtime
         /// <param name="disposing">释放资源标记。</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (_Disposed)
+            if (m_Disposed)
             {
                 return;
             }
 
             if (disposing)
             {
-                if (_WWW != null)
+                if (m_WWW != null)
                 {
-                    _WWW.Dispose();
-                    _WWW = null;
+                    m_WWW.Dispose();
+                    m_WWW = null;
                 }
             }
 
-            _Disposed = true;
+            m_Disposed = true;
         }
 
         private void Update()
         {
-            if (_WWW == null || !_WWW.isDone)
+            if (m_WWW == null || !m_WWW.isDone)
             {
                 return;
             }
 
-            if (!string.IsNullOrEmpty(_WWW.error))
+            if (!string.IsNullOrEmpty(m_WWW.error))
             {
-                WebRequestAgentHelperErrorEventArgs webRequestAgentHelperErrorEventArgs = WebRequestAgentHelperErrorEventArgs.Create(_WWW.error);
-                _WebRequestAgentHelperErrorEventHandler(this, webRequestAgentHelperErrorEventArgs);
+                WebRequestAgentHelperErrorEventArgs webRequestAgentHelperErrorEventArgs = WebRequestAgentHelperErrorEventArgs.Create(m_WWW.error);
+                m_WebRequestAgentHelperErrorEventHandler(this, webRequestAgentHelperErrorEventArgs);
                 ReferencePool.Release(webRequestAgentHelperErrorEventArgs);
             }
             else
             {
-                WebRequestAgentHelperCompleteEventArgs webRequestAgentHelperCompleteEventArgs = WebRequestAgentHelperCompleteEventArgs.Create(_WWW.bytes);
-                _WebRequestAgentHelperCompleteEventHandler(this, webRequestAgentHelperCompleteEventArgs);
+                WebRequestAgentHelperCompleteEventArgs webRequestAgentHelperCompleteEventArgs = WebRequestAgentHelperCompleteEventArgs.Create(m_WWW.bytes);
+                m_WebRequestAgentHelperCompleteEventHandler(this, webRequestAgentHelperCompleteEventArgs);
                 ReferencePool.Release(webRequestAgentHelperCompleteEventArgs);
             }
         }

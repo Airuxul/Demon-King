@@ -19,8 +19,8 @@ namespace GameFramework.Resource
         {
             private static readonly int[] EmptyIntArray = new int[] { };
 
-            private readonly string _Name;
-            private readonly int[] _ResourceIndexes;
+            private readonly string m_Name;
+            private readonly int[] m_ResourceIndexes;
 
             /// <summary>
             /// 初始化文件系统的新实例。
@@ -34,8 +34,8 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException("Name is invalid.");
                 }
 
-                _Name = name;
-                _ResourceIndexes = resourceIndexes ?? EmptyIntArray;
+                m_Name = name;
+                m_ResourceIndexes = resourceIndexes ?? EmptyIntArray;
             }
 
             /// <summary>
@@ -45,7 +45,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _Name;
+                    return m_Name;
                 }
             }
 
@@ -55,7 +55,7 @@ namespace GameFramework.Resource
             /// <returns>文件系统包含的资源索引集合。</returns>
             public int[] GetResourceIndexes()
             {
-                return _ResourceIndexes;
+                return m_ResourceIndexes;
             }
         }
     }

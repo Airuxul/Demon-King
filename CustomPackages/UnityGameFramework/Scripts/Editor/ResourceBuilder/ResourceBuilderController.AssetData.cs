@@ -11,26 +11,26 @@ namespace UnityGameFramework.Editor.ResourceTools
     {
         private sealed class AssetData
         {
-            private readonly string _Guid;
-            private readonly string _Name;
-            private readonly int _Length;
-            private readonly int _HashCode;
-            private readonly string[] _DependencyAssetNames;
+            private readonly string m_Guid;
+            private readonly string m_Name;
+            private readonly int m_Length;
+            private readonly int m_HashCode;
+            private readonly string[] m_DependencyAssetNames;
 
             public AssetData(string guid, string name, int length, int hashCode, string[] dependencyAssetNames)
             {
-                _Guid = guid;
-                _Name = name;
-                _Length = length;
-                _HashCode = hashCode;
-                _DependencyAssetNames = dependencyAssetNames;
+                m_Guid = guid;
+                m_Name = name;
+                m_Length = length;
+                m_HashCode = hashCode;
+                m_DependencyAssetNames = dependencyAssetNames;
             }
 
             public string Guid
             {
                 get
                 {
-                    return _Guid;
+                    return m_Guid;
                 }
             }
 
@@ -38,7 +38,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             {
                 get
                 {
-                    return _Name;
+                    return m_Name;
                 }
             }
 
@@ -46,7 +46,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             {
                 get
                 {
-                    return _Length;
+                    return m_Length;
                 }
             }
 
@@ -54,13 +54,13 @@ namespace UnityGameFramework.Editor.ResourceTools
             {
                 get
                 {
-                    return _HashCode;
+                    return m_HashCode;
                 }
             }
 
             public string[] GetDependencyAssetNames()
             {
-                return _DependencyAssetNames;
+                return m_DependencyAssetNames;
             }
         }
     }

@@ -11,24 +11,24 @@ namespace GameFramework.UI
     {
         private sealed class OpenUIFormInfo : IReference
         {
-            private int _SerialId;
-            private UIGroup _UIGroup;
-            private bool _PauseCoveredUIForm;
-            private object _UserData;
+            private int m_SerialId;
+            private UIGroup m_UIGroup;
+            private bool m_PauseCoveredUIForm;
+            private object m_UserData;
 
             public OpenUIFormInfo()
             {
-                _SerialId = 0;
-                _UIGroup = null;
-                _PauseCoveredUIForm = false;
-                _UserData = null;
+                m_SerialId = 0;
+                m_UIGroup = null;
+                m_PauseCoveredUIForm = false;
+                m_UserData = null;
             }
 
             public int SerialId
             {
                 get
                 {
-                    return _SerialId;
+                    return m_SerialId;
                 }
             }
 
@@ -36,7 +36,7 @@ namespace GameFramework.UI
             {
                 get
                 {
-                    return _UIGroup;
+                    return m_UIGroup;
                 }
             }
 
@@ -44,7 +44,7 @@ namespace GameFramework.UI
             {
                 get
                 {
-                    return _PauseCoveredUIForm;
+                    return m_PauseCoveredUIForm;
                 }
             }
 
@@ -52,26 +52,26 @@ namespace GameFramework.UI
             {
                 get
                 {
-                    return _UserData;
+                    return m_UserData;
                 }
             }
 
             public static OpenUIFormInfo Create(int serialId, UIGroup uiGroup, bool pauseCoveredUIForm, object userData)
             {
                 OpenUIFormInfo openUIFormInfo = ReferencePool.Acquire<OpenUIFormInfo>();
-                openUIFormInfo._SerialId = serialId;
-                openUIFormInfo._UIGroup = uiGroup;
-                openUIFormInfo._PauseCoveredUIForm = pauseCoveredUIForm;
-                openUIFormInfo._UserData = userData;
+                openUIFormInfo.m_SerialId = serialId;
+                openUIFormInfo.m_UIGroup = uiGroup;
+                openUIFormInfo.m_PauseCoveredUIForm = pauseCoveredUIForm;
+                openUIFormInfo.m_UserData = userData;
                 return openUIFormInfo;
             }
 
             public void Clear()
             {
-                _SerialId = 0;
-                _UIGroup = null;
-                _PauseCoveredUIForm = false;
-                _UserData = null;
+                m_SerialId = 0;
+                m_UIGroup = null;
+                m_PauseCoveredUIForm = false;
+                m_UserData = null;
             }
         }
     }

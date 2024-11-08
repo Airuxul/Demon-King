@@ -33,7 +33,13 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 获取用户自定义网络错误事件编号。
         /// </summary>
-        public override int Id => EventId;
+        public override int Id
+        {
+            get
+            {
+                return EventId;
+            }
+        }
 
         /// <summary>
         /// 获取网络频道。

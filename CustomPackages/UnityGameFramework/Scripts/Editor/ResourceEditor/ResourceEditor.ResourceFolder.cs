@@ -18,13 +18,13 @@ namespace UnityGameFramework.Editor.ResourceTools
         {
             private static Texture s_CachedIcon = null;
 
-            private readonly List<ResourceFolder> _Folders;
-            private readonly List<ResourceItem> _Items;
+            private readonly List<ResourceFolder> m_Folders;
+            private readonly List<ResourceItem> m_Items;
 
             public ResourceFolder(string name, ResourceFolder folder)
             {
-                _Folders = new List<ResourceFolder>();
-                _Items = new List<ResourceItem>();
+                m_Folders = new List<ResourceFolder>();
+                m_Items = new List<ResourceItem>();
 
                 Name = name;
                 Folder = folder;
@@ -73,13 +73,13 @@ namespace UnityGameFramework.Editor.ResourceTools
 
             public void Clear()
             {
-                _Folders.Clear();
-                _Items.Clear();
+                m_Folders.Clear();
+                m_Items.Clear();
             }
 
             public ResourceFolder[] GetFolders()
             {
-                return _Folders.ToArray();
+                return m_Folders.ToArray();
             }
 
             public ResourceFolder GetFolder(string name)
@@ -89,7 +89,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                     throw new GameFrameworkException("Resource folder name is invalid.");
                 }
 
-                foreach (ResourceFolder folder in _Folders)
+                foreach (ResourceFolder folder in m_Folders)
                 {
                     if (folder.Name == name)
                     {
@@ -114,14 +114,14 @@ namespace UnityGameFramework.Editor.ResourceTools
                 }
 
                 folder = new ResourceFolder(name, this);
-                _Folders.Add(folder);
+                m_Folders.Add(folder);
 
                 return folder;
             }
 
             public ResourceItem[] GetItems()
             {
-                return _Items.ToArray();
+                return m_Items.ToArray();
             }
 
             public ResourceItem GetItem(string name)
@@ -131,7 +131,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                     throw new GameFrameworkException("Resource item name is invalid.");
                 }
 
-                foreach (ResourceItem item in _Items)
+                foreach (ResourceItem item in m_Items)
                 {
                     if (item.Name == name)
                     {
@@ -151,8 +151,8 @@ namespace UnityGameFramework.Editor.ResourceTools
                 }
 
                 item = new ResourceItem(name, resource, this);
-                _Items.Add(item);
-                _Items.Sort(ResourceItemComparer);
+                m_Items.Add(item);
+                m_Items.Sort(ResourceItemComparer);
             }
 
             private int ResourceItemComparer(ResourceItem a, ResourceItem b)

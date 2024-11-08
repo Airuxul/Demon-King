@@ -20,9 +20,9 @@ namespace GameFramework
                 private const uint DefaultPolynomial = 0xedb88320;
                 private const uint DefaultSeed = 0xffffffff;
 
-                private readonly uint _Seed;
-                private readonly uint[] _Table;
-                private uint _Hash;
+                private readonly uint m_Seed;
+                private readonly uint[] m_Table;
+                private uint m_Hash;
 
                 public Crc32()
                     : this(DefaultPolynomial, DefaultSeed)
@@ -31,24 +31,24 @@ namespace GameFramework
 
                 public Crc32(uint polynomial, uint seed)
                 {
-                    _Seed = seed;
-                    _Table = InitializeTable(polynomial);
-                    _Hash = seed;
+                    m_Seed = seed;
+                    m_Table = InitializeTable(polynomial);
+                    m_Hash = seed;
                 }
 
                 public void Initialize()
                 {
-                    _Hash = _Seed;
+                    m_Hash = m_Seed;
                 }
 
                 public void HashCore(byte[] bytes, int offset, int length)
                 {
-                    _Hash = CalculateHash(_Table, _Hash, bytes, offset, length);
+                    m_Hash = CalculateHash(m_Table, m_Hash, bytes, offset, length);
                 }
 
                 public uint HashFinal()
                 {
-                    return ~_Hash;
+                    return ~m_Hash;
                 }
 
                 private static uint CalculateHash(uint[] table, uint value, byte[] bytes, int offset, int length)

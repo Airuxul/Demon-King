@@ -16,20 +16,20 @@ namespace GameFramework.DataTable
     /// </summary>
     internal sealed partial class DataTableManager : GameFrameworkModule, IDataTableManager
     {
-        private readonly Dictionary<TypeNamePair, DataTableBase> _DataTables;
-        private IResourceManager _ResourceManager;
-        private IDataProviderHelper<DataTableBase> _DataProviderHelper;
-        private IDataTableHelper _DataTableHelper;
+        private readonly Dictionary<TypeNamePair, DataTableBase> m_DataTables;
+        private IResourceManager m_ResourceManager;
+        private IDataProviderHelper<DataTableBase> m_DataProviderHelper;
+        private IDataTableHelper m_DataTableHelper;
 
         /// <summary>
         /// 初始化数据表管理器的新实例。
         /// </summary>
         public DataTableManager()
         {
-            _DataTables = new Dictionary<TypeNamePair, DataTableBase>();
-            _ResourceManager = null;
-            _DataProviderHelper = null;
-            _DataTableHelper = null;
+            m_DataTables = new Dictionary<TypeNamePair, DataTableBase>();
+            m_ResourceManager = null;
+            m_DataProviderHelper = null;
+            m_DataTableHelper = null;
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace GameFramework.DataTable
         {
             get
             {
-                return _DataTables.Count;
+                return m_DataTables.Count;
             }
         }
 
@@ -68,12 +68,12 @@ namespace GameFramework.DataTable
         /// </summary>
         internal override void Shutdown()
         {
-            foreach (KeyValuePair<TypeNamePair, DataTableBase> dataTable in _DataTables)
+            foreach (KeyValuePair<TypeNamePair, DataTableBase> dataTable in m_DataTables)
             {
                 dataTable.Value.Shutdown();
             }
 
-            _DataTables.Clear();
+            m_DataTables.Clear();
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace GameFramework.DataTable
                 throw new GameFrameworkException("Resource manager is invalid.");
             }
 
-            _ResourceManager = resourceManager;
+            m_ResourceManager = resourceManager;
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace GameFramework.DataTable
                 throw new GameFrameworkException("Data provider helper is invalid.");
             }
 
-            _DataProviderHelper = dataProviderHelper;
+            m_DataProviderHelper = dataProviderHelper;
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace GameFramework.DataTable
                 throw new GameFrameworkException("Data table helper is invalid.");
             }
 
-            _DataTableHelper = dataTableHelper;
+            m_DataTableHelper = dataTableHelper;
         }
 
         /// <summary>
@@ -266,8 +266,8 @@ namespace GameFramework.DataTable
         public DataTableBase[] GetAllDataTables()
         {
             int index = 0;
-            DataTableBase[] results = new DataTableBase[_DataTables.Count];
-            foreach (KeyValuePair<TypeNamePair, DataTableBase> dataTable in _DataTables)
+            DataTableBase[] results = new DataTableBase[m_DataTables.Count];
+            foreach (KeyValuePair<TypeNamePair, DataTableBase> dataTable in m_DataTables)
             {
                 results[index++] = dataTable.Value;
             }
@@ -287,7 +287,7 @@ namespace GameFramework.DataTable
             }
 
             results.Clear();
-            foreach (KeyValuePair<TypeNamePair, DataTableBase> dataTable in _DataTables)
+            foreach (KeyValuePair<TypeNamePair, DataTableBase> dataTable in m_DataTables)
             {
                 results.Add(dataTable.Value);
             }
@@ -321,12 +321,12 @@ namespace GameFramework.DataTable
         /// <returns>要创建的数据表。</returns>
         public IDataTable<T> CreateDataTable<T>(string name) where T : class, IDataRow, new()
         {
-            if (_ResourceManager == null)
+            if (m_ResourceManager == null)
             {
                 throw new GameFrameworkException("You must set resource manager first.");
             }
 
-            if (_DataProviderHelper == null)
+            if (m_DataProviderHelper == null)
             {
                 throw new GameFrameworkException("You must set data provider helper first.");
             }
@@ -338,9 +338,9 @@ namespace GameFramework.DataTable
             }
 
             DataTable<T> dataTable = new DataTable<T>(name);
-            dataTable.SetResourceManager(_ResourceManager);
-            dataTable.SetDataProviderHelper(_DataProviderHelper);
-            _DataTables.Add(typeNamePair, dataTable);
+            dataTable.SetResourceManager(m_ResourceManager);
+            dataTable.SetDataProviderHelper(m_DataProviderHelper);
+            m_DataTables.Add(typeNamePair, dataTable);
             return dataTable;
         }
 
@@ -352,12 +352,12 @@ namespace GameFramework.DataTable
         /// <returns>要创建的数据表。</returns>
         public DataTableBase CreateDataTable(Type dataRowType, string name)
         {
-            if (_ResourceManager == null)
+            if (m_ResourceManager == null)
             {
                 throw new GameFrameworkException("You must set resource manager first.");
             }
 
-            if (_DataProviderHelper == null)
+            if (m_DataProviderHelper == null)
             {
                 throw new GameFrameworkException("You must set data provider helper first.");
             }
@@ -380,9 +380,9 @@ namespace GameFramework.DataTable
 
             Type dataTableType = typeof(DataTable<>).MakeGenericType(dataRowType);
             DataTableBase dataTable = (DataTableBase)Activator.CreateInstance(dataTableType, name);
-            dataTable.SetResourceManager(_ResourceManager);
-            dataTable.SetDataProviderHelper(_DataProviderHelper);
-            _DataTables.Add(typeNamePair, dataTable);
+            dataTable.SetResourceManager(m_ResourceManager);
+            dataTable.SetDataProviderHelper(m_DataProviderHelper);
+            m_DataTables.Add(typeNamePair, dataTable);
             return dataTable;
         }
 
@@ -479,13 +479,13 @@ namespace GameFramework.DataTable
 
         private bool InternalHasDataTable(TypeNamePair typeNamePair)
         {
-            return _DataTables.ContainsKey(typeNamePair);
+            return m_DataTables.ContainsKey(typeNamePair);
         }
 
         private DataTableBase InternalGetDataTable(TypeNamePair typeNamePair)
         {
             DataTableBase dataTable = null;
-            if (_DataTables.TryGetValue(typeNamePair, out dataTable))
+            if (m_DataTables.TryGetValue(typeNamePair, out dataTable))
             {
                 return dataTable;
             }
@@ -496,10 +496,10 @@ namespace GameFramework.DataTable
         private bool InternalDestroyDataTable(TypeNamePair typeNamePair)
         {
             DataTableBase dataTable = null;
-            if (_DataTables.TryGetValue(typeNamePair, out dataTable))
+            if (m_DataTables.TryGetValue(typeNamePair, out dataTable))
             {
                 dataTable.Shutdown();
-                return _DataTables.Remove(typeNamePair);
+                return m_DataTables.Remove(typeNamePair);
             }
 
             return false;

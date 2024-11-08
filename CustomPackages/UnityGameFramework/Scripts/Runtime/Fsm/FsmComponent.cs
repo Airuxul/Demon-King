@@ -20,12 +20,18 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/FSM")]
     public sealed class FsmComponent : GameFrameworkComponent
     {
-        private IFsmManager _fsmManager = null;
+        private IFsmManager m_FsmManager = null;
 
         /// <summary>
         /// 获取有限状态机数量。
         /// </summary>
-        public int Count => _fsmManager.Count;
+        public int Count
+        {
+            get
+            {
+                return m_FsmManager.Count;
+            }
+        }
 
         /// <summary>
         /// 游戏框架组件初始化。
@@ -34,8 +40,8 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            _fsmManager = GameFrameworkEntry.GetModule<IFsmManager>();
-            if (_fsmManager == null)
+            m_FsmManager = GameFrameworkEntry.GetModule<IFsmManager>();
+            if (m_FsmManager == null)
             {
                 Log.Fatal("FSM manager is invalid.");
                 return;
@@ -53,7 +59,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在有限状态机。</returns>
         public bool HasFsm<T>() where T : class
         {
-            return _fsmManager.HasFsm<T>();
+            return m_FsmManager.HasFsm<T>();
         }
 
         /// <summary>
@@ -63,7 +69,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在有限状态机。</returns>
         public bool HasFsm(Type ownerType)
         {
-            return _fsmManager.HasFsm(ownerType);
+            return m_FsmManager.HasFsm(ownerType);
         }
 
         /// <summary>
@@ -74,7 +80,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在有限状态机。</returns>
         public bool HasFsm<T>(string name) where T : class
         {
-            return _fsmManager.HasFsm<T>(name);
+            return m_FsmManager.HasFsm<T>(name);
         }
 
         /// <summary>
@@ -85,7 +91,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否存在有限状态机。</returns>
         public bool HasFsm(Type ownerType, string name)
         {
-            return _fsmManager.HasFsm(ownerType, name);
+            return m_FsmManager.HasFsm(ownerType, name);
         }
 
         /// <summary>
@@ -95,7 +101,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的有限状态机。</returns>
         public IFsm<T> GetFsm<T>() where T : class
         {
-            return _fsmManager.GetFsm<T>();
+            return m_FsmManager.GetFsm<T>();
         }
 
         /// <summary>
@@ -105,7 +111,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的有限状态机。</returns>
         public FsmBase GetFsm(Type ownerType)
         {
-            return _fsmManager.GetFsm(ownerType);
+            return m_FsmManager.GetFsm(ownerType);
         }
 
         /// <summary>
@@ -116,7 +122,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的有限状态机。</returns>
         public IFsm<T> GetFsm<T>(string name) where T : class
         {
-            return _fsmManager.GetFsm<T>(name);
+            return m_FsmManager.GetFsm<T>(name);
         }
 
         /// <summary>
@@ -127,7 +133,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的有限状态机。</returns>
         public FsmBase GetFsm(Type ownerType, string name)
         {
-            return _fsmManager.GetFsm(ownerType, name);
+            return m_FsmManager.GetFsm(ownerType, name);
         }
 
         /// <summary>
@@ -135,7 +141,7 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public FsmBase[] GetAllFsms()
         {
-            return _fsmManager.GetAllFsms();
+            return m_FsmManager.GetAllFsms();
         }
 
         /// <summary>
@@ -144,7 +150,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">所有有限状态机。</param>
         public void GetAllFsms(List<FsmBase> results)
         {
-            _fsmManager.GetAllFsms(results);
+            m_FsmManager.GetAllFsms(results);
         }
 
         /// <summary>
@@ -156,7 +162,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要创建的有限状态机。</returns>
         public IFsm<T> CreateFsm<T>(T owner, params FsmState<T>[] states) where T : class
         {
-            return _fsmManager.CreateFsm(owner, states);
+            return m_FsmManager.CreateFsm(owner, states);
         }
 
         /// <summary>
@@ -169,7 +175,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要创建的有限状态机。</returns>
         public IFsm<T> CreateFsm<T>(string name, T owner, params FsmState<T>[] states) where T : class
         {
-            return _fsmManager.CreateFsm(name, owner, states);
+            return m_FsmManager.CreateFsm(name, owner, states);
         }
 
         /// <summary>
@@ -181,7 +187,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要创建的有限状态机。</returns>
         public IFsm<T> CreateFsm<T>(T owner, List<FsmState<T>> states) where T : class
         {
-            return _fsmManager.CreateFsm(owner, states);
+            return m_FsmManager.CreateFsm(owner, states);
         }
 
         /// <summary>
@@ -194,7 +200,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要创建的有限状态机。</returns>
         public IFsm<T> CreateFsm<T>(string name, T owner, List<FsmState<T>> states) where T : class
         {
-            return _fsmManager.CreateFsm(name, owner, states);
+            return m_FsmManager.CreateFsm(name, owner, states);
         }
 
         /// <summary>
@@ -204,7 +210,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否销毁有限状态机成功。</returns>
         public bool DestroyFsm<T>() where T : class
         {
-            return _fsmManager.DestroyFsm<T>();
+            return m_FsmManager.DestroyFsm<T>();
         }
 
         /// <summary>
@@ -214,7 +220,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否销毁有限状态机成功。</returns>
         public bool DestroyFsm(Type ownerType)
         {
-            return _fsmManager.DestroyFsm(ownerType);
+            return m_FsmManager.DestroyFsm(ownerType);
         }
 
         /// <summary>
@@ -225,7 +231,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否销毁有限状态机成功。</returns>
         public bool DestroyFsm<T>(string name) where T : class
         {
-            return _fsmManager.DestroyFsm<T>(name);
+            return m_FsmManager.DestroyFsm<T>(name);
         }
 
         /// <summary>
@@ -236,7 +242,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否销毁有限状态机成功。</returns>
         public bool DestroyFsm(Type ownerType, string name)
         {
-            return _fsmManager.DestroyFsm(ownerType, name);
+            return m_FsmManager.DestroyFsm(ownerType, name);
         }
 
         /// <summary>
@@ -247,7 +253,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否销毁有限状态机成功。</returns>
         public bool DestroyFsm<T>(IFsm<T> fsm) where T : class
         {
-            return _fsmManager.DestroyFsm(fsm);
+            return m_FsmManager.DestroyFsm(fsm);
         }
 
         /// <summary>
@@ -257,7 +263,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否销毁有限状态机成功。</returns>
         public bool DestroyFsm(FsmBase fsm)
         {
-            return _fsmManager.DestroyFsm(fsm);
+            return m_FsmManager.DestroyFsm(fsm);
         }
     }
 }

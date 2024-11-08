@@ -14,14 +14,14 @@ namespace GameFramework.Event
     /// </summary>
     internal sealed class EventManager : GameFrameworkModule, IEventManager
     {
-        private readonly EventPool<GameEventArgs> _EventPool;
+        private readonly EventPool<GameEventArgs> m_EventPool;
 
         /// <summary>
         /// 初始化事件管理器的新实例。
         /// </summary>
         public EventManager()
         {
-            _EventPool = new EventPool<GameEventArgs>(EventPoolMode.AllowNoHandler | EventPoolMode.AllowMultiHandler);
+            m_EventPool = new EventPool<GameEventArgs>(EventPoolMode.AllowNoHandler | EventPoolMode.AllowMultiHandler);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace GameFramework.Event
         {
             get
             {
-                return _EventPool.EventHandlerCount;
+                return m_EventPool.EventHandlerCount;
             }
         }
 
@@ -42,7 +42,7 @@ namespace GameFramework.Event
         {
             get
             {
-                return _EventPool.EventCount;
+                return m_EventPool.EventCount;
             }
         }
 
@@ -65,7 +65,7 @@ namespace GameFramework.Event
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
         internal override void Update(float elapseSeconds, float realElapseSeconds)
         {
-            _EventPool.Update(elapseSeconds, realElapseSeconds);
+            m_EventPool.Update(elapseSeconds, realElapseSeconds);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace GameFramework.Event
         /// </summary>
         internal override void Shutdown()
         {
-            _EventPool.Shutdown();
+            m_EventPool.Shutdown();
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace GameFramework.Event
         /// <returns>事件处理函数的数量。</returns>
         public int Count(int id)
         {
-            return _EventPool.Count(id);
+            return m_EventPool.Count(id);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace GameFramework.Event
         /// <returns>是否存在事件处理函数。</returns>
         public bool Check(int id, EventHandler<GameEventArgs> handler)
         {
-            return _EventPool.Check(id, handler);
+            return m_EventPool.Check(id, handler);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace GameFramework.Event
         /// <param name="handler">要订阅的事件处理函数。</param>
         public void Subscribe(int id, EventHandler<GameEventArgs> handler)
         {
-            _EventPool.Subscribe(id, handler);
+            m_EventPool.Subscribe(id, handler);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace GameFramework.Event
         /// <param name="handler">要取消订阅的事件处理函数。</param>
         public void Unsubscribe(int id, EventHandler<GameEventArgs> handler)
         {
-            _EventPool.Unsubscribe(id, handler);
+            m_EventPool.Unsubscribe(id, handler);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace GameFramework.Event
         /// <param name="handler">要设置的默认事件处理函数。</param>
         public void SetDefaultHandler(EventHandler<GameEventArgs> handler)
         {
-            _EventPool.SetDefaultHandler(handler);
+            m_EventPool.SetDefaultHandler(handler);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace GameFramework.Event
         /// <param name="e">事件参数。</param>
         public void Fire(object sender, GameEventArgs e)
         {
-            _EventPool.Fire(sender, e);
+            m_EventPool.Fire(sender, e);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace GameFramework.Event
         /// <param name="e">事件参数。</param>
         public void FireNow(object sender, GameEventArgs e)
         {
-            _EventPool.FireNow(sender, e);
+            m_EventPool.FireNow(sender, e);
         }
     }
 }

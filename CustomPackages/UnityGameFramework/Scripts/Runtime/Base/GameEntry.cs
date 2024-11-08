@@ -18,7 +18,7 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public static class GameEntry
     {
-        private static readonly GameFrameworkLinkedList<GameFrameworkComponent> SGameFrameworkComponents = new GameFrameworkLinkedList<GameFrameworkComponent>();
+        private static readonly GameFrameworkLinkedList<GameFrameworkComponent> s_GameFrameworkComponents = new GameFrameworkLinkedList<GameFrameworkComponent>();
 
         /// <summary>
         /// 游戏框架所在的场景编号。
@@ -42,7 +42,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的游戏框架组件。</returns>
         public static GameFrameworkComponent GetComponent(Type type)
         {
-            LinkedListNode<GameFrameworkComponent> current = SGameFrameworkComponents.First;
+            LinkedListNode<GameFrameworkComponent> current = s_GameFrameworkComponents.First;
             while (current != null)
             {
                 if (current.Value.GetType() == type)
@@ -63,7 +63,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>要获取的游戏框架组件。</returns>
         public static GameFrameworkComponent GetComponent(string typeName)
         {
-            LinkedListNode<GameFrameworkComponent> current = SGameFrameworkComponents.First;
+            LinkedListNode<GameFrameworkComponent> current = s_GameFrameworkComponents.First;
             while (current != null)
             {
                 Type type = current.Value.GetType();
@@ -92,7 +92,7 @@ namespace UnityGameFramework.Runtime
                 baseComponent = null;
             }
 
-            SGameFrameworkComponents.Clear();
+            s_GameFrameworkComponents.Clear();
 
             if (shutdownType == ShutdownType.None)
             {
@@ -129,7 +129,7 @@ namespace UnityGameFramework.Runtime
 
             Type type = gameFrameworkComponent.GetType();
 
-            LinkedListNode<GameFrameworkComponent> current = SGameFrameworkComponents.First;
+            LinkedListNode<GameFrameworkComponent> current = s_GameFrameworkComponents.First;
             while (current != null)
             {
                 if (current.Value.GetType() == type)
@@ -141,7 +141,7 @@ namespace UnityGameFramework.Runtime
                 current = current.Next;
             }
 
-            SGameFrameworkComponents.AddLast(gameFrameworkComponent);
+            s_GameFrameworkComponents.AddLast(gameFrameworkComponent);
         }
     }
 }

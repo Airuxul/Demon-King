@@ -14,10 +14,10 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(DebuggerComponent))]
     internal sealed class DebuggerComponentInspector : GameFrameworkInspector
     {
-        private SerializedProperty _Skin = null;
-        private SerializedProperty _ActiveWindow = null;
-        private SerializedProperty _ShowFullWindow = null;
-        private SerializedProperty _ConsoleWindow = null;
+        private SerializedProperty m_Skin = null;
+        private SerializedProperty m_ActiveWindow = null;
+        private SerializedProperty m_ShowFullWindow = null;
+        private SerializedProperty m_ConsoleWindow = null;
 
         public override void OnInspectorGUI()
         {
@@ -27,7 +27,7 @@ namespace UnityGameFramework.Editor
 
             DebuggerComponent t = (DebuggerComponent)target;
 
-            EditorGUILayout.PropertyField(_Skin);
+            EditorGUILayout.PropertyField(m_Skin);
 
             if (EditorApplication.isPlaying && IsPrefabInHierarchy(t.gameObject))
             {
@@ -39,10 +39,10 @@ namespace UnityGameFramework.Editor
             }
             else
             {
-                EditorGUILayout.PropertyField(_ActiveWindow);
+                EditorGUILayout.PropertyField(m_ActiveWindow);
             }
 
-            EditorGUILayout.PropertyField(_ShowFullWindow);
+            EditorGUILayout.PropertyField(m_ShowFullWindow);
 
             if (EditorApplication.isPlaying)
             {
@@ -52,17 +52,17 @@ namespace UnityGameFramework.Editor
                 }
             }
 
-            EditorGUILayout.PropertyField(_ConsoleWindow, true);
+            EditorGUILayout.PropertyField(m_ConsoleWindow, true);
 
             serializedObject.ApplyModifiedProperties();
         }
 
         private void OnEnable()
         {
-            _Skin = serializedObject.FindProperty("_Skin");
-            _ActiveWindow = serializedObject.FindProperty("_ActiveWindow");
-            _ShowFullWindow = serializedObject.FindProperty("_ShowFullWindow");
-            _ConsoleWindow = serializedObject.FindProperty("_ConsoleWindow");
+            m_Skin = serializedObject.FindProperty("m_Skin");
+            m_ActiveWindow = serializedObject.FindProperty("m_ActiveWindow");
+            m_ShowFullWindow = serializedObject.FindProperty("m_ShowFullWindow");
+            m_ConsoleWindow = serializedObject.FindProperty("m_ConsoleWindow");
         }
     }
 }

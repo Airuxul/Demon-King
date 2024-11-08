@@ -18,12 +18,12 @@ namespace GameFramework.Resource
         /// </summary>
         private sealed class VersionListProcessor
         {
-            private readonly ResourceManager _ResourceManager;
-            private IDownloadManager _DownloadManager;
-            private int _VersionListLength;
-            private int _VersionListHashCode;
-            private int _VersionListCompressedLength;
-            private int _VersionListCompressedHashCode;
+            private readonly ResourceManager m_ResourceManager;
+            private IDownloadManager m_DownloadManager;
+            private int m_VersionListLength;
+            private int m_VersionListHashCode;
+            private int m_VersionListCompressedLength;
+            private int m_VersionListCompressedHashCode;
 
             public GameFrameworkAction<string, string> VersionListUpdateSuccess;
             public GameFrameworkAction<string, string> VersionListUpdateFailure;
@@ -34,12 +34,12 @@ namespace GameFramework.Resource
             /// <param name="resourceManager">资源管理器。</param>
             public VersionListProcessor(ResourceManager resourceManager)
             {
-                _ResourceManager = resourceManager;
-                _DownloadManager = null;
-                _VersionListLength = 0;
-                _VersionListHashCode = 0;
-                _VersionListCompressedLength = 0;
-                _VersionListCompressedHashCode = 0;
+                m_ResourceManager = resourceManager;
+                m_DownloadManager = null;
+                m_VersionListLength = 0;
+                m_VersionListHashCode = 0;
+                m_VersionListCompressedLength = 0;
+                m_VersionListCompressedHashCode = 0;
 
                 VersionListUpdateSuccess = null;
                 VersionListUpdateFailure = null;
@@ -50,10 +50,10 @@ namespace GameFramework.Resource
             /// </summary>
             public void Shutdown()
             {
-                if (_DownloadManager != null)
+                if (m_DownloadManager != null)
                 {
-                    _DownloadManager.DownloadSuccess -= OnDownloadSuccess;
-                    _DownloadManager.DownloadFailure -= OnDownloadFailure;
+                    m_DownloadManager.DownloadSuccess -= OnDownloadSuccess;
+                    m_DownloadManager.DownloadFailure -= OnDownloadFailure;
                 }
             }
 
@@ -68,9 +68,9 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException("Download manager is invalid.");
                 }
 
-                _DownloadManager = downloadManager;
-                _DownloadManager.DownloadSuccess += OnDownloadSuccess;
-                _DownloadManager.DownloadFailure += OnDownloadFailure;
+                m_DownloadManager = downloadManager;
+                m_DownloadManager.DownloadSuccess += OnDownloadSuccess;
+                m_DownloadManager.DownloadFailure += OnDownloadFailure;
             }
 
             /// <summary>
@@ -80,12 +80,12 @@ namespace GameFramework.Resource
             /// <returns>检查版本资源列表结果。</returns>
             public CheckVersionListResult CheckVersionList(int latestInternalResourceVersion)
             {
-                if (string.IsNullOrEmpty(_ResourceManager._ReadWritePath))
+                if (string.IsNullOrEmpty(m_ResourceManager.m_ReadWritePath))
                 {
                     throw new GameFrameworkException("Read-write path is invalid.");
                 }
 
-                string versionListFileName = Utility.Path.GetRegularPath(Path.Combine(_ResourceManager._ReadWritePath, RemoteVersionListFileName));
+                string versionListFileName = Utility.Path.GetRegularPath(Path.Combine(m_ResourceManager.m_ReadWritePath, RemoteVersionListFileName));
                 if (!File.Exists(versionListFileName))
                 {
                     return CheckVersionListResult.NeedUpdate;
@@ -97,7 +97,7 @@ namespace GameFramework.Resource
                 {
                     fileStream = new FileStream(versionListFileName, FileMode.Open, FileAccess.Read);
                     object internalResourceVersionObject = null;
-                    if (!_ResourceManager._UpdatableVersionListSerializer.TryGetValue(fileStream, "InternalResourceVersion", out internalResourceVersionObject))
+                    if (!m_ResourceManager.m_UpdatableVersionListSerializer.TryGetValue(fileStream, "InternalResourceVersion", out internalResourceVersionObject))
                     {
                         return CheckVersionListResult.NeedUpdate;
                     }
@@ -134,19 +134,19 @@ namespace GameFramework.Resource
             /// <param name="versionListCompressedHashCode">版本资源列表压缩后哈希值。</param>
             public void UpdateVersionList(int versionListLength, int versionListHashCode, int versionListCompressedLength, int versionListCompressedHashCode)
             {
-                if (_DownloadManager == null)
+                if (m_DownloadManager == null)
                 {
                     throw new GameFrameworkException("You must set download manager first.");
                 }
 
-                _VersionListLength = versionListLength;
-                _VersionListHashCode = versionListHashCode;
-                _VersionListCompressedLength = versionListCompressedLength;
-                _VersionListCompressedHashCode = versionListCompressedHashCode;
-                string localVersionListFilePath = Utility.Path.GetRegularPath(Path.Combine(_ResourceManager._ReadWritePath, RemoteVersionListFileName));
+                m_VersionListLength = versionListLength;
+                m_VersionListHashCode = versionListHashCode;
+                m_VersionListCompressedLength = versionListCompressedLength;
+                m_VersionListCompressedHashCode = versionListCompressedHashCode;
+                string localVersionListFilePath = Utility.Path.GetRegularPath(Path.Combine(m_ResourceManager.m_ReadWritePath, RemoteVersionListFileName));
                 int dotPosition = RemoteVersionListFileName.LastIndexOf('.');
-                string latestVersionListFullNameWithCrc32 = Utility.Text.Format("{0}.{2:x8}.{1}", RemoteVersionListFileName.Substring(0, dotPosition), RemoteVersionListFileName.Substring(dotPosition + 1), _VersionListHashCode);
-                _DownloadManager.AddDownload(localVersionListFilePath, Utility.Path.GetRemotePath(Path.Combine(_ResourceManager._UpdatePrefixUri, latestVersionListFullNameWithCrc32)), this);
+                string latestVersionListFullNameWithCrc32 = Utility.Text.Format("{0}.{2:x8}.{1}", RemoteVersionListFileName.Substring(0, dotPosition), RemoteVersionListFileName.Substring(dotPosition + 1), m_VersionListHashCode);
+                m_DownloadManager.AddDownload(localVersionListFilePath, Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_UpdatePrefixUri, latestVersionListFullNameWithCrc32)), this);
             }
 
             private void OnDownloadSuccess(object sender, DownloadSuccessEventArgs e)
@@ -162,10 +162,10 @@ namespace GameFramework.Resource
                     using (FileStream fileStream = new FileStream(e.DownloadPath, FileMode.Open, FileAccess.ReadWrite))
                     {
                         int length = (int)fileStream.Length;
-                        if (length != _VersionListCompressedLength)
+                        if (length != m_VersionListCompressedLength)
                         {
                             fileStream.Close();
-                            string errorMessage = Utility.Text.Format("Latest version list compressed length error, need '{0}', downloaded '{1}'.", _VersionListCompressedLength, length);
+                            string errorMessage = Utility.Text.Format("Latest version list compressed length error, need '{0}', downloaded '{1}'.", m_VersionListCompressedLength, length);
                             DownloadFailureEventArgs downloadFailureEventArgs = DownloadFailureEventArgs.Create(e.SerialId, e.DownloadPath, e.DownloadUri, errorMessage, e.UserData);
                             OnDownloadFailure(this, downloadFailureEventArgs);
                             ReferencePool.Release(downloadFailureEventArgs);
@@ -174,10 +174,10 @@ namespace GameFramework.Resource
 
                         fileStream.Position = 0L;
                         int hashCode = Utility.Verifier.GetCrc32(fileStream);
-                        if (hashCode != _VersionListCompressedHashCode)
+                        if (hashCode != m_VersionListCompressedHashCode)
                         {
                             fileStream.Close();
-                            string errorMessage = Utility.Text.Format("Latest version list compressed hash code error, need '{0}', downloaded '{1}'.", _VersionListCompressedHashCode, hashCode);
+                            string errorMessage = Utility.Text.Format("Latest version list compressed hash code error, need '{0}', downloaded '{1}'.", m_VersionListCompressedHashCode, hashCode);
                             DownloadFailureEventArgs downloadFailureEventArgs = DownloadFailureEventArgs.Create(e.SerialId, e.DownloadPath, e.DownloadUri, errorMessage, e.UserData);
                             OnDownloadFailure(this, downloadFailureEventArgs);
                             ReferencePool.Release(downloadFailureEventArgs);
@@ -185,8 +185,8 @@ namespace GameFramework.Resource
                         }
 
                         fileStream.Position = 0L;
-                        _ResourceManager.PrepareCachedStream();
-                        if (!Utility.Compression.Decompress(fileStream, _ResourceManager._CachedStream))
+                        m_ResourceManager.PrepareCachedStream();
+                        if (!Utility.Compression.Decompress(fileStream, m_ResourceManager.m_CachedStream))
                         {
                             fileStream.Close();
                             string errorMessage = Utility.Text.Format("Unable to decompress latest version list '{0}'.", e.DownloadPath);
@@ -196,11 +196,11 @@ namespace GameFramework.Resource
                             return;
                         }
 
-                        int uncompressedLength = (int)_ResourceManager._CachedStream.Length;
-                        if (uncompressedLength != _VersionListLength)
+                        int uncompressedLength = (int)m_ResourceManager.m_CachedStream.Length;
+                        if (uncompressedLength != m_VersionListLength)
                         {
                             fileStream.Close();
-                            string errorMessage = Utility.Text.Format("Latest version list length error, need '{0}', downloaded '{1}'.", _VersionListLength, uncompressedLength);
+                            string errorMessage = Utility.Text.Format("Latest version list length error, need '{0}', downloaded '{1}'.", m_VersionListLength, uncompressedLength);
                             DownloadFailureEventArgs downloadFailureEventArgs = DownloadFailureEventArgs.Create(e.SerialId, e.DownloadPath, e.DownloadUri, errorMessage, e.UserData);
                             OnDownloadFailure(this, downloadFailureEventArgs);
                             ReferencePool.Release(downloadFailureEventArgs);
@@ -209,7 +209,7 @@ namespace GameFramework.Resource
 
                         fileStream.Position = 0L;
                         fileStream.SetLength(0L);
-                        fileStream.Write(_ResourceManager._CachedStream.GetBuffer(), 0, uncompressedLength);
+                        fileStream.Write(m_ResourceManager.m_CachedStream.GetBuffer(), 0, uncompressedLength);
                     }
 
                     if (VersionListUpdateSuccess != null)

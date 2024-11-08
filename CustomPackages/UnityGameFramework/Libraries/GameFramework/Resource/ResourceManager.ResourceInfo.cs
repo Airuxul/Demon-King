@@ -14,14 +14,14 @@ namespace GameFramework.Resource
         /// </summary>
         private sealed class ResourceInfo
         {
-            private readonly ResourceName _ResourceName;
-            private readonly string _FileSystemName;
-            private readonly LoadType _LoadType;
-            private readonly int _Length;
-            private readonly int _HashCode;
-            private readonly int _CompressedLength;
-            private readonly bool _StorageInReadOnly;
-            private bool _Ready;
+            private readonly ResourceName m_ResourceName;
+            private readonly string m_FileSystemName;
+            private readonly LoadType m_LoadType;
+            private readonly int m_Length;
+            private readonly int m_HashCode;
+            private readonly int m_CompressedLength;
+            private readonly bool m_StorageInReadOnly;
+            private bool m_Ready;
 
             /// <summary>
             /// 初始化资源信息的新实例。
@@ -36,14 +36,14 @@ namespace GameFramework.Resource
             /// <param name="ready">资源是否准备完毕。</param>
             public ResourceInfo(ResourceName resourceName, string fileSystemName, LoadType loadType, int length, int hashCode, int compressedLength, bool storageInReadOnly, bool ready)
             {
-                _ResourceName = resourceName;
-                _FileSystemName = fileSystemName;
-                _LoadType = loadType;
-                _Length = length;
-                _HashCode = hashCode;
-                _CompressedLength = compressedLength;
-                _StorageInReadOnly = storageInReadOnly;
-                _Ready = ready;
+                m_ResourceName = resourceName;
+                m_FileSystemName = fileSystemName;
+                m_LoadType = loadType;
+                m_Length = length;
+                m_HashCode = hashCode;
+                m_CompressedLength = compressedLength;
+                m_StorageInReadOnly = storageInReadOnly;
+                m_Ready = ready;
             }
 
             /// <summary>
@@ -53,7 +53,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _ResourceName;
+                    return m_ResourceName;
                 }
             }
 
@@ -64,7 +64,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return !string.IsNullOrEmpty(_FileSystemName);
+                    return !string.IsNullOrEmpty(m_FileSystemName);
                 }
             }
 
@@ -75,7 +75,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _FileSystemName;
+                    return m_FileSystemName;
                 }
             }
 
@@ -86,7 +86,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _LoadType == LoadType.LoadFromBinary || _LoadType == LoadType.LoadFromBinaryAndQuickDecrypt || _LoadType == LoadType.LoadFromBinaryAndDecrypt;
+                    return m_LoadType == LoadType.LoadFromBinary || m_LoadType == LoadType.LoadFromBinaryAndQuickDecrypt || m_LoadType == LoadType.LoadFromBinaryAndDecrypt;
                 }
             }
 
@@ -97,7 +97,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _LoadType;
+                    return m_LoadType;
                 }
             }
 
@@ -108,7 +108,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _Length;
+                    return m_Length;
                 }
             }
 
@@ -119,7 +119,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _HashCode;
+                    return m_HashCode;
                 }
             }
 
@@ -130,7 +130,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _CompressedLength;
+                    return m_CompressedLength;
                 }
             }
 
@@ -141,7 +141,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _StorageInReadOnly;
+                    return m_StorageInReadOnly;
                 }
             }
 
@@ -152,7 +152,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _Ready;
+                    return m_Ready;
                 }
             }
 
@@ -161,7 +161,7 @@ namespace GameFramework.Resource
             /// </summary>
             public void MarkReady()
             {
-                _Ready = true;
+                m_Ready = true;
             }
         }
     }

@@ -16,8 +16,8 @@ namespace GameFramework
     [StructLayout(LayoutKind.Auto)]
     internal struct TypeNamePair : IEquatable<TypeNamePair>
     {
-        private readonly Type _Type;
-        private readonly string _Name;
+        private readonly Type m_Type;
+        private readonly string m_Name;
 
         /// <summary>
         /// 初始化类型和名称的组合值的新实例。
@@ -40,8 +40,8 @@ namespace GameFramework
                 throw new GameFrameworkException("Type is invalid.");
             }
 
-            _Type = type;
-            _Name = name ?? string.Empty;
+            m_Type = type;
+            m_Name = name ?? string.Empty;
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace GameFramework
         {
             get
             {
-                return _Type;
+                return m_Type;
             }
         }
 
@@ -62,7 +62,7 @@ namespace GameFramework
         {
             get
             {
-                return _Name;
+                return m_Name;
             }
         }
 
@@ -72,13 +72,13 @@ namespace GameFramework
         /// <returns>类型和名称的组合值字符串。</returns>
         public override string ToString()
         {
-            if (_Type == null)
+            if (m_Type == null)
             {
                 throw new GameFrameworkException("Type is invalid.");
             }
 
-            string typeName = _Type.FullName;
-            return string.IsNullOrEmpty(_Name) ? typeName : Utility.Text.Format("{0}.{1}", typeName, _Name);
+            string typeName = m_Type.FullName;
+            return string.IsNullOrEmpty(m_Name) ? typeName : Utility.Text.Format("{0}.{1}", typeName, m_Name);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace GameFramework
         /// <returns>对象的哈希值。</returns>
         public override int GetHashCode()
         {
-            return _Type.GetHashCode() ^ _Name.GetHashCode();
+            return m_Type.GetHashCode() ^ m_Name.GetHashCode();
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace GameFramework
         /// <returns>被比较的对象是否与自身相等。</returns>
         public bool Equals(TypeNamePair value)
         {
-            return _Type == value._Type && _Name == value._Name;
+            return m_Type == value.m_Type && m_Name == value.m_Name;
         }
 
         /// <summary>

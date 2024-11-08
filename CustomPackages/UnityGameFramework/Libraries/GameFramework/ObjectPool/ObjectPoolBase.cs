@@ -14,7 +14,7 @@ namespace GameFramework.ObjectPool
     /// </summary>
     public abstract class ObjectPoolBase
     {
-        private readonly string _Name;
+        private readonly string m_Name;
 
         /// <summary>
         /// 初始化对象池基类的新实例。
@@ -30,7 +30,7 @@ namespace GameFramework.ObjectPool
         /// <param name="name">对象池名称。</param>
         public ObjectPoolBase(string name)
         {
-            _Name = name ?? string.Empty;
+            m_Name = name ?? string.Empty;
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace GameFramework.ObjectPool
         {
             get
             {
-                return _Name;
+                return m_Name;
             }
         }
 
@@ -51,7 +51,7 @@ namespace GameFramework.ObjectPool
         {
             get
             {
-                return new TypeNamePair(ObjectType, _Name).ToString();
+                return new TypeNamePair(ObjectType, m_Name).ToString();
             }
         }
 

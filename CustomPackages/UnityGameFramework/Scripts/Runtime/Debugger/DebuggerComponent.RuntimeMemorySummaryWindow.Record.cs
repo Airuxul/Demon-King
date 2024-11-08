@@ -13,29 +13,47 @@ namespace UnityGameFramework.Runtime
         {
             private sealed class Record
             {
-                private readonly string _name;
-                private int _count;
-                private long _size;
+                private readonly string m_Name;
+                private int m_Count;
+                private long m_Size;
 
                 public Record(string name)
                 {
-                    _name = name;
-                    _count = 0;
-                    _size = 0L;
+                    m_Name = name;
+                    m_Count = 0;
+                    m_Size = 0L;
                 }
 
-                public string Name => _name;
+                public string Name
+                {
+                    get
+                    {
+                        return m_Name;
+                    }
+                }
 
                 public int Count
                 {
-                    get => _count;
-                    set => _count = value;
+                    get
+                    {
+                        return m_Count;
+                    }
+                    set
+                    {
+                        m_Count = value;
+                    }
                 }
 
                 public long Size
                 {
-                    get => _size;
-                    set => _size = value;
+                    get
+                    {
+                        return m_Size;
+                    }
+                    set
+                    {
+                        m_Size = value;
+                    }
                 }
             }
         }

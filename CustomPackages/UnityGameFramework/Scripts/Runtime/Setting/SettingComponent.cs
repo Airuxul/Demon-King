@@ -10,7 +10,6 @@ using GameFramework.Setting;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UnityGameFramework.Runtime
 {
@@ -21,18 +20,24 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Setting")]
     public sealed class SettingComponent : GameFrameworkComponent
     {
-        private ISettingManager _settingManager = null;
+        private ISettingManager m_SettingManager = null;
 
-        [FormerlySerializedAs("_SettingHelperTypeName")] [SerializeField]
-        private string settingHelperTypeName = "UnityGameFramework.Runtime.DefaultSettingHelper";
+        [SerializeField]
+        private string m_SettingHelperTypeName = "UnityGameFramework.Runtime.DefaultSettingHelper";
 
-        [FormerlySerializedAs("_CustomSettingHelper")] [SerializeField]
-        private SettingHelperBase customSettingHelper = null;
+        [SerializeField]
+        private SettingHelperBase m_CustomSettingHelper = null;
 
         /// <summary>
         /// 获取游戏配置项数量。
         /// </summary>
-        public int Count => _settingManager.Count;
+        public int Count
+        {
+            get
+            {
+                return m_SettingManager.Count;
+            }
+        }
 
         /// <summary>
         /// 游戏框架组件初始化。
@@ -41,14 +46,14 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            _settingManager = GameFrameworkEntry.GetModule<ISettingManager>();
-            if (_settingManager == null)
+            m_SettingManager = GameFrameworkEntry.GetModule<ISettingManager>();
+            if (m_SettingManager == null)
             {
                 Log.Fatal("Setting manager is invalid.");
                 return;
             }
 
-            SettingHelperBase settingHelper = Helper.CreateHelper(settingHelperTypeName, customSettingHelper);
+            SettingHelperBase settingHelper = Helper.CreateHelper(m_SettingHelperTypeName, m_CustomSettingHelper);
             if (settingHelper == null)
             {
                 Log.Error("Can not create setting helper.");
@@ -60,12 +65,12 @@ namespace UnityGameFramework.Runtime
             transform.SetParent(this.transform);
             transform.localScale = Vector3.one;
 
-            _settingManager.SetSettingHelper(settingHelper);
+            m_SettingManager.SetSettingHelper(settingHelper);
         }
 
         private void Start()
         {
-            if (!_settingManager.Load())
+            if (!m_SettingManager.Load())
             {
                 Log.Error("Load settings failure.");
             }
@@ -76,7 +81,7 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public void Save()
         {
-            _settingManager.Save();
+            m_SettingManager.Save();
         }
 
         /// <summary>
@@ -85,7 +90,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>所有游戏配置项的名称。</returns>
         public string[] GetAllSettingNames()
         {
-            return _settingManager.GetAllSettingNames();
+            return m_SettingManager.GetAllSettingNames();
         }
 
         /// <summary>
@@ -94,7 +99,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="results">所有游戏配置项的名称。</param>
         public void GetAllSettingNames(List<string> results)
         {
-            _settingManager.GetAllSettingNames(results);
+            m_SettingManager.GetAllSettingNames(results);
         }
 
         /// <summary>
@@ -104,7 +109,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>指定的游戏配置项是否存在。</returns>
         public bool HasSetting(string settingName)
         {
-            return _settingManager.HasSetting(settingName);
+            return m_SettingManager.HasSetting(settingName);
         }
 
         /// <summary>
@@ -113,7 +118,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="settingName">要移除游戏配置项的名称。</param>
         public void RemoveSetting(string settingName)
         {
-            _settingManager.RemoveSetting(settingName);
+            m_SettingManager.RemoveSetting(settingName);
         }
 
         /// <summary>
@@ -121,7 +126,7 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public void RemoveAllSettings()
         {
-            _settingManager.RemoveAllSettings();
+            m_SettingManager.RemoveAllSettings();
         }
 
         /// <summary>
@@ -131,7 +136,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的布尔值。</returns>
         public bool GetBool(string settingName)
         {
-            return _settingManager.GetBool(settingName);
+            return m_SettingManager.GetBool(settingName);
         }
 
         /// <summary>
@@ -142,7 +147,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的布尔值。</returns>
         public bool GetBool(string settingName, bool defaultValue)
         {
-            return _settingManager.GetBool(settingName, defaultValue);
+            return m_SettingManager.GetBool(settingName, defaultValue);
         }
 
         /// <summary>
@@ -152,7 +157,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="value">要写入的布尔值。</param>
         public void SetBool(string settingName, bool value)
         {
-            _settingManager.SetBool(settingName, value);
+            m_SettingManager.SetBool(settingName, value);
         }
 
         /// <summary>
@@ -162,7 +167,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的整数值。</returns>
         public int GetInt(string settingName)
         {
-            return _settingManager.GetInt(settingName);
+            return m_SettingManager.GetInt(settingName);
         }
 
         /// <summary>
@@ -173,7 +178,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的整数值。</returns>
         public int GetInt(string settingName, int defaultValue)
         {
-            return _settingManager.GetInt(settingName, defaultValue);
+            return m_SettingManager.GetInt(settingName, defaultValue);
         }
 
         /// <summary>
@@ -183,7 +188,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="value">要写入的整数值。</param>
         public void SetInt(string settingName, int value)
         {
-            _settingManager.SetInt(settingName, value);
+            m_SettingManager.SetInt(settingName, value);
         }
 
         /// <summary>
@@ -193,7 +198,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的浮点数值。</returns>
         public float GetFloat(string settingName)
         {
-            return _settingManager.GetFloat(settingName);
+            return m_SettingManager.GetFloat(settingName);
         }
 
         /// <summary>
@@ -204,7 +209,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的浮点数值。</returns>
         public float GetFloat(string settingName, float defaultValue)
         {
-            return _settingManager.GetFloat(settingName, defaultValue);
+            return m_SettingManager.GetFloat(settingName, defaultValue);
         }
 
         /// <summary>
@@ -214,7 +219,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="value">要写入的浮点数值。</param>
         public void SetFloat(string settingName, float value)
         {
-            _settingManager.SetFloat(settingName, value);
+            m_SettingManager.SetFloat(settingName, value);
         }
 
         /// <summary>
@@ -224,7 +229,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的字符串值。</returns>
         public string GetString(string settingName)
         {
-            return _settingManager.GetString(settingName);
+            return m_SettingManager.GetString(settingName);
         }
 
         /// <summary>
@@ -235,7 +240,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的字符串值。</returns>
         public string GetString(string settingName, string defaultValue)
         {
-            return _settingManager.GetString(settingName, defaultValue);
+            return m_SettingManager.GetString(settingName, defaultValue);
         }
 
         /// <summary>
@@ -245,7 +250,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="value">要写入的字符串值。</param>
         public void SetString(string settingName, string value)
         {
-            _settingManager.SetString(settingName, value);
+            m_SettingManager.SetString(settingName, value);
         }
 
         /// <summary>
@@ -256,7 +261,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的对象。</returns>
         public T GetObject<T>(string settingName)
         {
-            return _settingManager.GetObject<T>(settingName);
+            return m_SettingManager.GetObject<T>(settingName);
         }
 
         /// <summary>
@@ -267,7 +272,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的对象。</returns>
         public object GetObject(Type objectType, string settingName)
         {
-            return _settingManager.GetObject(objectType, settingName);
+            return m_SettingManager.GetObject(objectType, settingName);
         }
 
         /// <summary>
@@ -279,7 +284,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的对象。</returns>
         public T GetObject<T>(string settingName, T defaultObj)
         {
-            return _settingManager.GetObject(settingName, defaultObj);
+            return m_SettingManager.GetObject(settingName, defaultObj);
         }
 
         /// <summary>
@@ -291,7 +296,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的对象。</returns>
         public object GetObject(Type objectType, string settingName, object defaultObj)
         {
-            return _settingManager.GetObject(objectType, settingName, defaultObj);
+            return m_SettingManager.GetObject(objectType, settingName, defaultObj);
         }
 
         /// <summary>
@@ -302,7 +307,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="obj">要写入的对象。</param>
         public void SetObject<T>(string settingName, T obj)
         {
-            _settingManager.SetObject(settingName, obj);
+            m_SettingManager.SetObject(settingName, obj);
         }
 
         /// <summary>
@@ -312,7 +317,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="obj">要写入的对象。</param>
         public void SetObject(string settingName, object obj)
         {
-            _settingManager.SetObject(settingName, obj);
+            m_SettingManager.SetObject(settingName, obj);
         }
     }
 }

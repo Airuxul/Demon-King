@@ -17,35 +17,65 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public sealed class Entity : MonoBehaviour, IEntity
     {
-        private int _id;
-        private string _entityAssetName;
-        private IEntityGroup _entityGroup;
-        private EntityLogic _entityLogic;
+        private int m_Id;
+        private string m_EntityAssetName;
+        private IEntityGroup m_EntityGroup;
+        private EntityLogic m_EntityLogic;
 
         /// <summary>
         /// 获取实体编号。
         /// </summary>
-        public int Id => _id;
+        public int Id
+        {
+            get
+            {
+                return m_Id;
+            }
+        }
 
         /// <summary>
         /// 获取实体资源名称。
         /// </summary>
-        public string EntityAssetName => _entityAssetName;
+        public string EntityAssetName
+        {
+            get
+            {
+                return m_EntityAssetName;
+            }
+        }
 
         /// <summary>
         /// 获取实体实例。
         /// </summary>
-        public object Handle => gameObject;
+        public object Handle
+        {
+            get
+            {
+                return gameObject;
+            }
+        }
 
         /// <summary>
         /// 获取实体所属的实体组。
         /// </summary>
-        public IEntityGroup EntityGroup => _entityGroup;
+        public IEntityGroup EntityGroup
+        {
+            get
+            {
+                return m_EntityGroup;
+            }
+        }
 
         /// <summary>
         /// 获取实体逻辑。
         /// </summary>
-        public EntityLogic Logic => _entityLogic;
+        public EntityLogic Logic
+        {
+            get
+            {
+                return m_EntityLogic;
+            }
+        }
 
         /// <summary>
         /// 实体初始化。
@@ -57,13 +87,13 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void OnInit(int entityId, string entityAssetName, IEntityGroup entityGroup, bool isNewInstance, object userData)
         {
-            _id = entityId;
-            _entityAssetName = entityAssetName;
+            m_Id = entityId;
+            m_EntityAssetName = entityAssetName;
             if (isNewInstance)
             {
-                _entityGroup = entityGroup;
+                m_EntityGroup = entityGroup;
             }
-            else if (_entityGroup != entityGroup)
+            else if (m_EntityGroup != entityGroup)
             {
                 Log.Error("Entity group is inconsistent for non-new-instance entity.");
                 return;
@@ -77,20 +107,20 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            if (_entityLogic != null)
+            if (m_EntityLogic != null)
             {
-                if (_entityLogic.GetType() == entityLogicType)
+                if (m_EntityLogic.GetType() == entityLogicType)
                 {
-                    _entityLogic.enabled = true;
+                    m_EntityLogic.enabled = true;
                     return;
                 }
 
-                Destroy(_entityLogic);
-                _entityLogic = null;
+                Destroy(m_EntityLogic);
+                m_EntityLogic = null;
             }
 
-            _entityLogic = gameObject.AddComponent(entityLogicType) as EntityLogic;
-            if (_entityLogic == null)
+            m_EntityLogic = gameObject.AddComponent(entityLogicType) as EntityLogic;
+            if (m_EntityLogic == null)
             {
                 Log.Error("Entity '{0}' can not add entity logic.", entityAssetName);
                 return;
@@ -98,11 +128,11 @@ namespace UnityGameFramework.Runtime
 
             try
             {
-                _entityLogic.OnInit(showEntityInfo.UserData);
+                m_EntityLogic.OnInit(showEntityInfo.UserData);
             }
             catch (Exception exception)
             {
-                Log.Error("Entity '[{0}]{1}' OnInit with exception '{2}'.", _id, _entityAssetName, exception);
+                Log.Error("Entity '[{0}]{1}' OnInit with exception '{2}'.", m_Id, m_EntityAssetName, exception);
             }
         }
 
@@ -113,15 +143,15 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                _entityLogic.OnRecycle();
-                _entityLogic.enabled = false;
+                m_EntityLogic.OnRecycle();
+                m_EntityLogic.enabled = false;
             }
             catch (Exception exception)
             {
-                Log.Error("Entity '[{0}]{1}' OnRecycle with exception '{2}'.", _id, _entityAssetName, exception);
+                Log.Error("Entity '[{0}]{1}' OnRecycle with exception '{2}'.", m_Id, m_EntityAssetName, exception);
             }
 
-            _id = 0;
+            m_Id = 0;
         }
 
         /// <summary>
@@ -133,11 +163,11 @@ namespace UnityGameFramework.Runtime
             ShowEntityInfo showEntityInfo = (ShowEntityInfo)userData;
             try
             {
-                _entityLogic.OnShow(showEntityInfo.UserData);
+                m_EntityLogic.OnShow(showEntityInfo.UserData);
             }
             catch (Exception exception)
             {
-                Log.Error("Entity '[{0}]{1}' OnShow with exception '{2}'.", _id, _entityAssetName, exception);
+                Log.Error("Entity '[{0}]{1}' OnShow with exception '{2}'.", m_Id, m_EntityAssetName, exception);
             }
         }
 
@@ -150,11 +180,11 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                _entityLogic.OnHide(isShutdown, userData);
+                m_EntityLogic.OnHide(isShutdown, userData);
             }
             catch (Exception exception)
             {
-                Log.Error("Entity '[{0}]{1}' OnHide with exception '{2}'.", _id, _entityAssetName, exception);
+                Log.Error("Entity '[{0}]{1}' OnHide with exception '{2}'.", m_Id, m_EntityAssetName, exception);
             }
         }
 
@@ -168,11 +198,11 @@ namespace UnityGameFramework.Runtime
             AttachEntityInfo attachEntityInfo = (AttachEntityInfo)userData;
             try
             {
-                _entityLogic.OnAttached(((Entity)childEntity).Logic, attachEntityInfo.ParentTransform, attachEntityInfo.UserData);
+                m_EntityLogic.OnAttached(((Entity)childEntity).Logic, attachEntityInfo.ParentTransform, attachEntityInfo.UserData);
             }
             catch (Exception exception)
             {
-                Log.Error("Entity '[{0}]{1}' OnAttached with exception '{2}'.", _id, _entityAssetName, exception);
+                Log.Error("Entity '[{0}]{1}' OnAttached with exception '{2}'.", m_Id, m_EntityAssetName, exception);
             }
         }
 
@@ -185,11 +215,11 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                _entityLogic.OnDetached(((Entity)childEntity).Logic, userData);
+                m_EntityLogic.OnDetached(((Entity)childEntity).Logic, userData);
             }
             catch (Exception exception)
             {
-                Log.Error("Entity '[{0}]{1}' OnDetached with exception '{2}'.", _id, _entityAssetName, exception);
+                Log.Error("Entity '[{0}]{1}' OnDetached with exception '{2}'.", m_Id, m_EntityAssetName, exception);
             }
         }
 
@@ -203,11 +233,11 @@ namespace UnityGameFramework.Runtime
             AttachEntityInfo attachEntityInfo = (AttachEntityInfo)userData;
             try
             {
-                _entityLogic.OnAttachTo(((Entity)parentEntity).Logic, attachEntityInfo.ParentTransform, attachEntityInfo.UserData);
+                m_EntityLogic.OnAttachTo(((Entity)parentEntity).Logic, attachEntityInfo.ParentTransform, attachEntityInfo.UserData);
             }
             catch (Exception exception)
             {
-                Log.Error("Entity '[{0}]{1}' OnAttachTo with exception '{2}'.", _id, _entityAssetName, exception);
+                Log.Error("Entity '[{0}]{1}' OnAttachTo with exception '{2}'.", m_Id, m_EntityAssetName, exception);
             }
 
             ReferencePool.Release(attachEntityInfo);
@@ -222,11 +252,11 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                _entityLogic.OnDetachFrom(((Entity)parentEntity).Logic, userData);
+                m_EntityLogic.OnDetachFrom(((Entity)parentEntity).Logic, userData);
             }
             catch (Exception exception)
             {
-                Log.Error("Entity '[{0}]{1}' OnDetachFrom with exception '{2}'.", _id, _entityAssetName, exception);
+                Log.Error("Entity '[{0}]{1}' OnDetachFrom with exception '{2}'.", m_Id, m_EntityAssetName, exception);
             }
         }
 
@@ -239,11 +269,11 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                _entityLogic.OnUpdate(elapseSeconds, realElapseSeconds);
+                m_EntityLogic.OnUpdate(elapseSeconds, realElapseSeconds);
             }
             catch (Exception exception)
             {
-                Log.Error("Entity '[{0}]{1}' OnUpdate with exception '{2}'.", _id, _entityAssetName, exception);
+                Log.Error("Entity '[{0}]{1}' OnUpdate with exception '{2}'.", m_Id, m_EntityAssetName, exception);
             }
         }
     }

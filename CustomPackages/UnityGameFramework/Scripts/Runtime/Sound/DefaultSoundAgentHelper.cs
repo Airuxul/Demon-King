@@ -19,30 +19,48 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public class DefaultSoundAgentHelper : SoundAgentHelperBase
     {
-        private Transform _cachedTransform = null;
-        private AudioSource _audioSource = null;
-        private EntityLogic _bindingEntityLogic = null;
-        private float _volumeWhenPause = 0f;
-        private bool _applicationPauseFlag = false;
-        private EventHandler<ResetSoundAgentEventArgs> _resetSoundAgentEventHandler = null;
+        private Transform m_CachedTransform = null;
+        private AudioSource m_AudioSource = null;
+        private EntityLogic m_BindingEntityLogic = null;
+        private float m_VolumeWhenPause = 0f;
+        private bool m_ApplicationPauseFlag = false;
+        private EventHandler<ResetSoundAgentEventArgs> m_ResetSoundAgentEventHandler = null;
 
         /// <summary>
         /// 获取当前是否正在播放。
         /// </summary>
-        public override bool IsPlaying => _audioSource.isPlaying;
+        public override bool IsPlaying
+        {
+            get
+            {
+                return m_AudioSource.isPlaying;
+            }
+        }
 
         /// <summary>
         /// 获取声音长度。
         /// </summary>
-        public override float Length => _audioSource.clip != null ? _audioSource.clip.length : 0f;
+        public override float Length
+        {
+            get
+            {
+                return m_AudioSource.clip != null ? m_AudioSource.clip.length : 0f;
+            }
+        }
 
         /// <summary>
         /// 获取或设置播放位置。
         /// </summary>
         public override float Time
         {
-            get => _audioSource.time;
-            set => _audioSource.time = value;
+            get
+            {
+                return m_AudioSource.time;
+            }
+            set
+            {
+                m_AudioSource.time = value;
+            }
         }
 
         /// <summary>
@@ -50,8 +68,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override bool Mute
         {
-            get => _audioSource.mute;
-            set => _audioSource.mute = value;
+            get
+            {
+                return m_AudioSource.mute;
+            }
+            set
+            {
+                m_AudioSource.mute = value;
+            }
         }
 
         /// <summary>
@@ -59,8 +83,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override bool Loop
         {
-            get => _audioSource.loop;
-            set => _audioSource.loop = value;
+            get
+            {
+                return m_AudioSource.loop;
+            }
+            set
+            {
+                m_AudioSource.loop = value;
+            }
         }
 
         /// <summary>
@@ -68,8 +98,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override int Priority
         {
-            get => 128 - _audioSource.priority;
-            set => _audioSource.priority = 128 - value;
+            get
+            {
+                return 128 - m_AudioSource.priority;
+            }
+            set
+            {
+                m_AudioSource.priority = 128 - value;
+            }
         }
 
         /// <summary>
@@ -77,8 +113,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override float Volume
         {
-            get => _audioSource.volume;
-            set => _audioSource.volume = value;
+            get
+            {
+                return m_AudioSource.volume;
+            }
+            set
+            {
+                m_AudioSource.volume = value;
+            }
         }
 
         /// <summary>
@@ -86,8 +128,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override float Pitch
         {
-            get => _audioSource.pitch;
-            set => _audioSource.pitch = value;
+            get
+            {
+                return m_AudioSource.pitch;
+            }
+            set
+            {
+                m_AudioSource.pitch = value;
+            }
         }
 
         /// <summary>
@@ -95,8 +143,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override float PanStereo
         {
-            get => _audioSource.panStereo;
-            set => _audioSource.panStereo = value;
+            get
+            {
+                return m_AudioSource.panStereo;
+            }
+            set
+            {
+                m_AudioSource.panStereo = value;
+            }
         }
 
         /// <summary>
@@ -104,8 +158,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override float SpatialBlend
         {
-            get => _audioSource.spatialBlend;
-            set => _audioSource.spatialBlend = value;
+            get
+            {
+                return m_AudioSource.spatialBlend;
+            }
+            set
+            {
+                m_AudioSource.spatialBlend = value;
+            }
         }
 
         /// <summary>
@@ -113,9 +173,15 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override float MaxDistance
         {
-            get => _audioSource.maxDistance;
+            get
+            {
+                return m_AudioSource.maxDistance;
+            }
 
-            set => _audioSource.maxDistance = value;
+            set
+            {
+                m_AudioSource.maxDistance = value;
+            }
         }
 
         /// <summary>
@@ -123,8 +189,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override float DopplerLevel
         {
-            get => _audioSource.dopplerLevel;
-            set => _audioSource.dopplerLevel = value;
+            get
+            {
+                return m_AudioSource.dopplerLevel;
+            }
+            set
+            {
+                m_AudioSource.dopplerLevel = value;
+            }
         }
 
         /// <summary>
@@ -132,8 +204,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override AudioMixerGroup AudioMixerGroup
         {
-            get => _audioSource.outputAudioMixerGroup;
-            set => _audioSource.outputAudioMixerGroup = value;
+            get
+            {
+                return m_AudioSource.outputAudioMixerGroup;
+            }
+            set
+            {
+                m_AudioSource.outputAudioMixerGroup = value;
+            }
         }
 
         /// <summary>
@@ -141,8 +219,14 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override event EventHandler<ResetSoundAgentEventArgs> ResetSoundAgent
         {
-            add => _resetSoundAgentEventHandler += value;
-            remove => _resetSoundAgentEventHandler -= value;
+            add
+            {
+                m_ResetSoundAgentEventHandler += value;
+            }
+            remove
+            {
+                m_ResetSoundAgentEventHandler -= value;
+            }
         }
 
         /// <summary>
@@ -153,12 +237,12 @@ namespace UnityGameFramework.Runtime
         {
             StopAllCoroutines();
 
-            _audioSource.Play();
+            m_AudioSource.Play();
             if (fadeInSeconds > 0f)
             {
-                float volume = _audioSource.volume;
-                _audioSource.volume = 0f;
-                StartCoroutine(FadeToVolume(_audioSource, volume, fadeInSeconds));
+                float volume = m_AudioSource.volume;
+                m_AudioSource.volume = 0f;
+                StartCoroutine(FadeToVolume(m_AudioSource, volume, fadeInSeconds));
             }
         }
 
@@ -176,7 +260,7 @@ namespace UnityGameFramework.Runtime
             }
             else
             {
-                _audioSource.Stop();
+                m_AudioSource.Stop();
             }
         }
 
@@ -188,14 +272,14 @@ namespace UnityGameFramework.Runtime
         {
             StopAllCoroutines();
 
-            _volumeWhenPause = _audioSource.volume;
+            m_VolumeWhenPause = m_AudioSource.volume;
             if (fadeOutSeconds > 0f && gameObject.activeInHierarchy)
             {
                 StartCoroutine(PauseCo(fadeOutSeconds));
             }
             else
             {
-                _audioSource.Pause();
+                m_AudioSource.Pause();
             }
         }
 
@@ -207,14 +291,14 @@ namespace UnityGameFramework.Runtime
         {
             StopAllCoroutines();
 
-            _audioSource.UnPause();
+            m_AudioSource.UnPause();
             if (fadeInSeconds > 0f)
             {
-                StartCoroutine(FadeToVolume(_audioSource, _volumeWhenPause, fadeInSeconds));
+                StartCoroutine(FadeToVolume(m_AudioSource, m_VolumeWhenPause, fadeInSeconds));
             }
             else
             {
-                _audioSource.volume = _volumeWhenPause;
+                m_AudioSource.volume = m_VolumeWhenPause;
             }
         }
 
@@ -223,10 +307,10 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public override void Reset()
         {
-            _cachedTransform.localPosition = Vector3.zero;
-            _audioSource.clip = null;
-            _bindingEntityLogic = null;
-            _volumeWhenPause = 0f;
+            m_CachedTransform.localPosition = Vector3.zero;
+            m_AudioSource.clip = null;
+            m_BindingEntityLogic = null;
+            m_VolumeWhenPause = 0f;
         }
 
         /// <summary>
@@ -242,7 +326,7 @@ namespace UnityGameFramework.Runtime
                 return false;
             }
 
-            _audioSource.clip = audioClip;
+            m_AudioSource.clip = audioClip;
             return true;
         }
 
@@ -252,17 +336,17 @@ namespace UnityGameFramework.Runtime
         /// <param name="bindingEntity">声音绑定的实体。</param>
         public override void SetBindingEntity(Entity bindingEntity)
         {
-            _bindingEntityLogic = bindingEntity.Logic;
-            if (_bindingEntityLogic != null)
+            m_BindingEntityLogic = bindingEntity.Logic;
+            if (m_BindingEntityLogic != null)
             {
                 UpdateAgentPosition();
                 return;
             }
 
-            if (_resetSoundAgentEventHandler != null)
+            if (m_ResetSoundAgentEventHandler != null)
             {
                 ResetSoundAgentEventArgs resetSoundAgentEventArgs = ResetSoundAgentEventArgs.Create();
-                _resetSoundAgentEventHandler(this, resetSoundAgentEventArgs);
+                m_ResetSoundAgentEventHandler(this, resetSoundAgentEventArgs);
                 ReferencePool.Release(resetSoundAgentEventArgs);
             }
         }
@@ -273,28 +357,28 @@ namespace UnityGameFramework.Runtime
         /// <param name="worldPosition">声音所在的世界坐标。</param>
         public override void SetWorldPosition(Vector3 worldPosition)
         {
-            _cachedTransform.position = worldPosition;
+            m_CachedTransform.position = worldPosition;
         }
 
         private void Awake()
         {
-            _cachedTransform = transform;
-            _audioSource = gameObject.GetOrAddComponent<AudioSource>();
-            _audioSource.playOnAwake = false;
-            _audioSource.rolloffMode = AudioRolloffMode.Custom;
+            m_CachedTransform = transform;
+            m_AudioSource = gameObject.GetOrAddComponent<AudioSource>();
+            m_AudioSource.playOnAwake = false;
+            m_AudioSource.rolloffMode = AudioRolloffMode.Custom;
         }
 
         private void Update()
         {
-            if (!_applicationPauseFlag && !IsPlaying && _audioSource.clip != null && _resetSoundAgentEventHandler != null)
+            if (!m_ApplicationPauseFlag && !IsPlaying && m_AudioSource.clip != null && m_ResetSoundAgentEventHandler != null)
             {
                 ResetSoundAgentEventArgs resetSoundAgentEventArgs = ResetSoundAgentEventArgs.Create();
-                _resetSoundAgentEventHandler(this, resetSoundAgentEventArgs);
+                m_ResetSoundAgentEventHandler(this, resetSoundAgentEventArgs);
                 ReferencePool.Release(resetSoundAgentEventArgs);
                 return;
             }
 
-            if (_bindingEntityLogic != null)
+            if (m_BindingEntityLogic != null)
             {
                 UpdateAgentPosition();
             }
@@ -302,35 +386,35 @@ namespace UnityGameFramework.Runtime
 
         private void OnApplicationPause(bool pause)
         {
-            _applicationPauseFlag = pause;
+            m_ApplicationPauseFlag = pause;
         }
 
         private void UpdateAgentPosition()
         {
-            if (_bindingEntityLogic.Available)
+            if (m_BindingEntityLogic.Available)
             {
-                _cachedTransform.position = _bindingEntityLogic.CachedTransform.position;
+                m_CachedTransform.position = m_BindingEntityLogic.CachedTransform.position;
                 return;
             }
 
-            if (_resetSoundAgentEventHandler != null)
+            if (m_ResetSoundAgentEventHandler != null)
             {
                 ResetSoundAgentEventArgs resetSoundAgentEventArgs = ResetSoundAgentEventArgs.Create();
-                _resetSoundAgentEventHandler(this, resetSoundAgentEventArgs);
+                m_ResetSoundAgentEventHandler(this, resetSoundAgentEventArgs);
                 ReferencePool.Release(resetSoundAgentEventArgs);
             }
         }
 
         private IEnumerator StopCo(float fadeOutSeconds)
         {
-            yield return FadeToVolume(_audioSource, 0f, fadeOutSeconds);
-            _audioSource.Stop();
+            yield return FadeToVolume(m_AudioSource, 0f, fadeOutSeconds);
+            m_AudioSource.Stop();
         }
 
         private IEnumerator PauseCo(float fadeOutSeconds)
         {
-            yield return FadeToVolume(_audioSource, 0f, fadeOutSeconds);
-            _audioSource.Pause();
+            yield return FadeToVolume(m_AudioSource, 0f, fadeOutSeconds);
+            m_AudioSource.Pause();
         }
 
         private IEnumerator FadeToVolume(AudioSource audioSource, float volume, float duration)

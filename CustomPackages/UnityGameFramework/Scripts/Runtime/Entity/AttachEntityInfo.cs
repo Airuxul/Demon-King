@@ -12,31 +12,43 @@ namespace UnityGameFramework.Runtime
 {
     internal sealed class AttachEntityInfo : IReference
     {
-        private Transform _parentTransform;
-        private object _userData;
+        private Transform m_ParentTransform;
+        private object m_UserData;
 
         public AttachEntityInfo()
         {
-            _parentTransform = null;
-            _userData = null;
+            m_ParentTransform = null;
+            m_UserData = null;
         }
 
-        public Transform ParentTransform => _parentTransform;
+        public Transform ParentTransform
+        {
+            get
+            {
+                return m_ParentTransform;
+            }
+        }
 
-        public object UserData => _userData;
+        public object UserData
+        {
+            get
+            {
+                return m_UserData;
+            }
+        }
 
         public static AttachEntityInfo Create(Transform parentTransform, object userData)
         {
             AttachEntityInfo attachEntityInfo = ReferencePool.Acquire<AttachEntityInfo>();
-            attachEntityInfo._parentTransform = parentTransform;
-            attachEntityInfo._userData = userData;
+            attachEntityInfo.m_ParentTransform = parentTransform;
+            attachEntityInfo.m_UserData = userData;
             return attachEntityInfo;
         }
 
         public void Clear()
         {
-            _parentTransform = null;
-            _userData = null;
+            m_ParentTransform = null;
+            m_UserData = null;
         }
     }
 }

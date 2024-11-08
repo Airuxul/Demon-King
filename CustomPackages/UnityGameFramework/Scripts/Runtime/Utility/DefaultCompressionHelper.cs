@@ -18,7 +18,7 @@ namespace UnityGameFramework.Runtime
     public class DefaultCompressionHelper : Utility.Compression.ICompressionHelper
     {
         private const int CachedBytesLength = 0x1000;
-        private readonly byte[] _cachedBytes = new byte[CachedBytesLength];
+        private readonly byte[] m_CachedBytes = new byte[CachedBytesLength];
 
         /// <summary>
         /// 压缩数据。
@@ -81,9 +81,9 @@ namespace UnityGameFramework.Runtime
             {
                 GZipOutputStream gZipOutputStream = new GZipOutputStream(compressedStream);
                 int bytesRead = 0;
-                while ((bytesRead = stream.Read(_cachedBytes, 0, CachedBytesLength)) > 0)
+                while ((bytesRead = stream.Read(m_CachedBytes, 0, CachedBytesLength)) > 0)
                 {
-                    gZipOutputStream.Write(_cachedBytes, 0, bytesRead);
+                    gZipOutputStream.Write(m_CachedBytes, 0, bytesRead);
                 }
 
                 gZipOutputStream.Finish();
@@ -96,7 +96,7 @@ namespace UnityGameFramework.Runtime
             }
             finally
             {
-                Array.Clear(_cachedBytes, 0, CachedBytesLength);
+                Array.Clear(m_CachedBytes, 0, CachedBytesLength);
             }
         }
 
@@ -132,9 +132,9 @@ namespace UnityGameFramework.Runtime
                 using (GZipInputStream gZipInputStream = new GZipInputStream(memoryStream))
                 {
                     int bytesRead = 0;
-                    while ((bytesRead = gZipInputStream.Read(_cachedBytes, 0, CachedBytesLength)) > 0)
+                    while ((bytesRead = gZipInputStream.Read(m_CachedBytes, 0, CachedBytesLength)) > 0)
                     {
-                        decompressedStream.Write(_cachedBytes, 0, bytesRead);
+                        decompressedStream.Write(m_CachedBytes, 0, bytesRead);
                     }
                 }
 
@@ -152,7 +152,7 @@ namespace UnityGameFramework.Runtime
                     memoryStream = null;
                 }
 
-                Array.Clear(_cachedBytes, 0, CachedBytesLength);
+                Array.Clear(m_CachedBytes, 0, CachedBytesLength);
             }
         }
 
@@ -178,9 +178,9 @@ namespace UnityGameFramework.Runtime
             {
                 GZipInputStream gZipInputStream = new GZipInputStream(stream);
                 int bytesRead = 0;
-                while ((bytesRead = gZipInputStream.Read(_cachedBytes, 0, CachedBytesLength)) > 0)
+                while ((bytesRead = gZipInputStream.Read(m_CachedBytes, 0, CachedBytesLength)) > 0)
                 {
-                    decompressedStream.Write(_cachedBytes, 0, bytesRead);
+                    decompressedStream.Write(m_CachedBytes, 0, bytesRead);
                 }
 
                 return true;
@@ -191,7 +191,7 @@ namespace UnityGameFramework.Runtime
             }
             finally
             {
-                Array.Clear(_cachedBytes, 0, CachedBytesLength);
+                Array.Clear(m_CachedBytes, 0, CachedBytesLength);
             }
         }
 

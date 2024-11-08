@@ -16,13 +16,13 @@ namespace GameFramework.Entity
         /// </summary>
         private sealed class EntityInstanceObject : ObjectBase
         {
-            private object _EntityAsset;
-            private IEntityHelper _EntityHelper;
+            private object m_EntityAsset;
+            private IEntityHelper m_EntityHelper;
 
             public EntityInstanceObject()
             {
-                _EntityAsset = null;
-                _EntityHelper = null;
+                m_EntityAsset = null;
+                m_EntityHelper = null;
             }
 
             public static EntityInstanceObject Create(string name, object entityAsset, object entityInstance, IEntityHelper entityHelper)
@@ -39,21 +39,21 @@ namespace GameFramework.Entity
 
                 EntityInstanceObject entityInstanceObject = ReferencePool.Acquire<EntityInstanceObject>();
                 entityInstanceObject.Initialize(name, entityInstance);
-                entityInstanceObject._EntityAsset = entityAsset;
-                entityInstanceObject._EntityHelper = entityHelper;
+                entityInstanceObject.m_EntityAsset = entityAsset;
+                entityInstanceObject.m_EntityHelper = entityHelper;
                 return entityInstanceObject;
             }
 
             public override void Clear()
             {
                 base.Clear();
-                _EntityAsset = null;
-                _EntityHelper = null;
+                m_EntityAsset = null;
+                m_EntityHelper = null;
             }
 
             protected internal override void Release(bool isShutdown)
             {
-                _EntityHelper.ReleaseEntity(_EntityAsset, Target);
+                m_EntityHelper.ReleaseEntity(m_EntityAsset, Target);
             }
         }
     }

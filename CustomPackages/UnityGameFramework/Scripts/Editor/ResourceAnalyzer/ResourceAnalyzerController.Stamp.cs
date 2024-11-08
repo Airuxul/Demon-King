@@ -14,20 +14,20 @@ namespace UnityGameFramework.Editor.ResourceTools
         [StructLayout(LayoutKind.Auto)]
         private struct Stamp
         {
-            private readonly string _HostAssetName;
-            private readonly string _DependencyAssetName;
+            private readonly string m_HostAssetName;
+            private readonly string m_DependencyAssetName;
 
             public Stamp(string hostAssetName, string dependencyAssetName)
             {
-                _HostAssetName = hostAssetName;
-                _DependencyAssetName = dependencyAssetName;
+                m_HostAssetName = hostAssetName;
+                m_DependencyAssetName = dependencyAssetName;
             }
 
             public string HostAssetName
             {
                 get
                 {
-                    return _HostAssetName;
+                    return m_HostAssetName;
                 }
             }
 
@@ -35,7 +35,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             {
                 get
                 {
-                    return _DependencyAssetName;
+                    return m_DependencyAssetName;
                 }
             }
         }

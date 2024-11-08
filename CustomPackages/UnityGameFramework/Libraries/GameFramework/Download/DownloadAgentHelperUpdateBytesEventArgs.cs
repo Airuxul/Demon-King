@@ -12,14 +12,14 @@ namespace GameFramework.Download
     /// </summary>
     public sealed class DownloadAgentHelperUpdateBytesEventArgs : GameFrameworkEventArgs
     {
-        private byte[] _Bytes;
+        private byte[] m_Bytes;
 
         /// <summary>
         /// 初始化下载代理辅助器更新数据流事件的新实例。
         /// </summary>
         public DownloadAgentHelperUpdateBytesEventArgs()
         {
-            _Bytes = null;
+            m_Bytes = null;
             Offset = 0;
             Length = 0;
         }
@@ -67,7 +67,7 @@ namespace GameFramework.Download
             }
 
             DownloadAgentHelperUpdateBytesEventArgs downloadAgentHelperUpdateBytesEventArgs = ReferencePool.Acquire<DownloadAgentHelperUpdateBytesEventArgs>();
-            downloadAgentHelperUpdateBytesEventArgs._Bytes = bytes;
+            downloadAgentHelperUpdateBytesEventArgs.m_Bytes = bytes;
             downloadAgentHelperUpdateBytesEventArgs.Offset = offset;
             downloadAgentHelperUpdateBytesEventArgs.Length = length;
             return downloadAgentHelperUpdateBytesEventArgs;
@@ -78,7 +78,7 @@ namespace GameFramework.Download
         /// </summary>
         public override void Clear()
         {
-            _Bytes = null;
+            m_Bytes = null;
             Offset = 0;
             Length = 0;
         }
@@ -88,7 +88,7 @@ namespace GameFramework.Download
         /// </summary>
         public byte[] GetBytes()
         {
-            return _Bytes;
+            return m_Bytes;
         }
     }
 }

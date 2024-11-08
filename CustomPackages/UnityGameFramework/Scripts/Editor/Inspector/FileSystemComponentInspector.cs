@@ -15,7 +15,7 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(FileSystemComponent))]
     internal sealed class FileSystemComponentInspector : GameFrameworkInspector
     {
-        private HelperInfo<FileSystemHelperBase> _FileSystemHelperInfo = new HelperInfo<FileSystemHelperBase>("FileSystem");
+        private HelperInfo<FileSystemHelperBase> m_FileSystemHelperInfo = new HelperInfo<FileSystemHelperBase>("FileSystem");
 
         public override void OnInspectorGUI()
         {
@@ -25,7 +25,7 @@ namespace UnityGameFramework.Editor
 
             EditorGUI.BeginDisabledGroup(EditorApplication.isPlayingOrWillChangePlaymode);
             {
-                _FileSystemHelperInfo.Draw();
+                m_FileSystemHelperInfo.Draw();
             }
             EditorGUI.EndDisabledGroup();
 
@@ -54,14 +54,14 @@ namespace UnityGameFramework.Editor
 
         private void OnEnable()
         {
-            _FileSystemHelperInfo.Init(serializedObject);
+            m_FileSystemHelperInfo.Init(serializedObject);
 
             RefreshTypeNames();
         }
 
         private void RefreshTypeNames()
         {
-            _FileSystemHelperInfo.Refresh();
+            m_FileSystemHelperInfo.Refresh();
             serializedObject.ApplyModifiedProperties();
         }
 

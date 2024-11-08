@@ -33,7 +33,13 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 获取加载字典更新事件编号。
         /// </summary>
-        public override int Id => EventId;
+        public override int Id
+        {
+            get
+            {
+                return EventId;
+            }
+        }
 
         /// <summary>
         /// 获取字典资源名称。

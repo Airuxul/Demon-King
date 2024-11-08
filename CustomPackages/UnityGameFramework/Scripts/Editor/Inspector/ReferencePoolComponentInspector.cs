@@ -19,12 +19,12 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(ReferencePoolComponent))]
     internal sealed class ReferencePoolComponentInspector : GameFrameworkInspector
     {
-        private readonly Dictionary<string, List<ReferencePoolInfo>> _ReferencePoolInfos = new Dictionary<string, List<ReferencePoolInfo>>(StringComparer.Ordinal);
-        private readonly HashSet<string> _OpenedItems = new HashSet<string>();
+        private readonly Dictionary<string, List<ReferencePoolInfo>> m_ReferencePoolInfos = new Dictionary<string, List<ReferencePoolInfo>>(StringComparer.Ordinal);
+        private readonly HashSet<string> m_OpenedItems = new HashSet<string>();
 
-        private SerializedProperty _EnableStrictCheck = null;
+        private SerializedProperty m_EnableStrictCheck = null;
 
-        private bool _ShowFullClassName = false;
+        private bool m_ShowFullClassName = false;
 
         public override void OnInspectorGUI()
         {
@@ -43,35 +43,35 @@ namespace UnityGameFramework.Editor
                 }
 
                 EditorGUILayout.LabelField("Reference Pool Count", ReferencePool.Count.ToString());
-                _ShowFullClassName = EditorGUILayout.Toggle("Show Full Class Name", _ShowFullClassName);
-                _ReferencePoolInfos.Clear();
+                m_ShowFullClassName = EditorGUILayout.Toggle("Show Full Class Name", m_ShowFullClassName);
+                m_ReferencePoolInfos.Clear();
                 ReferencePoolInfo[] referencePoolInfos = ReferencePool.GetAllReferencePoolInfos();
                 foreach (ReferencePoolInfo referencePoolInfo in referencePoolInfos)
                 {
                     string assemblyName = referencePoolInfo.Type.Assembly.GetName().Name;
                     List<ReferencePoolInfo> results = null;
-                    if (!_ReferencePoolInfos.TryGetValue(assemblyName, out results))
+                    if (!m_ReferencePoolInfos.TryGetValue(assemblyName, out results))
                     {
                         results = new List<ReferencePoolInfo>();
-                        _ReferencePoolInfos.Add(assemblyName, results);
+                        m_ReferencePoolInfos.Add(assemblyName, results);
                     }
 
                     results.Add(referencePoolInfo);
                 }
 
-                foreach (KeyValuePair<string, List<ReferencePoolInfo>> assemblyReferencePoolInfo in _ReferencePoolInfos)
+                foreach (KeyValuePair<string, List<ReferencePoolInfo>> assemblyReferencePoolInfo in m_ReferencePoolInfos)
                 {
-                    bool lastState = _OpenedItems.Contains(assemblyReferencePoolInfo.Key);
+                    bool lastState = m_OpenedItems.Contains(assemblyReferencePoolInfo.Key);
                     bool currentState = EditorGUILayout.Foldout(lastState, assemblyReferencePoolInfo.Key);
                     if (currentState != lastState)
                     {
                         if (currentState)
                         {
-                            _OpenedItems.Add(assemblyReferencePoolInfo.Key);
+                            m_OpenedItems.Add(assemblyReferencePoolInfo.Key);
                         }
                         else
                         {
-                            _OpenedItems.Remove(assemblyReferencePoolInfo.Key);
+                            m_OpenedItems.Remove(assemblyReferencePoolInfo.Key);
                         }
                     }
 
@@ -79,7 +79,7 @@ namespace UnityGameFramework.Editor
                     {
                         EditorGUILayout.BeginVertical("box");
                         {
-                            EditorGUILayout.LabelField(_ShowFullClassName ? "Full Class Name" : "Class Name", "Unused\tUsing\tAcquire\tRelease\tAdd\tRemove");
+                            EditorGUILayout.LabelField(m_ShowFullClassName ? "Full Class Name" : "Class Name", "Unused\tUsing\tAcquire\tRelease\tAdd\tRemove");
                             assemblyReferencePoolInfo.Value.Sort(Comparison);
                             foreach (ReferencePoolInfo referencePoolInfo in assemblyReferencePoolInfo.Value)
                             {
@@ -119,7 +119,7 @@ namespace UnityGameFramework.Editor
             }
             else
             {
-                EditorGUILayout.PropertyField(_EnableStrictCheck);
+                EditorGUILayout.PropertyField(m_EnableStrictCheck);
             }
 
             serializedObject.ApplyModifiedProperties();
@@ -129,17 +129,17 @@ namespace UnityGameFramework.Editor
 
         private void OnEnable()
         {
-            _EnableStrictCheck = serializedObject.FindProperty("_EnableStrictCheck");
+            m_EnableStrictCheck = serializedObject.FindProperty("m_EnableStrictCheck");
         }
 
         private void DrawReferencePoolInfo(ReferencePoolInfo referencePoolInfo)
         {
-            EditorGUILayout.LabelField(_ShowFullClassName ? referencePoolInfo.Type.FullName : referencePoolInfo.Type.Name, Utility.Text.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", referencePoolInfo.UnusedReferenceCount, referencePoolInfo.UsingReferenceCount, referencePoolInfo.AcquireReferenceCount, referencePoolInfo.ReleaseReferenceCount, referencePoolInfo.AddReferenceCount, referencePoolInfo.RemoveReferenceCount));
+            EditorGUILayout.LabelField(m_ShowFullClassName ? referencePoolInfo.Type.FullName : referencePoolInfo.Type.Name, Utility.Text.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", referencePoolInfo.UnusedReferenceCount, referencePoolInfo.UsingReferenceCount, referencePoolInfo.AcquireReferenceCount, referencePoolInfo.ReleaseReferenceCount, referencePoolInfo.AddReferenceCount, referencePoolInfo.RemoveReferenceCount));
         }
 
         private int Comparison(ReferencePoolInfo a, ReferencePoolInfo b)
         {
-            if (_ShowFullClassName)
+            if (m_ShowFullClassName)
             {
                 return a.Type.FullName.CompareTo(b.Type.FullName);
             }

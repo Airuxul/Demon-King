@@ -16,47 +16,89 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public sealed class UIForm : MonoBehaviour, IUIForm
     {
-        private int _serialId;
-        private string _uiFormAssetName;
-        private IUIGroup _uiGroup;
-        private int _depthInUIGroup;
-        private bool _pauseCoveredUIForm;
-        private UIFormLogic _uiFormLogic;
+        private int m_SerialId;
+        private string m_UIFormAssetName;
+        private IUIGroup m_UIGroup;
+        private int m_DepthInUIGroup;
+        private bool m_PauseCoveredUIForm;
+        private UIFormLogic m_UIFormLogic;
 
         /// <summary>
         /// 获取界面序列编号。
         /// </summary>
-        public int SerialId => _serialId;
+        public int SerialId
+        {
+            get
+            {
+                return m_SerialId;
+            }
+        }
 
         /// <summary>
         /// 获取界面资源名称。
         /// </summary>
-        public string UIFormAssetName => _uiFormAssetName;
+        public string UIFormAssetName
+        {
+            get
+            {
+                return m_UIFormAssetName;
+            }
+        }
 
         /// <summary>
         /// 获取界面实例。
         /// </summary>
-        public object Handle => gameObject;
+        public object Handle
+        {
+            get
+            {
+                return gameObject;
+            }
+        }
 
         /// <summary>
         /// 获取界面所属的界面组。
         /// </summary>
-        public IUIGroup UIGroup => _uiGroup;
+        public IUIGroup UIGroup
+        {
+            get
+            {
+                return m_UIGroup;
+            }
+        }
 
         /// <summary>
         /// 获取界面深度。
         /// </summary>
-        public int DepthInUIGroup => _depthInUIGroup;
+        public int DepthInUIGroup
+        {
+            get
+            {
+                return m_DepthInUIGroup;
+            }
+        }
 
         /// <summary>
         /// 获取是否暂停被覆盖的界面。
         /// </summary>
-        public bool PauseCoveredUIForm => _pauseCoveredUIForm;
+        public bool PauseCoveredUIForm
+        {
+            get
+            {
+                return m_PauseCoveredUIForm;
+            }
+        }
 
         /// <summary>
         /// 获取界面逻辑。
         /// </summary>
-        public UIFormLogic Logic => _uiFormLogic;
+        public UIFormLogic Logic
+        {
+            get
+            {
+                return m_UIFormLogic;
+            }
+        }
 
         /// <summary>
         /// 初始化界面。
@@ -69,19 +111,19 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void OnInit(int serialId, string uiFormAssetName, IUIGroup uiGroup, bool pauseCoveredUIForm, bool isNewInstance, object userData)
         {
-            _serialId = serialId;
-            _uiFormAssetName = uiFormAssetName;
-            _uiGroup = uiGroup;
-            _depthInUIGroup = 0;
-            _pauseCoveredUIForm = pauseCoveredUIForm;
+            m_SerialId = serialId;
+            m_UIFormAssetName = uiFormAssetName;
+            m_UIGroup = uiGroup;
+            m_DepthInUIGroup = 0;
+            m_PauseCoveredUIForm = pauseCoveredUIForm;
 
             if (!isNewInstance)
             {
                 return;
             }
 
-            _uiFormLogic = GetComponent<UIFormLogic>();
-            if (_uiFormLogic == null)
+            m_UIFormLogic = GetComponent<UIFormLogic>();
+            if (m_UIFormLogic == null)
             {
                 Log.Error("UI form '{0}' can not get UI form logic.", uiFormAssetName);
                 return;
@@ -89,11 +131,11 @@ namespace UnityGameFramework.Runtime
 
             try
             {
-                _uiFormLogic.OnInit(userData);
+                m_UIFormLogic.OnInit(userData);
             }
             catch (Exception exception)
             {
-                Log.Error("UI form '[{0}]{1}' OnInit with exception '{2}'.", _serialId, _uiFormAssetName, exception);
+                Log.Error("UI form '[{0}]{1}' OnInit with exception '{2}'.", m_SerialId, m_UIFormAssetName, exception);
             }
         }
 
@@ -104,16 +146,16 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                _uiFormLogic.OnRecycle();
+                m_UIFormLogic.OnRecycle();
             }
             catch (Exception exception)
             {
-                Log.Error("UI form '[{0}]{1}' OnRecycle with exception '{2}'.", _serialId, _uiFormAssetName, exception);
+                Log.Error("UI form '[{0}]{1}' OnRecycle with exception '{2}'.", m_SerialId, m_UIFormAssetName, exception);
             }
 
-            _serialId = 0;
-            _depthInUIGroup = 0;
-            _pauseCoveredUIForm = true;
+            m_SerialId = 0;
+            m_DepthInUIGroup = 0;
+            m_PauseCoveredUIForm = true;
         }
 
         /// <summary>
@@ -124,11 +166,11 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                _uiFormLogic.OnOpen(userData);
+                m_UIFormLogic.OnOpen(userData);
             }
             catch (Exception exception)
             {
-                Log.Error("UI form '[{0}]{1}' OnOpen with exception '{2}'.", _serialId, _uiFormAssetName, exception);
+                Log.Error("UI form '[{0}]{1}' OnOpen with exception '{2}'.", m_SerialId, m_UIFormAssetName, exception);
             }
         }
 
@@ -141,11 +183,11 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                _uiFormLogic.OnClose(isShutdown, userData);
+                m_UIFormLogic.OnClose(isShutdown, userData);
             }
             catch (Exception exception)
             {
-                Log.Error("UI form '[{0}]{1}' OnClose with exception '{2}'.", _serialId, _uiFormAssetName, exception);
+                Log.Error("UI form '[{0}]{1}' OnClose with exception '{2}'.", m_SerialId, m_UIFormAssetName, exception);
             }
         }
 
@@ -156,11 +198,11 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                _uiFormLogic.OnPause();
+                m_UIFormLogic.OnPause();
             }
             catch (Exception exception)
             {
-                Log.Error("UI form '[{0}]{1}' OnPause with exception '{2}'.", _serialId, _uiFormAssetName, exception);
+                Log.Error("UI form '[{0}]{1}' OnPause with exception '{2}'.", m_SerialId, m_UIFormAssetName, exception);
             }
         }
 
@@ -171,11 +213,11 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                _uiFormLogic.OnResume();
+                m_UIFormLogic.OnResume();
             }
             catch (Exception exception)
             {
-                Log.Error("UI form '[{0}]{1}' OnResume with exception '{2}'.", _serialId, _uiFormAssetName, exception);
+                Log.Error("UI form '[{0}]{1}' OnResume with exception '{2}'.", m_SerialId, m_UIFormAssetName, exception);
             }
         }
 
@@ -186,11 +228,11 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                _uiFormLogic.OnCover();
+                m_UIFormLogic.OnCover();
             }
             catch (Exception exception)
             {
-                Log.Error("UI form '[{0}]{1}' OnCover with exception '{2}'.", _serialId, _uiFormAssetName, exception);
+                Log.Error("UI form '[{0}]{1}' OnCover with exception '{2}'.", m_SerialId, m_UIFormAssetName, exception);
             }
         }
 
@@ -201,11 +243,11 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                _uiFormLogic.OnReveal();
+                m_UIFormLogic.OnReveal();
             }
             catch (Exception exception)
             {
-                Log.Error("UI form '[{0}]{1}' OnReveal with exception '{2}'.", _serialId, _uiFormAssetName, exception);
+                Log.Error("UI form '[{0}]{1}' OnReveal with exception '{2}'.", m_SerialId, m_UIFormAssetName, exception);
             }
         }
 
@@ -217,11 +259,11 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                _uiFormLogic.OnRefocus(userData);
+                m_UIFormLogic.OnRefocus(userData);
             }
             catch (Exception exception)
             {
-                Log.Error("UI form '[{0}]{1}' OnRefocus with exception '{2}'.", _serialId, _uiFormAssetName, exception);
+                Log.Error("UI form '[{0}]{1}' OnRefocus with exception '{2}'.", m_SerialId, m_UIFormAssetName, exception);
             }
         }
 
@@ -234,11 +276,11 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                _uiFormLogic.OnUpdate(elapseSeconds, realElapseSeconds);
+                m_UIFormLogic.OnUpdate(elapseSeconds, realElapseSeconds);
             }
             catch (Exception exception)
             {
-                Log.Error("UI form '[{0}]{1}' OnUpdate with exception '{2}'.", _serialId, _uiFormAssetName, exception);
+                Log.Error("UI form '[{0}]{1}' OnUpdate with exception '{2}'.", m_SerialId, m_UIFormAssetName, exception);
             }
         }
 
@@ -249,14 +291,14 @@ namespace UnityGameFramework.Runtime
         /// <param name="depthInUIGroup">界面在界面组中的深度。</param>
         public void OnDepthChanged(int uiGroupDepth, int depthInUIGroup)
         {
-            _depthInUIGroup = depthInUIGroup;
+            m_DepthInUIGroup = depthInUIGroup;
             try
             {
-                _uiFormLogic.OnDepthChanged(uiGroupDepth, depthInUIGroup);
+                m_UIFormLogic.OnDepthChanged(uiGroupDepth, depthInUIGroup);
             }
             catch (Exception exception)
             {
-                Log.Error("UI form '[{0}]{1}' OnDepthChanged with exception '{2}'.", _serialId, _uiFormAssetName, exception);
+                Log.Error("UI form '[{0}]{1}' OnDepthChanged with exception '{2}'.", m_SerialId, m_UIFormAssetName, exception);
             }
         }
     }

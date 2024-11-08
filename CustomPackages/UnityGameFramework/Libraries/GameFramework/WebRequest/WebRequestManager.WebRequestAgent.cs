@@ -14,9 +14,9 @@ namespace GameFramework.WebRequest
         /// </summary>
         private sealed class WebRequestAgent : ITaskAgent<WebRequestTask>
         {
-            private readonly IWebRequestAgentHelper _Helper;
-            private WebRequestTask _Task;
-            private float _WaitTime;
+            private readonly IWebRequestAgentHelper m_Helper;
+            private WebRequestTask m_Task;
+            private float m_WaitTime;
 
             public GameFrameworkAction<WebRequestAgent> WebRequestAgentStart;
             public GameFrameworkAction<WebRequestAgent, byte[]> WebRequestAgentSuccess;
@@ -33,9 +33,9 @@ namespace GameFramework.WebRequest
                     throw new GameFrameworkException("Web request agent helper is invalid.");
                 }
 
-                _Helper = webRequestAgentHelper;
-                _Task = null;
-                _WaitTime = 0f;
+                m_Helper = webRequestAgentHelper;
+                m_Task = null;
+                m_WaitTime = 0f;
 
                 WebRequestAgentStart = null;
                 WebRequestAgentSuccess = null;
@@ -49,7 +49,7 @@ namespace GameFramework.WebRequest
             {
                 get
                 {
-                    return _Task;
+                    return m_Task;
                 }
             }
 
@@ -60,7 +60,7 @@ namespace GameFramework.WebRequest
             {
                 get
                 {
-                    return _WaitTime;
+                    return m_WaitTime;
                 }
             }
 
@@ -69,8 +69,8 @@ namespace GameFramework.WebRequest
             /// </summary>
             public void Initialize()
             {
-                _Helper.WebRequestAgentHelperComplete += OnWebRequestAgentHelperComplete;
-                _Helper.WebRequestAgentHelperError += OnWebRequestAgentHelperError;
+                m_Helper.WebRequestAgentHelperComplete += OnWebRequestAgentHelperComplete;
+                m_Helper.WebRequestAgentHelperError += OnWebRequestAgentHelperError;
             }
 
             /// <summary>
@@ -80,10 +80,10 @@ namespace GameFramework.WebRequest
             /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
             public void Update(float elapseSeconds, float realElapseSeconds)
             {
-                if (_Task.Status == WebRequestTaskStatus.Doing)
+                if (m_Task.Status == WebRequestTaskStatus.Doing)
                 {
-                    _WaitTime += realElapseSeconds;
-                    if (_WaitTime >= _Task.Timeout)
+                    m_WaitTime += realElapseSeconds;
+                    if (m_WaitTime >= m_Task.Timeout)
                     {
                         WebRequestAgentHelperErrorEventArgs webRequestAgentHelperErrorEventArgs = WebRequestAgentHelperErrorEventArgs.Create("Timeout");
                         OnWebRequestAgentHelperError(this, webRequestAgentHelperErrorEventArgs);
@@ -98,8 +98,8 @@ namespace GameFramework.WebRequest
             public void Shutdown()
             {
                 Reset();
-                _Helper.WebRequestAgentHelperComplete -= OnWebRequestAgentHelperComplete;
-                _Helper.WebRequestAgentHelperError -= OnWebRequestAgentHelperError;
+                m_Helper.WebRequestAgentHelperComplete -= OnWebRequestAgentHelperComplete;
+                m_Helper.WebRequestAgentHelperError -= OnWebRequestAgentHelperError;
             }
 
             /// <summary>
@@ -114,25 +114,25 @@ namespace GameFramework.WebRequest
                     throw new GameFrameworkException("Task is invalid.");
                 }
 
-                _Task = task;
-                _Task.Status = WebRequestTaskStatus.Doing;
+                m_Task = task;
+                m_Task.Status = WebRequestTaskStatus.Doing;
 
                 if (WebRequestAgentStart != null)
                 {
                     WebRequestAgentStart(this);
                 }
 
-                byte[] postData = _Task.GetPostData();
+                byte[] postData = m_Task.GetPostData();
                 if (postData == null)
                 {
-                    _Helper.Request(_Task.WebRequestUri, _Task.UserData);
+                    m_Helper.Request(m_Task.WebRequestUri, m_Task.UserData);
                 }
                 else
                 {
-                    _Helper.Request(_Task.WebRequestUri, postData, _Task.UserData);
+                    m_Helper.Request(m_Task.WebRequestUri, postData, m_Task.UserData);
                 }
 
-                _WaitTime = 0f;
+                m_WaitTime = 0f;
                 return StartTaskStatus.CanResume;
             }
 
@@ -141,35 +141,35 @@ namespace GameFramework.WebRequest
             /// </summary>
             public void Reset()
             {
-                _Helper.Reset();
-                _Task = null;
-                _WaitTime = 0f;
+                m_Helper.Reset();
+                m_Task = null;
+                m_WaitTime = 0f;
             }
 
             private void OnWebRequestAgentHelperComplete(object sender, WebRequestAgentHelperCompleteEventArgs e)
             {
-                _Helper.Reset();
-                _Task.Status = WebRequestTaskStatus.Done;
+                m_Helper.Reset();
+                m_Task.Status = WebRequestTaskStatus.Done;
 
                 if (WebRequestAgentSuccess != null)
                 {
                     WebRequestAgentSuccess(this, e.GetWebResponseBytes());
                 }
 
-                _Task.Done = true;
+                m_Task.Done = true;
             }
 
             private void OnWebRequestAgentHelperError(object sender, WebRequestAgentHelperErrorEventArgs e)
             {
-                _Helper.Reset();
-                _Task.Status = WebRequestTaskStatus.Error;
+                m_Helper.Reset();
+                m_Task.Status = WebRequestTaskStatus.Error;
 
                 if (WebRequestAgentFailure != null)
                 {
                     WebRequestAgentFailure(this, e.ErrorMessage);
                 }
 
-                _Task.Done = true;
+                m_Task.Done = true;
             }
         }
     }

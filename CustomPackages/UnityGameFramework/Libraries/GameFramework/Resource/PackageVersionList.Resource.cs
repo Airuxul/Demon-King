@@ -19,13 +19,13 @@ namespace GameFramework.Resource
         {
             private static readonly int[] EmptyIntArray = new int[] { };
 
-            private readonly string _Name;
-            private readonly string _Variant;
-            private readonly string _Extension;
-            private readonly byte _LoadType;
-            private readonly int _Length;
-            private readonly int _HashCode;
-            private readonly int[] _AssetIndexes;
+            private readonly string m_Name;
+            private readonly string m_Variant;
+            private readonly string m_Extension;
+            private readonly byte m_LoadType;
+            private readonly int m_Length;
+            private readonly int m_HashCode;
+            private readonly int[] m_AssetIndexes;
 
             /// <summary>
             /// 初始化资源的新实例。
@@ -44,13 +44,13 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException("Name is invalid.");
                 }
 
-                _Name = name;
-                _Variant = variant;
-                _Extension = extension;
-                _LoadType = loadType;
-                _Length = length;
-                _HashCode = hashCode;
-                _AssetIndexes = assetIndexes ?? EmptyIntArray;
+                m_Name = name;
+                m_Variant = variant;
+                m_Extension = extension;
+                m_LoadType = loadType;
+                m_Length = length;
+                m_HashCode = hashCode;
+                m_AssetIndexes = assetIndexes ?? EmptyIntArray;
             }
 
             /// <summary>
@@ -60,7 +60,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _Name;
+                    return m_Name;
                 }
             }
 
@@ -71,7 +71,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _Variant;
+                    return m_Variant;
                 }
             }
 
@@ -82,7 +82,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _Extension;
+                    return m_Extension;
                 }
             }
 
@@ -93,7 +93,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _LoadType;
+                    return m_LoadType;
                 }
             }
 
@@ -104,7 +104,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _Length;
+                    return m_Length;
                 }
             }
 
@@ -115,7 +115,7 @@ namespace GameFramework.Resource
             {
                 get
                 {
-                    return _HashCode;
+                    return m_HashCode;
                 }
             }
 
@@ -125,7 +125,7 @@ namespace GameFramework.Resource
             /// <returns>资源包含的资源索引集合。</returns>
             public int[] GetAssetIndexes()
             {
-                return _AssetIndexes;
+                return m_AssetIndexes;
             }
         }
     }
