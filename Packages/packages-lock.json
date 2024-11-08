@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "com.airuxul.game-framework": {
-      "version": "file:../CustomPackages/GameFramework",
+    "com.airuxul.untiy-game-framework": {
+      "version": "file:../CustomPackages/UnityGameFramework",
       "depth": 0,
       "source": "local",
       "dependencies": {}

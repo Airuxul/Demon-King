@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.airuxul.game-framework": "file:../CustomPackages/GameFramework",
+    "com.airuxul.untiy-game-framework": "file:../CustomPackages/UnityGameFramework",
     "com.fluid.behavior-tree": "file:../CustomPackages/fluid-behavior-tree",
     "com.unity.collab-proxy": "2.5.2",
     "com.unity.feature.development": "1.0.1",

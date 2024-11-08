@@ -1,0 +1,11 @@
+{
+  "name": "com.airuxul.untiy-game-framework",
+  "version": "1.0.0",
+  "displayName": "Unity Game Framework",
+  "category": "Unity Game Framework",
+  "description": "This is literally a game framework, based on Unity game engine. It encapsulates commonly used game modules during development, and, to a large degree, standardises the process, enhances the development speed and ensures the product quality.",
+  "unity": "2022.3",
+  "keywords": [
+    "Unity Framework"
+  ]
+}
