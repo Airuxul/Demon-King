@@ -1,8 +1,6 @@
 {
   "dependencies": {
-    "com.airuxl.asset-proxy": "file:../CustomPackages/asset-proxy",
-    "com.airuxl.ui-proxy": "file:../CustomPackages/ui-proxy",
-    "com.airuxul.game-core": "file:../CustomPackages/game-core",
+    "com.airuxul.game-framework": "file:../CustomPackages/GameFramework",
     "com.fluid.behavior-tree": "file:../CustomPackages/fluid-behavior-tree",
     "com.unity.collab-proxy": "2.5.2",
     "com.unity.feature.development": "1.0.1",
