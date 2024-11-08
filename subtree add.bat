@@ -1,0 +1,1 @@
+git subtree add --prefix=CustomPackages/UnityGameFramework https://github.com/Airuxul/UnityGameFramework.git master
