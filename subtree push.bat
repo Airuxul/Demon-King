@@ -1,2 +1,1 @@
-git subtree push --prefix=CustomPackages/GameFramework https://github.com/Airuxul/GameFramework.git master
-pause
+git subtree push --prefix=CustomPackages/UnityGameFramework https://github.com/Airuxul/UnityGameFramework.git master
