@@ -63,7 +63,6 @@ namespace UnityGameFramework.Runtime
             if (m_ProcedureManager == null)
             {
                 Log.Fatal("Procedure manager is invalid.");
-                return;
             }
         }
 
