@@ -1,9 +1,0 @@
-{
-  "name": "com.airuxul.game-framework",
-  "version": "1.0.0",
-  "displayName": "Airuxul GameFramework",
-  "description": "",
-  "unity": "2022.3",
-  "dependencies": {
-  }
-}
